@@ -1,0 +1,61 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Windows.Forms.VisualStyles;
+using System.Windows.Forms;
+
+
+namespace Diploma.Controllers
+{
+    internal class MyAuthorization
+    {
+        private String connection_string;
+        
+        public MyAuthorization()
+        {
+            connection_string= "Data Source=PRESKIIN-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        }
+
+        //возвращает хэш, созданный из переданной строки
+        private String get_sha256(String text_to_sha256)
+        {
+            using SHA256 sha256 = SHA256.Create();
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(text_to_sha256));
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hashBytes)
+                sb.Append(b.ToString("X2"));
+            return sb.ToString();
+        }
+
+        //Сверяет хэши логина и парооля из базы, с хэшем переданных логина и пароля
+        public bool check_auth(String log, String pas)
+        {
+            CRUD_Users users = new CRUD_Users(connection_string);
+            String tmp_data = users.get_log_pas(get_sha256(log));//вытаскивает по хэшу
+            if (tmp_data != "None")
+            {
+                if (tmp_data.Split(' ').Length != 2)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (tmp_data.Split(' ')[0]== get_sha256(log) && tmp_data.Split(' ')[1] == get_sha256(pas))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+                return false;
+        }
+    }
+}
