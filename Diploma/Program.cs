@@ -17,7 +17,7 @@ namespace Diploma
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Authorize());
+            Application.Run(new Form1());
 
         }
     }
