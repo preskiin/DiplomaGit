@@ -35,7 +35,6 @@ namespace Diploma
         {
             docController.saveHtml(textBox1.Text, textBox2.Text);
             docController.openDocument(textBox2.Text, webBrowser1);
-            webBrowser1.Url = new Uri(textBox1.Text);
             webBrowser1.Update();
         }
     }
