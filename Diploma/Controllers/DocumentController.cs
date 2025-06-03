@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,19 +13,32 @@ namespace Diploma.Controllers
 {
     internal class DocumentController
     {
-        public void openDocument(String filePath, System.Windows.Forms.WebBrowser myWeb)
+        public String htmlCode;
+        private String htmlPath;
+        public void openDocument(System.Windows.Forms.WebBrowser myWeb)
         {
             //Aspose.Words.Document myDoc = new Aspose.Words.Document(filePath);
-            myWeb.Navigate(filePath);
+            myWeb.Navigate(htmlPath);
 
         }
-        public void saveHtml(string fileInput, string fileOutput)
+
+        public bool saveFromDocxToHtml(string docxPath, string fileOutput)
         {
-            var wordApp = new Microsoft.Office.Interop.Word.Application();
-            var doc = wordApp.Documents.Open(fileInput);
-            doc.SaveAs2(fileOutput, WdSaveFormat.wdFormatFilteredHTML);
-            doc.Close();
-            wordApp.Quit();
+            if (System.IO.File.Exists(docxPath))
+            {
+                var wordApp = new Microsoft.Office.Interop.Word.Application();
+                var doc = wordApp.Documents.Open(docxPath);
+                doc.SaveAs2(fileOutput, WdSaveFormat.wdFormatFilteredHTML);
+                htmlPath = fileOutput;
+                doc.Close();
+                wordApp.Quit();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
             //// Use Aspose.Words license to remove trial version limitations after converting Word DOCX to HTML
             //License licenseForConvertingDOCXtoHTML = new License();
             //licenseForConvertingDOCXtoHTML.SetLicense("Aspose.Words.lic");
@@ -40,11 +54,78 @@ namespace Diploma.Controllers
 
             //// Save output HTML
             //doc.Save("HtmlSaveOptions.html", saveOptions);
-
         }
 
+        public bool docxToHtml(string docxPath)
+        {
+            if (System.IO.File.Exists(docxPath))
+            {
+                this.htmlCode = "";
+                //var doc = new Aspose.Words.Document(docxPath);
+                //MemoryStream stream = new MemoryStream();
+                //doc.Save(stream, SaveFormat.Html);
+                //stream.Position = 0;
+                //using (StreamReader reader = new StreamReader(stream))
+                //{
+                //    this.htmlCode = reader.ReadToEnd();
+                //}
+                //stream.Close();
+                var doc = new Aspose.Words.Document(docxPath);
+                var options = new HtmlSaveOptions()
+                {
+                    ExportImagesAsBase64 = true
+                };
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    doc.Save(stream, options);
+                    stream.Position = 0;
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        this.htmlCode += reader.ReadToEnd();
+                    }
+                }
+                return true;
+            }
+            else
+                return false;
+        }
 
+        public bool saveFromHtmlToDocx(string fileInput, string fileOutput)
+        {
+            if (System.IO.File.Exists(fileInput))
+            {
+                Aspose.Words.Document doc = new Aspose.Words.Document(fileInput);
+                doc.Save(fileOutput);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
+        //public bool setHtml(System.Windows.Forms.WebBrowser myWeb)
+        //{
+        //    if (myWeb != null && htmlCode!=null)
+        //    {
+        //        myWeb.DocumentText = htmlCode;
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        private class HandleImageSaving : IImageSavingCallback
+        {
+            void IImageSavingCallback.ImageSaving(Aspose.Words.Saving.ImageSavingArgs e)
+            {
+                Stream imageStream = new MemoryStream();
+                e.ImageStream = imageStream;
+            }
+        }
 
     }
+
 }
