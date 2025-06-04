@@ -21,7 +21,7 @@ namespace Diploma.Controllers
         }
 
         //возвращает хэш, созданный из переданной строки
-        private String get_sha256(String text_to_sha256)
+        public String get_sha256(String text_to_sha256)
         {
             using SHA256 sha256 = SHA256.Create();
             byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(text_to_sha256));
@@ -31,7 +31,7 @@ namespace Diploma.Controllers
             return sb.ToString();
         }
 
-        //Сверяет хэши логина и парооля из базы, с хэшем переданных логина и пароля
+        //Сверяет хэши логина и пароля из базы, с хэшем переданных логина и пароля
         public bool check_auth(String log, String pas)
         {
             CRUD_Users users = new CRUD_Users(connection_string);

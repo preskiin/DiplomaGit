@@ -2,19 +2,33 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Aspose.Words;
 using Aspose.Words.Saving;
 using Microsoft.Office.Interop.Word;
+using GroupDocs.Conversion.Options.Convert;
+using System.Runtime.InteropServices;
 
 namespace Diploma.Controllers
 {
     internal class DocumentController
     {
-        public String htmlCode;
-        private String htmlPath;
+        
+        
+
+        private String htmlCode;
+        public String htmlPath;
+
+        public DocumentController()
+        {
+            //string licensePath = "GroupDocs.Conversion.lic";
+            //GroupDocs.Conversion.License lic = new GroupDocs.Conversion.License();
+            //lic.SetLicense(licensePath);
+        }
+
         public void openDocument(System.Windows.Forms.WebBrowser myWeb)
         {
             //Aspose.Words.Document myDoc = new Aspose.Words.Document(filePath);
@@ -29,7 +43,7 @@ namespace Diploma.Controllers
                 var wordApp = new Microsoft.Office.Interop.Word.Application();
                 var doc = wordApp.Documents.Open(docxPath);
                 doc.SaveAs2(fileOutput, WdSaveFormat.wdFormatFilteredHTML);
-                htmlPath = fileOutput;
+                htmlPath = fileOutput; //если не присвоить, метод openDocument не отработает
                 doc.Close();
                 wordApp.Quit();
                 return true;
@@ -60,7 +74,6 @@ namespace Diploma.Controllers
         {
             if (System.IO.File.Exists(docxPath))
             {
-                this.htmlCode = "";
                 //var doc = new Aspose.Words.Document(docxPath);
                 //MemoryStream stream = new MemoryStream();
                 //doc.Save(stream, SaveFormat.Html);
@@ -70,19 +83,27 @@ namespace Diploma.Controllers
                 //    this.htmlCode = reader.ReadToEnd();
                 //}
                 //stream.Close();
-                var doc = new Aspose.Words.Document(docxPath);
-                var options = new HtmlSaveOptions()
+
+                //var doc = new Aspose.Words.Document(docxPath);
+                //var options = new HtmlSaveOptions()
+                //{
+                //    ExportImagesAsBase64 = true
+                //};
+                //MemoryStream stream = new MemoryStream();
+                //doc.Save(stream, options);
+                //stream.Position = 0;
+                //using (StreamReader reader = new StreamReader(stream))
+                //{
+                //    this.htmlCode += reader.ReadToEnd();
+                //}
+
+                this.htmlPath = System.IO.Directory.GetCurrentDirectory() + "\\tmp_data\\GroupDocsToHtml.html";
+                var converter = new GroupDocs.Conversion.Converter(docxPath);
+                WebConvertOptions convOpt = new WebConvertOptions();
+                converter.Convert(this.htmlPath, convOpt);
+                using (StreamReader reader = new StreamReader(this.htmlPath))
                 {
-                    ExportImagesAsBase64 = true
-                };
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    doc.Save(stream, options);
-                    stream.Position = 0;
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        this.htmlCode += reader.ReadToEnd();
-                    }
+                    this.htmlCode = reader.ReadToEnd();
                 }
                 return true;
             }
@@ -90,25 +111,12 @@ namespace Diploma.Controllers
                 return false;
         }
 
-        public bool saveFromHtmlToDocx(string fileInput, string fileOutput)
-        {
-            if (System.IO.File.Exists(fileInput))
-            {
-                Aspose.Words.Document doc = new Aspose.Words.Document(fileInput);
-                doc.Save(fileOutput);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        //public bool setHtml(System.Windows.Forms.WebBrowser myWeb)
+        //public bool saveFromHtmlToDocx(string fileInput, string fileOutput)
         //{
-        //    if (myWeb != null && htmlCode!=null)
+        //    if (System.IO.File.Exists(fileInput))
         //    {
-        //        myWeb.DocumentText = htmlCode;
+        //        Aspose.Words.Document doc = new Aspose.Words.Document(fileInput);
+        //        doc.Save(fileOutput);
         //        return true;
         //    }
         //    else
@@ -117,14 +125,27 @@ namespace Diploma.Controllers
         //    }
         //}
 
-        private class HandleImageSaving : IImageSavingCallback
+        public bool setHtml(System.Windows.Forms.WebBrowser myWeb)
         {
-            void IImageSavingCallback.ImageSaving(Aspose.Words.Saving.ImageSavingArgs e)
+            if (myWeb != null && htmlCode != null)
             {
-                Stream imageStream = new MemoryStream();
-                e.ImageStream = imageStream;
+                myWeb.DocumentText = this.htmlCode;
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
+
+        //private class HandleImageSaving : IImageSavingCallback
+        //{
+        //    void IImageSavingCallback.ImageSaving(Aspose.Words.Saving.ImageSavingArgs e)
+        //    {
+        //        Stream imageStream = new MemoryStream();
+        //        e.ImageStream = imageStream;
+        //    }
+        //}
 
     }
 
