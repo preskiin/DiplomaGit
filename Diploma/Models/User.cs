@@ -16,13 +16,13 @@ namespace Diploma.NewFolder1
         Int32 _place_num;
         String _login;
         String _password;
-        public Int32 id_pos { get; }
-        public String name { get; }
-        public String surname { get; }
-        public String patronymic { get; }
-        public Int32 place_num { get; }
-        public String login { get; }
-        public String password { get; }
+        public Int32 id_pos { get { return _id_position; } }
+        public String name { get { return _name; } }
+        public String surname { get { return _surname; } }
+        public String patronymic { get {return _patronymic; } }
+        public Int32 place_num { get { return _place_num; } }
+        public String login { get { return _login; } }
+        public String password { get { return _password; } }
 
         public User()
         {
@@ -39,20 +39,20 @@ namespace Diploma.NewFolder1
         public User(String login = "login", String password = "password")
         {
             
-            this._login = login;
-            this._password = password;
+            this._login = (String)login;
+            this._password = (String)password;
         }
 
-        public User(Int32 id=0, Int32 id_position = 0, String name = "name", String surname = "surname", String patronymic = "patronymic", Int32 place_num = 0, String login= "login", String password = "password")
+        public User(Int32 id, Int32 id_position, String name, String surname, String patronymic, Int32 place_num, String login, String password)
         {
-            this._id = id;
-            this._id_position = id_position;
-            this._name = name;
-            this._surname = surname;
-            this._patronymic = patronymic;
-            this._place_num = place_num;
-            this._login = login;
-            this._password = password;
+            this._id = (Int32)id;
+            this._id_position = (Int32)id_position;
+            this._name = (String)name;
+            this._surname = (String)surname;
+            this._patronymic = (String)patronymic;
+            this._place_num = (Int32)place_num;
+            this._login = (String)login;
+            this._password = (String)password;
         }
 
     }

@@ -103,18 +103,26 @@ namespace Diploma.Controllers
 
         public bool create(User new_user)
         {
-            User tmp = new User(1, 2, "Анна", "Полушкина", "Петровна", 2, "AnnaPol", "AnnaPol2000");
+            //User tmp = new User(1, 2, "Анна", "Полушкина", "Петровна", 2, "AnnaPol", "AnnaPol2000");
             using (SqlConnection con = new SqlConnection(connection_string))
             {
                 String sql_exp = "INSERT INTO People (Id_position, Name, Surname, Patronymic, Place, Login, Password) VALUES (@id_pos, @name, @surname, @patro, @place, @log, @pas)";
+                //SqlParameter par = new SqlParameter("@login", new_user.login);
                 SqlCommand command = new SqlCommand(sql_exp, con);
-                command.Parameters.AddWithValue("@id_pos", tmp.id_pos);
-                command.Parameters.AddWithValue("@name", tmp.name);
-                command.Parameters.AddWithValue("@surname", new_user.surname);
-                command.Parameters.AddWithValue("@patro", new_user.patronymic);
-                command.Parameters.AddWithValue("@place", new_user.place_num);
-                command.Parameters.AddWithValue("@log", new_user.login);
-                command.Parameters.AddWithValue("@pas", new_user.password);
+                command.Parameters.Add(new SqlParameter("@id_pos", new_user.id_pos));
+                command.Parameters.Add(new SqlParameter("@name", new_user.name));
+                command.Parameters.Add(new SqlParameter("@surname", new_user.surname));
+                command.Parameters.Add(new SqlParameter("@patro", new_user.patronymic));
+                command.Parameters.Add(new SqlParameter("@place", new_user.place_num));
+                command.Parameters.Add(new SqlParameter("@log", new_user.login));
+                command.Parameters.Add(new SqlParameter("@pas", new_user.password));
+                //command.Parameters.AddWithValue("@id_pos", new_user.id_pos);
+                //command.Parameters.AddWithValue("@name", new_user.name);
+                //command.Parameters.AddWithValue("@surname", new_user.surname);
+                //command.Parameters.AddWithValue("@patro", new_user.patronymic);
+                //command.Parameters.AddWithValue("@place", new_user.place_num);
+                //command.Parameters.AddWithValue("@log", new_user.login);
+                //command.Parameters.AddWithValue("@pas", new_user.password);
                 con.Open();
                 command.ExecuteNonQuery();
                 con.Close();

@@ -17,11 +17,11 @@ namespace Diploma.Controllers
         
         public MyAuthorization()
         {
-            connection_string= "Data Source=PRESKIIN-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+            connection_string= "Data Source=PC-141-10;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         }
 
         //возвращает хэш, созданный из переданной строки
-        public String get_sha256(String text_to_sha256)
+        private String get_sha256(String text_to_sha256)
         {
             using SHA256 sha256 = SHA256.Create();
             byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(text_to_sha256));

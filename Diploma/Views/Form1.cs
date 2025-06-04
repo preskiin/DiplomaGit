@@ -51,7 +51,8 @@ namespace Diploma
         {
             //webBrowser1.Navigate(System.IO.Directory.GetCurrentDirectory() + "\\tmp_data\\AsposeWordsDocxToHtml.html");
             //webBrowser1.Update();
-            webBrowser2.DocumentText = webBrowser1.Document.Body.InnerHtml;
+            webBrowser2.DocumentText = webBrowser1.DocumentText;
+            
             //docController.saveFromHtmlToDocx(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\DocxToHtml.html",
             //    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\testDoc.docx");
         }
