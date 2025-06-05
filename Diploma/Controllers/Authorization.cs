@@ -17,7 +17,7 @@ namespace Diploma.Controllers
         
         public MyAuthorization()
         {
-            connection_string= "Data Source=PC-141-10;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+            connection_string= "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         }
 
         //возвращает хэш, созданный из переданной строки
@@ -35,24 +35,18 @@ namespace Diploma.Controllers
         public bool check_auth(String log, String pas)
         {
             CRUD_Users users = new CRUD_Users(connection_string);
-            String tmp_data = users.get_log_pas(get_sha256(log));//вытаскивает по хэшу
-            if (tmp_data != "None")
+            String data_pas = users.get_pas(get_sha256(log));//вытаскивает по хэшу
+            if (data_pas != null)
             {
-                if (tmp_data.Split(' ').Length != 2)
-                {
-                    return false;
-                }
-                else
-                {
-                    if (tmp_data.Split(' ')[0]== get_sha256(log) && tmp_data.Split(' ')[1] == get_sha256(pas))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                
+                 if (data_pas == get_sha256(pas))
+                 {
+                     return true;
+                 }
+                 else
+                 {
+                     return false;
+                 }
             }
             else
                 return false;

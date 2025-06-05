@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Diploma.Models;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,23 +30,16 @@ namespace Diploma.NewFolder1
         public User()
         {
             this._id = 0;
-            this._id_position = 0;
-            this._name = "name";
-            this._surname = "surname";
-            this._patronymic = "patronymic";
+            this._id_position = 1003;
+            this._name = "nobody";
+            this._surname = "nobody";
+            this._patronymic = "nobody";
             this._place_num = 0;
-            this._login = "login";
-            this._password = "password";
+            this._login = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F";
+            this._password = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F";
         }
 
-        public User(String login = "login", String password = "password")
-        {
-            
-            this._login = (String)login;
-            this._password = (String)password;
-        }
-
-        public User(Int32 id, Int32 id_position, String name, String surname, String patronymic, Int32 place_num, String login, String password)
+        public User(Int32 id = 0, Int32 id_position = 1003, String name = "nobody", String surname="nobody", String patronymic ="nobody", Int32 place_num = 0, String login = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F", String password = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F")
         {
             this._id = (Int32)id;
             this._id_position = (Int32)id_position;
@@ -55,5 +51,28 @@ namespace Diploma.NewFolder1
             this._password = (String)password;
         }
 
+        // Создание объекта из SqlDataReader
+        public static User FromDataReader(SqlDataReader reader)
+        {
+            User tmp = new User(
+                id: reader.GetInt32(reader.GetOrdinal("id")),
+                id_position: reader.GetInt32(reader.GetOrdinal("Id_position")),
+                name: reader.GetString(reader.GetOrdinal("Name")),
+                surname: reader.GetString(reader.GetOrdinal("Surname")),
+                patronymic: reader.GetString(reader.GetOrdinal("Patronymic")),
+                place_num: reader.GetInt32(reader.GetOrdinal("Place")),
+                login: reader.GetString(reader.GetOrdinal("Login")),
+                password: reader.GetString(reader.GetOrdinal("Password"))
+            );
+            return tmp;
+        }
+        // Проверка валидности данных
+        //public Boolean IsValid()
+        //{
+        //    return (!String.IsNullOrEmpty(_name)
+        //       && _sector > 0
+        //       && _department > 0
+        //       && _level > 0);
+        //}
     }
 }

@@ -23,8 +23,6 @@ namespace Diploma
             
         }
 
-        
-
         private void button1_Click(object sender, EventArgs e)
         {
             MyAuthorization auth = new MyAuthorization();
@@ -34,19 +32,6 @@ namespace Diploma
             }
             else
                 label3.Text = "Неверное имя пользователя или пароль";
-
-
-            //if (!users.check_login(textBox1.Text))
-            //    button1.BackColor = Color.Red;
-            //else
-            //    
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            //User tmp = new User(1, 2, "Анна", "Полушкина", "Петровна", 2, auth.get_sha256("AnnaPol"), auth.get_sha256("AnnaPol2000"));
-            //CRUD_Users tmp_CRUD = new CRUD_Users("Data Source=PC-141-10;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True");
-            //tmp_CRUD.create(tmp);
         }
     }
 }
