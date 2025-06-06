@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using Aspose.Words;
 using Aspose.Words.Saving;
 using Microsoft.Office.Interop.Word;
-using GroupDocs.Conversion.Options.Convert;
 using System.Runtime.InteropServices;
 
 namespace Diploma.Controllers
@@ -97,14 +96,7 @@ namespace Diploma.Controllers
                 //    this.htmlCode += reader.ReadToEnd();
                 //}
 
-                this.htmlPath = System.IO.Directory.GetCurrentDirectory() + "\\tmp_data\\GroupDocsToHtml.html";
-                var converter = new GroupDocs.Conversion.Converter(docxPath);
-                WebConvertOptions convOpt = new WebConvertOptions();
-                converter.Convert(this.htmlPath, convOpt);
-                using (StreamReader reader = new StreamReader(this.htmlPath))
-                {
-                    this.htmlCode = reader.ReadToEnd();
-                }
+                
                 return true;
             }
             else
