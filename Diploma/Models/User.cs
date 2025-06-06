@@ -19,10 +19,11 @@ namespace Diploma.Models
         Int32 _place_num;
         String _login;
         String _password;
+        public Int32 Id { get { return _id; } }
         public Int32 id_pos { get { return _id_position; } }
         public String name { get { return _name; } }
         public String surname { get { return _surname; } }
-        public String patronymic { get {return _patronymic; } }
+        public String patronymic { get { return _patronymic; } }
         public Int32 place_num { get { return _place_num; } }
         public String login { get { return _login; } }
         public String password { get { return _password; } }
@@ -39,7 +40,7 @@ namespace Diploma.Models
             this._password = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F";
         }
 
-        public User(Int32 id = 0, Int32 id_position = 1003, String name = "nobody", String surname="nobody", String patronymic ="nobody", Int32 place_num = 0, String login = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F", String password = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F")
+        public User(Int32 id, Int32 id_position, String name, String surname, String patronymic, Int32 place_num, String login, String password)
         {
             this._id = (Int32)id;
             this._id_position = (Int32)id_position;
@@ -66,13 +67,15 @@ namespace Diploma.Models
             );
             return tmp;
         }
-        // Проверка валидности данных
-        //public Boolean IsValid()
-        //{
-        //    return (!String.IsNullOrEmpty(_name)
-        //       && _sector > 0
-        //       && _department > 0
-        //       && _level > 0);
-        //}
+
+        //Проверка валидности данных
+        public Boolean IsValid()
+        {
+            return (!String.IsNullOrEmpty(_name)
+               && _id_position > 0
+               && !String.IsNullOrEmpty(_surname)
+               && !String.IsNullOrEmpty(_login)
+               && !String.IsNullOrEmpty(_password));
+        }
     }
 }

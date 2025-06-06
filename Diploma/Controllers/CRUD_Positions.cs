@@ -22,33 +22,38 @@ namespace Diploma.Controllers
         // Создает новую запись в таблице Positions.
         public Int32 create(Position position)
         {
+            Int32 tmp;
             if (!position.IsValid())
-                throw new ArgumentException("Некорректные данные позиции.");
-
-            String sql_exp = @"
+                tmp = -1; //возврат неверного ввода данных
+            else if (checkPosInBase(position))
+                tmp = -2; //возврат существования записи в таблице
+            else
+            {
+                String sql_exp = @"
             INSERT INTO Positions (Name, Sector, Department, Leve1)
             OUTPUT INSERTED.id
             VALUES (@Name, @Sector, @Department, @Level)";
 
-            SqlConnection connection = new SqlConnection(_connectionString);
-            using (var command = new SqlCommand(sql_exp, connection))
-            {
-                command.Parameters.AddWithValue("@Name", position.Name);
-                command.Parameters.AddWithValue("@Sector", position.Sector);
-                command.Parameters.AddWithValue("@Department", position.Department);
-                command.Parameters.AddWithValue("@Level", position.Level);
-                connection.Open();
-                Int32 tmp = (Int32)command.ExecuteScalar();
-                connection.Close();
-                return tmp; // Возвращает ID новой записи
+                SqlConnection connection = new SqlConnection(_connectionString);
+                using (var command = new SqlCommand(sql_exp, connection))
+                {
+                    command.Parameters.AddWithValue("@Name", position.Name);
+                    command.Parameters.AddWithValue("@Sector", position.Sector);
+                    command.Parameters.AddWithValue("@Department", position.Department);
+                    command.Parameters.AddWithValue("@Level", position.Level);
+                    connection.Open();
+                    tmp = (Int32)command.ExecuteScalar();// Возвращает ID новой записи
+                    connection.Close();
+                }
             }
+            return tmp;
         }
 
         //Получает записи с пагинацией
-        public IEnumerable<Position> getPage(Int32 pageNumber)
+        public List<Position> getPage(Int32 pageNumber)
         {
-            if (pageNumber < 1)
-                throw new ArgumentException("Номер страницы должен быть >= 1");
+            //if (pageNumber < 1)
+            //    throw new ArgumentException("Номер страницы должен быть >= 1");
 
             List<Position> positions = new List<Position>();
             String sql_exp = @"
@@ -96,6 +101,7 @@ namespace Diploma.Controllers
             connection.Close();
             return dataTable;
         }
+
         // Получает позицию по ID.
         public Position read(Int32 id)
         {
@@ -120,44 +126,75 @@ namespace Diploma.Controllers
         }
 
         // Обновляет существующую позицию.
-        public void update(Position position)
+        public Int32 update(Position position)
         {
+            Int32 result;
             if (!position.IsValid())
-                throw new ArgumentException("Некорректные данные позиции.");
-
-            String sql_exp = @"
-            UPDATE Positions 
-            SET 
-                Name = @Name,
-                Sector = @Sector,
-                Department = @Department,
-                Leve1 = @Level
-            WHERE id = @Id";
-
-            SqlConnection connection = new SqlConnection(_connectionString);
-            SqlCommand command = new SqlCommand(sql_exp, connection);
-            command.Parameters.AddWithValue("@Id", position.Id);
-            command.Parameters.AddWithValue("@Name", position.Name);
-            command.Parameters.AddWithValue("@Sector", position.Sector);
-            command.Parameters.AddWithValue("@Department", position.Department);
-            command.Parameters.AddWithValue("@Level", position.Level);
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.Close();
-        }
-
-        //Удаляет позицию по ID.
-        public void delete(Int32 id)
-        {
-            const String sql = "DELETE FROM Positions WHERE id = @Id";
-
-            using (var connection = new SqlConnection(_connectionString))
-            using (var command = new SqlCommand(sql, connection))
+                result = -1; //Индекс неверных данных
+            else
             {
-                command.Parameters.AddWithValue("@Id", id);
+                String sql_exp = @"
+                UPDATE Positions 
+                SET 
+                    Name = @Name,
+                    Sector = @Sector,
+                    Department = @Department,
+                    Leve1 = @Level
+                WHERE id = @Id";
+                SqlConnection connection = new SqlConnection(_connectionString);
+                SqlCommand command = new SqlCommand(sql_exp, connection);
+                command.Parameters.AddWithValue("@Id", position.Id);
+                command.Parameters.AddWithValue("@Name", position.Name);
+                command.Parameters.AddWithValue("@Sector", position.Sector);
+                command.Parameters.AddWithValue("@Department", position.Department);
+                command.Parameters.AddWithValue("@Level", position.Level);
                 connection.Open();
                 command.ExecuteNonQuery();
+                connection.Close();
+                result = 1;//индекс успешного ввода новых данных
             }
+            return result;
+        }
+
+        //Удаляет позицию по ID. 
+        public bool delete(Position posToDel)
+        {
+            bool result;
+            if (checkPosInBase(posToDel))
+            {
+                String sql_exp = "DELETE FROM Positions WHERE id = @Id";
+                SqlConnection connection = new SqlConnection(_connectionString);
+                SqlCommand command = new SqlCommand(sql_exp, connection);
+                command.Parameters.AddWithValue("@Id", posToDel.Id);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+                result = true;
+            }
+            else
+                result = false;
+            return result;
+        }
+        //Проверяет, есть ли должность с таким же названием в базе
+        private bool checkPosInBase(Position position)
+        {
+            bool result;
+            String sql_exp = @"
+            SELECT * 
+            FROM Positions 
+            WHERE Name COLLATE Latin1_General_CS_AS = @name";
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand (sql_exp, connection);
+            cmd.Parameters.AddWithValue("@name", position.Name);
+            connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                result = true;
+            else
+                result = false;
+            reader.Close();
+            connection.Close();
+            return result;
         }
     }
 }

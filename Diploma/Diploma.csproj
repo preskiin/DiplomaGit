@@ -81,8 +81,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CRUD_Operations.cs" />
     <Compile Include="Controllers\CRUD_Positions.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Models\Operation.cs" />
     <Compile Include="Models\Position.cs" />
     <Compile Include="Views\Authorize.cs">
       <SubType>Form</SubType>

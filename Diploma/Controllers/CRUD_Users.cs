@@ -11,100 +11,24 @@ namespace Diploma.Controllers
 {
     internal class CRUD_Users
     {
-        private String connection_string;
-
+        private String _connectionString;
+        private Int32 _pageSize=50;
         public CRUD_Users(string con_str)
         {
-            connection_string = con_str;
+            _connectionString = con_str;
         }
 
-        //функция проверки логина в пользователях.
-        public bool is_in_base(string login)
-        {
-            using (SqlConnection con = new SqlConnection(connection_string))
-            {
-                con.Open();
-                String sql_exp = "SELECT Login FROM People WHERE Login COLLATE Latin1_General_CS_AS = @login";
-                SqlParameter log_par = new SqlParameter("@login", login);
-                SqlCommand cmd = new SqlCommand(sql_exp, con);
-                cmd.Parameters.Add(log_par);
-                SqlDataReader reader = cmd.ExecuteReader();
-                bool tmp_res;
-                if (reader.Read())
-                    tmp_res = true;
-                else
-                    tmp_res = false;
-                return tmp_res;
-            }
-        }
-        //функция чтения одного пользователя из базы по логину
-        public User read(String login)
-        {
-            SqlConnection connection = new SqlConnection(connection_string);
-            String sql_exp = @"
-            SELECT * 
-            FROM People 
-            WHERE Login COLLATE Latin1_General_CS_AS = @login";
-            SqlCommand command = new SqlCommand(sql_exp, connection);
-            command.Parameters.Add(new SqlParameter("@login", login));
-            connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
-            User tmp_user;
-            if (reader.Read())
-            {
-                //while (reader.Read())
-                //{
-                //    tmp_user = new User(Convert.ToInt32(reader.GetValue(0)),Convert.ToInt32(reader.GetValue(1)), Convert.ToString(reader.GetValue(2)), Convert.ToString(reader.GetValue(3)),
-                //        Convert.ToString(reader.GetValue(4)), Convert.ToInt32(reader.GetValue(5)), Convert.ToString(reader.GetValue(6)), Convert.ToString(reader.GetValue(7)));
-                //}
-                //return tmp_user;
-                tmp_user = User.FromDataReader(reader);
-            }
-            else
-                tmp_user= null;
-            reader.Close();
-            connection.Close();
-            return tmp_user;
-        }
-
-        //функция возвращающая пароль из базы по хэшу-логину
-        public String get_pas(String login)
-        {
-            SqlConnection con = new SqlConnection(connection_string);
-            String sql_exp = @"
-            SELECT Password 
-            FROM People 
-            WHERE Login COLLATE Latin1_General_CS_AS = @login";
-            SqlCommand cmd = new SqlCommand(sql_exp, con);
-            cmd.Parameters.AddWithValue("@login", login);
-            con.Open();
-            String tmp_str;
-            SqlDataReader reader = cmd.ExecuteReader();
-            if (reader.Read())
-            {
-                //String tmp_str = "";
-                //while (reader.Read())
-                //{
-                //    tmp_str += reader.GetValue(0) + " " + reader.GetValue(1);
-                //}
-                //con.Close();
-                tmp_str = reader.GetString(reader.GetOrdinal("Password"));
-            }
-            else
-            {
-                tmp_str = null;
-            }
-            reader.Close();
-            con.Close();
-            return tmp_str;
-        }
-
+        //Возвращает либо индекс созданной записи, либо индекс ошибки
         public Int32 create(User new_user)
         {
             Int32 res;
-            if (!is_in_base(new_user.login))
+            if (is_in_base(new_user.login))
+                res = -2; //Индекс, указывающий, что такой логин в базе уже есть
+            else if (!new_user.IsValid())
+                res = -1; //Индекс, указывающий на неверные данные при вводе
+            else
             {
-                SqlConnection con = new SqlConnection(connection_string);
+                SqlConnection con = new SqlConnection(_connectionString);
                 String sql_exp = @"
                 INSERT INTO People (Id_position, Name, Surname, Patronymic, Place, Login, Password) 
                 VALUES (@id_pos, @name, @surname, @patro, @place, @log, @pas)";
@@ -120,9 +44,141 @@ namespace Diploma.Controllers
                 res = (Int32)command.ExecuteScalar();
                 con.Close();
             }
-            else
-                res = -1;
             return res;
         }
+
+        //функция чтения одного пользователя из базы по логину-хэшу
+        public User read(String login)
+        {
+            SqlConnection connection = new SqlConnection(_connectionString);
+            String sql_exp = @"
+            SELECT * 
+            FROM People 
+            WHERE Login COLLATE Latin1_General_CS_AS = @login";
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            command.Parameters.Add(new SqlParameter("@login", login));
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            User tmp_user;
+            if (reader.Read())
+            {
+                tmp_user = User.FromDataReader(reader);
+            }
+            else
+                tmp_user= null;
+            reader.Close();
+            connection.Close();
+            return tmp_user;
+        }
+
+        //Возвращает страницу из пользователей (заданное число записей)
+        public IEnumerable<User> getPage(Int32 pageNumber)
+        {
+            String sql = @"
+            SELECT * FROM People
+            ORDER BY id
+            OFFSET @Offset ROWS
+            FETCH NEXT @PageSize ROWS ONLY";
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@Offset", (pageNumber - 1) * _pageSize);
+            command.Parameters.AddWithValue("@PageSize", _pageSize);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return User.FromDataReader(reader);
+            }
+        }
+
+        //Получает всех пользователей, с указнной должностью
+        public List<User> readByPositionId(Int32 positionId, Int32 pageNum)
+        {
+            var users = new List<User>();
+            String sql_exp = "SELECT * FROM Users WHERE Id_position=@IdPosition";
+            //String sql_exp = @"
+            //SELECT * FROM Users
+            //WHERE Id_position = @IdPosition
+            //ORDER BY id
+            //OFFSET @Offset ROWS
+            //FETCH NEXT @PageSize ROWS ONLY";
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand(@sql_exp, connection);
+            Int32 offset = (pageNum-1) * _pageSize;
+            //command.Parameters.AddWithValue("Offset", offset);
+           // command.Parameters.AddWithValue("@PageSize", _pageSize);
+            command.Parameters.AddWithValue("@IdPosition", positionId);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                users.Add(User.FromDataReader(reader));
+            }
+            reader.Close();
+            connection.Close();
+            return users;
+        }
+
+        //СДЕЛАТЬ ЕЩЕ МЕТОД UPDATE 
+
+        //Удаляет пользователя по ID. 
+        public void delete(User userToDel)
+        {
+            String sql_exp = "DELETE FROM Users WHERE id = @Id";
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            command.Parameters.AddWithValue("@Id", userToDel.Id);
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        //функция возвращающая пароль из базы по хэшу-логину
+        public String get_pas(String login)
+        {
+            SqlConnection con = new SqlConnection(_connectionString);
+            String sql_exp = @"
+            SELECT Password 
+            FROM People 
+            WHERE Login COLLATE Latin1_General_CS_AS = @login";
+            SqlCommand cmd = new SqlCommand(sql_exp, con);
+            cmd.Parameters.AddWithValue("@login", login);
+            con.Open();
+            String tmp_str;
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                tmp_str = reader.GetString(reader.GetOrdinal("Password"));
+            }
+            else
+            {
+                tmp_str = null;
+            }
+            reader.Close();
+            con.Close();
+            return tmp_str;
+        }
+
+        //функция проверки логина в пользователях.
+        public bool is_in_base(string login)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                con.Open();
+                String sql_exp = "SELECT Login FROM People WHERE Login COLLATE Latin1_General_CS_AS = @login";
+                SqlParameter log_par = new SqlParameter("@login", login);
+                SqlCommand cmd = new SqlCommand(sql_exp, con);
+                cmd.Parameters.Add(log_par);
+                SqlDataReader reader = cmd.ExecuteReader();
+                bool tmp_res;
+                if (reader.Read())
+                    tmp_res = true;
+                else
+                    tmp_res = false;
+                reader.Close();
+                return tmp_res;
+            }
+        }
+
     }
 }
