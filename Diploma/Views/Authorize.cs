@@ -21,10 +21,7 @@ namespace Diploma
         {
             InitializeComponent();
             
-            
         }
-
-        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -35,12 +32,6 @@ namespace Diploma
             }
             else
                 label3.Text = "Неверное имя пользователя или пароль";
-
-
-            //if (!users.check_login(textBox1.Text))
-            //    button1.BackColor = Color.Red;
-            //else
-            //    
         }
     }
 }
