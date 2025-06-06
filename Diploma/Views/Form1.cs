@@ -39,7 +39,7 @@ namespace Diploma
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (docController.docxToHtml(textBox1.Text) && docController.setHtml(this.webBrowser1))
+            if (docController.docxToHtml("C:\\Users\\User\\Desktop\\DocxToHtml.html") && docController.setHtml(this.webBrowser1))
             {}
             else
             {
@@ -51,7 +51,7 @@ namespace Diploma
         {
             //webBrowser1.Navigate(System.IO.Directory.GetCurrentDirectory() + "\\tmp_data\\AsposeWordsDocxToHtml.html");
             //webBrowser1.Update();
-            webBrowser2.DocumentText = webBrowser1.DocumentText;
+            //webBrowser2.DocumentText = webBrowser1.DocumentText;
             
             //docController.saveFromHtmlToDocx(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\DocxToHtml.html",
             //    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\testDoc.docx");

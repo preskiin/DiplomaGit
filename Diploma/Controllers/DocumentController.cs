@@ -10,6 +10,7 @@ using Aspose.Words;
 using Aspose.Words.Saving;
 using Microsoft.Office.Interop.Word;
 using System.Runtime.InteropServices;
+using HtmlAgilityPack;
 
 namespace Diploma.Controllers
 {
@@ -73,6 +74,7 @@ namespace Diploma.Controllers
         {
             if (System.IO.File.Exists(docxPath))
             {
+
                 //var doc = new Aspose.Words.Document(docxPath);
                 //MemoryStream stream = new MemoryStream();
                 //doc.Save(stream, SaveFormat.Html);
@@ -96,7 +98,7 @@ namespace Diploma.Controllers
                 //    this.htmlCode += reader.ReadToEnd();
                 //}
 
-                
+                this.htmlCode = File.ReadAllText(docxPath, Encoding.UTF8);
                 return true;
             }
             else
@@ -122,6 +124,7 @@ namespace Diploma.Controllers
             if (myWeb != null && htmlCode != null)
             {
                 myWeb.DocumentText = this.htmlCode;
+                myWeb.Update();
                 return true;
             }
             else
