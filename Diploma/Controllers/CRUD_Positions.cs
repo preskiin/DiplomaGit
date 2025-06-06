@@ -6,16 +6,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Diploma.Controllers
 {
     internal class CRUD_Positions
     {
         private String _connectionString;
-        private Int32 PageSize = 50;
+        private Int32 _pageSize = 50;
         public CRUD_Positions(String connectionString)
         {
-            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _connectionString = connectionString /*?? throw new ArgumentNullException(nameof(connectionString))*/;
         }
 
         // Создает новую запись в таблице Positions.
@@ -43,8 +44,8 @@ namespace Diploma.Controllers
             }
         }
 
-        //Получает записи с пагинацией (по 50 позиций на страницу)
-        public IEnumerable<Position> GetPage(Int32 pageNumber)
+        //Получает записи с пагинацией
+        public IEnumerable<Position> getPage(Int32 pageNumber)
         {
             if (pageNumber < 1)
                 throw new ArgumentException("Номер страницы должен быть >= 1");
@@ -57,9 +58,9 @@ namespace Diploma.Controllers
             FETCH NEXT @PageSize ROWS ONLY";
             SqlConnection connection = new SqlConnection(_connectionString);
             SqlCommand command = new SqlCommand(sql_exp, connection);
-            Int32 offset = (pageNumber - 1) * PageSize;
+            Int32 offset = (pageNumber - 1) * _pageSize;
             command.Parameters.AddWithValue("@Offset", offset);
-            command.Parameters.AddWithValue("@PageSize", PageSize);
+            command.Parameters.AddWithValue("@PageSize", _pageSize);
             connection.Open();
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -71,6 +72,30 @@ namespace Diploma.Controllers
             return positions;
         }
 
+        //Получает записи с заданной пагинацией для вывода в dataGridView
+        public System.Data.DataTable getPageAsDataTable(Int32 pageNumber)
+        {
+            if (pageNumber < 1)
+                throw new ArgumentException("Номер страницы должен быть >= 1");
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = @"
+            SELECT id, Name, Sector, Department, Leve1 
+            FROM Positions
+            ORDER BY id
+            OFFSET @Offset ROWS 
+            FETCH NEXT @PageSize ROWS ONLY";
+
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            int offset = (pageNumber - 1) * _pageSize;
+            command.Parameters.AddWithValue("@Offset", offset);
+            command.Parameters.AddWithValue("@PageSize", _pageSize);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
         // Получает позицию по ID.
         public Position read(Int32 id)
         {

@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Diploma.NewFolder1
+namespace Diploma.Models
 {
     internal class User
     {

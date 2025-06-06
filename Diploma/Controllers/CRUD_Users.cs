@@ -1,11 +1,11 @@
-﻿using Diploma.NewFolder1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Diploma.Models;
 
 namespace Diploma.Controllers
 {
