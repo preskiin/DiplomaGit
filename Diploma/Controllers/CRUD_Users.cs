@@ -22,7 +22,7 @@ namespace Diploma.Controllers
         public Int32 create(User new_user)
         {
             Int32 res;
-            if (is_in_base(new_user.login))
+            if (is_in_base(new_user.Login))
                 res = -2; //Индекс, указывающий, что такой логин в базе уже есть
             else if (!new_user.IsValid())
                 res = -1; //Индекс, указывающий на неверные данные при вводе
@@ -33,13 +33,13 @@ namespace Diploma.Controllers
                 INSERT INTO People (Id_position, Name, Surname, Patronymic, Place, Login, Password) 
                 VALUES (@id_pos, @name, @surname, @patro, @place, @log, @pas)";
                 SqlCommand command = new SqlCommand(sql_exp, con);
-                command.Parameters.Add(new SqlParameter("@id_pos", new_user.id_pos));
-                command.Parameters.Add(new SqlParameter("@name", new_user.name));
-                command.Parameters.Add(new SqlParameter("@surname", new_user.surname));
-                command.Parameters.Add(new SqlParameter("@patro", new_user.patronymic));
-                command.Parameters.Add(new SqlParameter("@place", new_user.place_num));
-                command.Parameters.Add(new SqlParameter("@log", new_user.login));
-                command.Parameters.Add(new SqlParameter("@pas", new_user.password));
+                command.Parameters.Add(new SqlParameter("@id_pos", new_user.IdPosition));
+                command.Parameters.Add(new SqlParameter("@name", new_user.Name));
+                command.Parameters.Add(new SqlParameter("@surname", new_user.Surname));
+                command.Parameters.Add(new SqlParameter("@patro", new_user.Patronymic));
+                command.Parameters.Add(new SqlParameter("@place", new_user.Place));
+                command.Parameters.Add(new SqlParameter("@log", new_user.Login));
+                command.Parameters.Add(new SqlParameter("@pas", new_user.Password));
                 con.Open();
                 res = (Int32)command.ExecuteScalar();
                 con.Close();
@@ -119,7 +119,42 @@ namespace Diploma.Controllers
             return users;
         }
 
-        //СДЕЛАТЬ ЕЩЕ МЕТОД UPDATE 
+        //Отправляет запрос на обновление указанного экземпляра по ID
+        public Int32 update(User user)
+        {
+            Int32 result;
+            if (!user.IsValid())
+                result = -1; //индекс неверных данных
+            else
+            {
+                String sql_exp = @"
+                UPDATE Users
+                SET
+                    Id_position=@IdPosition,
+                    Name = @Name,
+                    Surname=@Surname,
+                    Patronymic=@Patronymic,
+                    Place=@Place,
+                    Login= @Login,
+                    Password=@Password
+                WHERE id=@Id";
+                SqlConnection connecton = new SqlConnection(_connectionString);
+                SqlCommand command = new SqlCommand(sql_exp, connecton);
+                command.Parameters.AddWithValue("@Id", user.Id);
+                command.Parameters.AddWithValue("@IdPosition", user.IdPosition);
+                command.Parameters.AddWithValue("@Name", user.Name);
+                command.Parameters.AddWithValue("@Surname", user.Surname);
+                command.Parameters.AddWithValue("@Patronymic", user.Patronymic);
+                command.Parameters.AddWithValue("@Place", user.Place);
+                command.Parameters.AddWithValue("@Login", user.Login);
+                command.Parameters.AddWithValue("@Password", user.Password);
+                connecton.Open();
+                command.ExecuteNonQuery();
+                connecton.Close();
+                result = 1;//Индекс успешного ввода значений
+            }
+            return result;
+        }
 
         //Удаляет пользователя по ID. 
         public void delete(User userToDel)

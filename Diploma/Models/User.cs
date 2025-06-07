@@ -20,13 +20,13 @@ namespace Diploma.Models
         String _login;
         String _password;
         public Int32 Id { get { return _id; } }
-        public Int32 id_pos { get { return _id_position; } }
-        public String name { get { return _name; } }
-        public String surname { get { return _surname; } }
-        public String patronymic { get { return _patronymic; } }
-        public Int32 place_num { get { return _place_num; } }
-        public String login { get { return _login; } }
-        public String password { get { return _password; } }
+        public Int32 IdPosition { get { return _id_position; } }
+        public String Name { get { return _name; } }
+        public String Surname { get { return _surname; } }
+        public String Patronymic { get { return _patronymic; } }
+        public Int32 Place { get { return _place_num; } }
+        public String Login { get { return _login; } }
+        public String Password { get { return _password; } }
 
         public User()
         {

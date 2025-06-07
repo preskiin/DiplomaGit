@@ -30,21 +30,18 @@ namespace Diploma.Controllers
             else
             {
                 String sql_exp = @"
-            INSERT INTO Positions (Name, Sector, Department, Leve1)
-            OUTPUT INSERTED.id
-            VALUES (@Name, @Sector, @Department, @Level)";
-
+                INSERT INTO Positions (Name, Sector, Department, Leve1)
+                OUTPUT INSERTED.id
+                VALUES (@Name, @Sector, @Department, @Level)";
                 SqlConnection connection = new SqlConnection(_connectionString);
-                using (var command = new SqlCommand(sql_exp, connection))
-                {
-                    command.Parameters.AddWithValue("@Name", position.Name);
-                    command.Parameters.AddWithValue("@Sector", position.Sector);
-                    command.Parameters.AddWithValue("@Department", position.Department);
-                    command.Parameters.AddWithValue("@Level", position.Level);
-                    connection.Open();
-                    tmp = (Int32)command.ExecuteScalar();// Возвращает ID новой записи
-                    connection.Close();
-                }
+                var command = new SqlCommand(sql_exp, connection);
+                command.Parameters.AddWithValue("@Name", position.Name);
+                command.Parameters.AddWithValue("@Sector", position.Sector);
+                command.Parameters.AddWithValue("@Department", position.Department);
+                command.Parameters.AddWithValue("@Level", position.Level);
+                connection.Open();
+                tmp = (Int32)command.ExecuteScalar();// Возвращает ID новой записи
+                connection.Close();
             }
             return tmp;
         }
@@ -55,13 +52,13 @@ namespace Diploma.Controllers
             //if (pageNumber < 1)
             //    throw new ArgumentException("Номер страницы должен быть >= 1");
 
-            List<Position> positions = new List<Position>();
+            List<Position> positions = new();
             String sql_exp = @"
             SELECT * FROM Positions
             ORDER BY id
             OFFSET @Offset ROWS
             FETCH NEXT @PageSize ROWS ONLY";
-            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlConnection connection = new(_connectionString);
             SqlCommand command = new SqlCommand(sql_exp, connection);
             Int32 offset = (pageNumber - 1) * _pageSize;
             command.Parameters.AddWithValue("@Offset", offset);
