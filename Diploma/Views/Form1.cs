@@ -22,7 +22,8 @@ namespace Diploma
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            textBox1.Text = System.IO.Directory.GetCurrentDirectory()+"\\tmp_data\\TestDocx.docx";
+            //textBox1.Text = System.IO.Directory.GetCurrentDirectory()+"\\tmp_data\\TestDocx.docx";
+            textBox1.Text = "D:\\Subjects\\4_2\\Диплом\\ВКР.docx";
             docController = new DocumentController();
             //docController.openDocument()
         }
@@ -39,8 +40,10 @@ namespace Diploma
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (docController.docxToHtml("C:\\Users\\User\\Desktop\\DocxToHtml.html") && docController.setHtml(this.webBrowser1))
-            {}
+            if (docController.docxToHtml(textBox1.Text))
+            {
+                this.webBrowser1.DocumentText = docController.getHtml();
+            }
             else
             {
                 MessageBox.Show("Текст не был присвоен элементу", "Ошибка", MessageBoxButtons.OK);

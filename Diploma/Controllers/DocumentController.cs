@@ -11,6 +11,7 @@ using Aspose.Words.Saving;
 using Microsoft.Office.Interop.Word;
 using System.Runtime.InteropServices;
 using HtmlAgilityPack;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Diploma.Controllers
 {
@@ -85,54 +86,53 @@ namespace Diploma.Controllers
                 //}
                 //stream.Close();
 
-                //var doc = new Aspose.Words.Document(docxPath);
-                //var options = new HtmlSaveOptions()
-                //{
-                //    ExportImagesAsBase64 = true
-                //};
-                //MemoryStream stream = new MemoryStream();
-                //doc.Save(stream, options);
-                //stream.Position = 0;
-                //using (StreamReader reader = new StreamReader(stream))
-                //{
-                //    this.htmlCode += reader.ReadToEnd();
-                //}
+                var doc = new Aspose.Words.Document(docxPath);
+                var options = new HtmlSaveOptions()
+                {
+                    ExportImagesAsBase64 = true
+                };
+                MemoryStream stream = new MemoryStream();
+                doc.Save(stream, options);
+                stream.Position = 0;
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    this.htmlCode += reader.ReadToEnd();
+                }
+                if (putStringAfter("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">", "<head>") != -1)
+                    return true;
+                else return false;
 
-                this.htmlCode = File.ReadAllText(docxPath, Encoding.UTF8);
-                return true;
+                //this.htmlCode = File.ReadAllText(docxPath, Encoding.UTF8);
+                //return true;
             }
             else
                 return false;
         }
 
-        //public bool saveFromHtmlToDocx(string fileInput, string fileOutput)
-        //{
-        //    if (System.IO.File.Exists(fileInput))
-        //    {
-        //        Aspose.Words.Document doc = new Aspose.Words.Document(fileInput);
-        //        doc.Save(fileOutput);
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
-        public bool setHtml(System.Windows.Forms.WebBrowser myWeb)
+        public String getHtml()
         {
-            if (myWeb != null && htmlCode != null)
+            if (htmlCode != null)
             {
-                myWeb.DocumentText = this.htmlCode;
-                myWeb.Update();
-                return true;
+                return this.htmlCode;
             }
             else
             {
-                return false;
+                return null;
             }
         }
 
+        private int putStringAfter(String putString, String afterString)
+        {
+            if (this.htmlCode.IndexOf(afterString) != -1)
+            {
+                Int32 stringPosition = this.htmlCode.IndexOf(afterString) + afterString.Length;
+                String tmpString = this.htmlCode.Insert(stringPosition, putString);
+                this.htmlCode = tmpString;
+                return 1;
+            }
+            else return -1;
+            
+        }
         //private class HandleImageSaving : IImageSavingCallback
         //{
         //    void IImageSavingCallback.ImageSaving(Aspose.Words.Saving.ImageSavingArgs e)
