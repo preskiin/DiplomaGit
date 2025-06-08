@@ -34,16 +34,18 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.webBrowser2 = new System.Windows.Forms.WebBrowser();
+            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.SuspendLayout();
             // 
             // webBrowser1
             // 
-            this.webBrowser1.Location = new System.Drawing.Point(299, 12);
+            this.webBrowser1.Location = new System.Drawing.Point(21, 250);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(860, 233);
+            this.webBrowser1.Size = new System.Drawing.Size(608, 298);
             this.webBrowser1.TabIndex = 0;
+            this.webBrowser1.Visible = false;
             this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
             // 
             // textBox1
@@ -76,7 +78,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(257, 23);
             this.button2.TabIndex = 4;
-            this.button2.Text = "Сохранить в DOCX";
+            this.button2.Text = "Сохранить HTML-код";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -90,20 +92,23 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // webBrowser2
+            // webView21
             // 
-            this.webBrowser2.Location = new System.Drawing.Point(299, 262);
-            this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser2.Name = "webBrowser2";
-            this.webBrowser2.Size = new System.Drawing.Size(860, 250);
-            this.webBrowser2.TabIndex = 6;
+            this.webView21.AllowExternalDrop = true;
+            this.webView21.CreationProperties = null;
+            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView21.Location = new System.Drawing.Point(299, 12);
+            this.webView21.Name = "webView21";
+            this.webView21.Size = new System.Drawing.Size(860, 603);
+            this.webView21.TabIndex = 6;
+            this.webView21.ZoomFactor = 1D;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1171, 645);
-            this.Controls.Add(this.webBrowser2);
+            this.Controls.Add(this.webView21);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox2);
@@ -113,6 +118,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -126,7 +132,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.WebBrowser webBrowser2;
+        private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
     }
 }
 

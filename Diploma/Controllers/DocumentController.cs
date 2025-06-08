@@ -6,109 +6,118 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics.Eventing.Reader;
 using Aspose.Words;
 using Aspose.Words.Saving;
-using Microsoft.Office.Interop.Word;
-using System.Runtime.InteropServices;
-using HtmlAgilityPack;
-using System.Diagnostics.Eventing.Reader;
+using Diploma.Controllers;
+using Diploma.Models;
+using System.Data.SqlClient;
 
 namespace Diploma.Controllers
 {
     internal class DocumentController
     {
-        
-        
 
+
+        private String _connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         private String htmlCode;
-        public String htmlPath;
+        //private String text;
 
         public DocumentController()
         {
-            //string licensePath = "GroupDocs.Conversion.lic";
-            //GroupDocs.Conversion.License lic = new GroupDocs.Conversion.License();
-            //lic.SetLicense(licensePath);
+            
+            
+            
         }
+
 
         public void openDocument(System.Windows.Forms.WebBrowser myWeb)
         {
-            //Aspose.Words.Document myDoc = new Aspose.Words.Document(filePath);
-            myWeb.Navigate(htmlPath);
-
-        }
-
-        public bool saveFromDocxToHtml(string docxPath, string fileOutput)
-        {
-            if (System.IO.File.Exists(docxPath))
-            {
-                var wordApp = new Microsoft.Office.Interop.Word.Application();
-                var doc = wordApp.Documents.Open(docxPath);
-                doc.SaveAs2(fileOutput, WdSaveFormat.wdFormatFilteredHTML);
-                htmlPath = fileOutput; //если не присвоить, метод openDocument не отработает
-                doc.Close();
-                wordApp.Quit();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
             
-            //// Use Aspose.Words license to remove trial version limitations after converting Word DOCX to HTML
-            //License licenseForConvertingDOCXtoHTML = new License();
-            //licenseForConvertingDOCXtoHTML.SetLicense("Aspose.Words.lic");
 
-            //// Load input Word DOCX file with Document class
-            //Document doc = new Document("Input.docx");
-
-            //// Set different properties of HtmlSaveOptions class
-            //HtmlSaveOptions saveOptions = new HtmlSaveOptions();
-            //saveOptions.CssStyleSheetType = CssStyleSheetType.Inline;
-            //saveOptions.ExportPageMargins = true;
-            //saveOptions.ImageResolution = 90;
-
-            //// Save output HTML
-            //doc.Save("HtmlSaveOptions.html", saveOptions);
         }
 
+        //с помощью Aspose.Words формирует html-код страницу
         public bool docxToHtml(string docxPath)
         {
             if (System.IO.File.Exists(docxPath))
             {
-
-                //var doc = new Aspose.Words.Document(docxPath);
-                //MemoryStream stream = new MemoryStream();
-                //doc.Save(stream, SaveFormat.Html);
-                //stream.Position = 0;
-                //using (StreamReader reader = new StreamReader(stream))
-                //{
-                //    this.htmlCode = reader.ReadToEnd();
-                //}
-                //stream.Close();
-
                 var doc = new Aspose.Words.Document(docxPath);
+                MemoryStream stream = new MemoryStream();
                 var options = new HtmlSaveOptions()
                 {
-                    ExportImagesAsBase64 = true
+                    Encoding = Encoding.UTF8,
+                    ExportImagesAsBase64 = true,
                 };
-                MemoryStream stream = new MemoryStream();
                 doc.Save(stream, options);
                 stream.Position = 0;
+
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    this.htmlCode += reader.ReadToEnd();
+                    this.htmlCode = reader.ReadToEnd();
                 }
+                stream.Close();
+                cleanFromWatermarks();
                 if (putStringAfter("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">", "<head>") != -1)
                     return true;
                 else return false;
-
-                //this.htmlCode = File.ReadAllText(docxPath, Encoding.UTF8);
-                //return true;
             }
             else
                 return false;
         }
+        
+        //удаляет упоминания библиотеки в документе html
+        private void cleanFromWatermarks()
+        {
+            String tmpStr = this.htmlCode;
+            int start_rem;
+            for (int i = 0; i < 10; i++)
+            {
+                if (tmpStr.IndexOf("<div style=\"-aw-different-first-page") != -1)
+                {
+                    start_rem = tmpStr.IndexOf("<div style=\"-aw-different-first-page");
+                    tmpStr = tmpStr.Remove(start_rem, getDivClosePosition(start_rem, tmpStr)-start_rem);
+                }
+                else
+                    break;
+            }
+            tmpStr = removeFirstLastP(tmpStr);
+            this.htmlCode = tmpStr;
+        }
 
+        //Определяет положение </div>, который закроет строку, перед которой начали форматирование
+        private Int32 getDivClosePosition(Int32 start_pos, String allStr)
+        {
+            int result = 1;
+            int tmp_position = start_pos+4;
+            for (int i=0; i<10; i++)
+            {
+                if (result == 0)
+                    break;
+                if (allStr.IndexOf("<div", tmp_position)<allStr.IndexOf("</div>", tmp_position)&&allStr.IndexOf("<div", tmp_position)!=-1)
+                {
+                    result++;
+                    tmp_position = allStr.IndexOf("<div", tmp_position) + 4;
+                }
+                else
+                {
+                    result--;
+                    tmp_position = allStr.IndexOf("</div>", tmp_position) + 6;
+                }
+            }
+            return tmp_position;
+        }
+
+        //Удаляет упоминания библиотеки сверху с снизу документа.
+        private String removeFirstLastP(String strToClean)
+        {
+            String tmpStr = strToClean;
+            tmpStr = tmpStr.Remove(tmpStr.IndexOf("<p"), tmpStr.IndexOf("</p>")+4-tmpStr.IndexOf("<p"));
+            tmpStr = tmpStr.Remove(tmpStr.LastIndexOf("<p"), tmpStr.LastIndexOf("</p>") + 4- tmpStr.LastIndexOf("<p"));
+            return tmpStr;
+        }
+
+        //Возвращает строку html-кода страницы, ранее прочитанной из файла
         public String getHtml()
         {
             if (htmlCode != null)
@@ -121,6 +130,7 @@ namespace Diploma.Controllers
             }
         }
 
+        //засовывает строку после другой строки в html-код страницы
         private int putStringAfter(String putString, String afterString)
         {
             if (this.htmlCode.IndexOf(afterString) != -1)
@@ -133,15 +143,20 @@ namespace Diploma.Controllers
             else return -1;
             
         }
-        //private class HandleImageSaving : IImageSavingCallback
-        //{
-        //    void IImageSavingCallback.ImageSaving(Aspose.Words.Saving.ImageSavingArgs e)
-        //    {
-        //        Stream imageStream = new MemoryStream();
-        //        e.ImageStream = imageStream;
-        //    }
-        //}
 
+        //сохраняет html-код на рабочий стол
+        public void saveHtml()
+        {
+            if (this.htmlCode != null)
+            {
+                File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\MyHtml.html", this.htmlCode);
+            }
+        }
+
+        public void addListInput(Int32 textPos)
+        {
+            this.htmlCode = this.htmlCode.Insert(textPos, CRUD_Positions.GeneratePositionsDropdown(this._connection));
+        }
     }
 
 }

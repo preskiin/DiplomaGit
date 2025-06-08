@@ -172,6 +172,7 @@ namespace Diploma.Controllers
                 result = false;
             return result;
         }
+
         //Проверяет, есть ли должность с таким же названием в базе
         private bool checkPosInBase(Position position)
         {
@@ -192,6 +193,31 @@ namespace Diploma.Controllers
             reader.Close();
             connection.Close();
             return result;
+        }
+
+        public static string GeneratePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        {
+            var html = new StringBuilder();
+            string sql = "SELECT id, Name FROM Positions ORDER BY Name";
+            var connection = new SqlConnection(connectionString);
+            var command = new SqlCommand(sql, connection);
+            connection.Open();
+            var reader = command.ExecuteReader();
+            html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
+            html.AppendLine("<option value=''>-- Выберите должность --</option>");
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+                bool isSelected = id.ToString() == currentValue;
+                html.AppendLine(
+                    $"<option value='{id}' {(isSelected ? "selected" : "")}>{name}</option>"
+                );
+            }
+            reader.Close();
+            connection.Close();
+            html.AppendLine("</select>");
+            return html.ToString();
         }
     }
 }
