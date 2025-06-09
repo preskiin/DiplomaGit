@@ -19,7 +19,7 @@ namespace Diploma.Controllers
     {
 
 
-        private String _connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        private String _connection = "Data Source=PC-229-06;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         private String htmlCode;
         //private String text;
 
@@ -73,9 +73,9 @@ namespace Diploma.Controllers
             int start_rem;
             for (int i = 0; i < 10; i++)
             {
-                if (tmpStr.IndexOf("<div style=\"-aw-different-first-page") != -1)
+                if (tmpStr.IndexOf("<div style=") != -1)
                 {
-                    start_rem = tmpStr.IndexOf("<div style=\"-aw-different-first-page");
+                    start_rem = tmpStr.IndexOf("<div style=");
                     tmpStr = tmpStr.Remove(start_rem, getDivClosePosition(start_rem, tmpStr)-start_rem);
                 }
                 else

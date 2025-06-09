@@ -16,10 +16,11 @@ namespace Diploma
 {
     public partial class Authorize : Form
     {
+        //private String _connection;
         public Authorize()
         {
             InitializeComponent();
-            
+            //_connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         }
 
         private void button1_Click(object sender, EventArgs e)
