@@ -19,7 +19,7 @@ namespace Diploma.Controllers
     {
 
 
-        private String _connection = "Data Source=PC-229-06;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        private String _connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         private String htmlCode;
         //private String text;
 

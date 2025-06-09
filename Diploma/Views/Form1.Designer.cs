@@ -91,6 +91,7 @@
             this.webView21.Size = new System.Drawing.Size(860, 603);
             this.webView21.TabIndex = 6;
             this.webView21.ZoomFactor = 1D;
+            this.webView21.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.webView21_NavigationCompleted);
             // 
             // Form1
             // 

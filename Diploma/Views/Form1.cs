@@ -24,7 +24,7 @@ namespace Diploma
         private async void Form1_Load(object sender, EventArgs e)
         {
             await webView21.EnsureCoreWebView2Async();
-            textBox1.Text = Directory.GetCurrentDirectory()+"\\tmp_data\\1.docx";//адрес файла docx для чтения
+            textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\1.docx");//адрес файла docx для чтения
             docController = new DocumentController();
         }
 
@@ -49,6 +49,11 @@ namespace Diploma
         {
             docController.addListInput(docController.getHtml().IndexOf("<div>") + 5);
             this.webView21.NavigateToString(docController.getHtml());
+        }
+
+        private async void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            await webView21.CoreWebView2.ExecuteScriptAsync("document.body.contentEditable = 'true'; document.designMode = 'on';");
         }
     }
 }

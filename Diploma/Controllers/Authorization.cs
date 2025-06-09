@@ -17,7 +17,7 @@ namespace Diploma.Controllers
         
         public MyAuthorization()
         {
-            connection_string= "Data Source=PC-29-06;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+            connection_string= "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         }
 
         //возвращает хэш, созданный из переданной строки
