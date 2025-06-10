@@ -11,7 +11,7 @@ namespace Diploma.Controllers
     internal class CRUD_Operations
     {
         private String _connectionString;
-
+        private Int32 _pageSize = 50;
         public CRUD_Operations(String connectionString)
         {
             _connectionString = connectionString;
@@ -80,6 +80,30 @@ namespace Diploma.Controllers
             return operations;
         }
 
+        //Получает записи операций с пагинацией
+        public System.Data.DataTable getPageAsDataTable(Int32 pageNumber)
+        {
+            if (pageNumber < 1)
+                throw new ArgumentException("Номер страницы должен быть >= 1");
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = @"
+            SELECT id, Id_position, Name, Description 
+            FROM Operations
+            ORDER BY id
+            OFFSET @Offset ROWS 
+            FETCH NEXT @PageSize ROWS ONLY";
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            int offset = (pageNumber - 1) * _pageSize;
+            command.Parameters.AddWithValue("@Offset", offset);
+            command.Parameters.AddWithValue("@PageSize", _pageSize);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
+
         //Обновляет сущетсвующую в базе запись, которая передана в экземпляре (передавать надо уже измененную)
         public Int32 update(Operation operation)
         {
@@ -144,6 +168,32 @@ namespace Diploma.Controllers
             reader.Close();
             connection.Close();
             return result;
+        }
+
+        //создает html-код выпадающего списка со значениями людей из базы
+        public static string generateOperationsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        {
+            var html = new StringBuilder();
+            string sql = "SELECT id, Name FROM Operations ORDER BY Name";
+            var connection = new SqlConnection(connectionString);
+            var command = new SqlCommand(sql, connection);
+            connection.Open();
+            var reader = command.ExecuteReader();
+            html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
+            html.AppendLine("<option value=''>-- Выберите действие --</option>");
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string operation = reader.GetString(1);
+                bool isSelected = id.ToString() == currentValue;
+                html.AppendLine(
+                    $"<option value='{id}' {(isSelected ? "selected" : "")}>{operation}</option>"
+                );
+            }
+            reader.Close();
+            connection.Close();
+            html.AppendLine("</select>");
+            return html.ToString();
         }
     }
 }

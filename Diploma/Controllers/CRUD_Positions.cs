@@ -195,7 +195,8 @@ namespace Diploma.Controllers
             return result;
         }
 
-        public static string GeneratePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        //создает html-код выпадающего списка со значениями должностей из базы
+        public static string generatePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
         {
             var html = new StringBuilder();
             string sql = "SELECT id, Name FROM Positions ORDER BY Name";

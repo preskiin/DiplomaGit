@@ -17,7 +17,12 @@ namespace Diploma.Controllers
 {
     internal class DocumentController
     {
-
+        public enum usingCRUD
+        {
+            positions,
+            operations,
+            people
+        }
 
         private String _connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         private String htmlCode;
@@ -153,9 +158,40 @@ namespace Diploma.Controllers
             }
         }
 
-        public void addListInput(Int32 textPos)
+
+        //public void addListInput(Int32 textPos)
+        //{
+        //    this.htmlCode = this.htmlCode.Insert(textPos, CRUD_Positions.generatePositionsDropdown(this._connection));
+        //}
+
+
+        public String createListInput(usingCRUD dataNeeded)
         {
-            this.htmlCode = this.htmlCode.Insert(textPos, CRUD_Positions.GeneratePositionsDropdown(this._connection));
+            String htmlString = "";
+            switch (dataNeeded)
+            {
+                case usingCRUD.positions:
+                    {
+                        htmlString = CRUD_Positions.generatePositionsDropdown(this._connection);
+                        break;
+                    }
+                case usingCRUD.operations:
+                    {
+                        htmlString = CRUD_Operations.generateOperationsDropdown(this._connection);
+                        break;
+                    }
+                case usingCRUD.people:
+                    {
+                        htmlString = CRUD_Users.generateUsersDropdown(this._connection);
+                        break;
+                    }
+                default:
+                    {
+                        htmlString = "";
+                        break;
+                    }
+            }
+            return htmlString;
         }
     }
 

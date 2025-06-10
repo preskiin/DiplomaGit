@@ -47,13 +47,44 @@ namespace Diploma
 
         private void button3_Click(object sender, EventArgs e)
         {
-            docController.addListInput(docController.getHtml().IndexOf("<div>") + 5);
+            //docController.addListInput(docController.getHtml().IndexOf("<div>") + 5);
             this.webView21.NavigateToString(docController.getHtml());
         }
 
         private async void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             await webView21.CoreWebView2.ExecuteScriptAsync("document.body.contentEditable = 'true'; document.designMode = 'on';");
+        }
+
+        private async void button4_Click(object sender, EventArgs e)
+        {
+            await webView21.EnsureCoreWebView2Async();
+            String html = docController.createListInput(DocumentController.usingCRUD.positions);
+            string script = $@"
+        (function() {{
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {{
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = `{html}`;
+                
+                const fragment = document.createDocumentFragment();
+                while (tempDiv.firstChild) {{
+                    fragment.appendChild(tempDiv.firstChild);
+                }}
+                
+                range.insertNode(fragment);
+                range.setStartAfter(fragment.lastChild);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }}
+            return true;
+        }})()";
+
+            await webView21.CoreWebView2.ExecuteScriptAsync(script);
         }
     }
 }

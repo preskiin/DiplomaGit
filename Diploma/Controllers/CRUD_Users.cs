@@ -91,6 +91,30 @@ namespace Diploma.Controllers
             }
         }
 
+        public System.Data.DataTable getPageAsDataTable(Int32 pageNumber)
+        {
+            if (pageNumber < 1)
+                throw new ArgumentException("Номер страницы должен быть >= 1");
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = @"
+            SELECT * 
+            FROM People
+            ORDER BY id
+            OFFSET @Offset ROWS 
+            FETCH NEXT @PageSize ROWS ONLY";
+
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            int offset = (pageNumber - 1) * _pageSize;
+            command.Parameters.AddWithValue("@Offset", offset);
+            command.Parameters.AddWithValue("@PageSize", _pageSize);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
+
         //Получает всех пользователей, с указнной должностью
         public List<User> readByPositionId(Int32 positionId, Int32 pageNum)
         {
@@ -215,5 +239,30 @@ namespace Diploma.Controllers
             }
         }
 
+        //создает html-код выпадающего списка со значениями людей из базы
+        public static string generateUsersDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        {
+            var html = new StringBuilder();
+            string sql = "SELECT id, Name, Surname, Patronymic FROM People ORDER BY Name";
+            var connection = new SqlConnection(connectionString);
+            var command = new SqlCommand(sql, connection);
+            connection.Open();
+            var reader = command.ExecuteReader();
+            html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
+            html.AppendLine("<option value=''>-- Выберите сотрудника --</option>");
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string fIO = reader.GetString(1)+" " +reader.GetString(2)+" "+  reader.GetString(3);
+                bool isSelected = id.ToString() == currentValue;
+                html.AppendLine(
+                    $"<option value='{id}' {(isSelected ? "selected" : "")}>{fIO}</option>"
+                );
+            }
+            reader.Close();
+            connection.Close();
+            html.AppendLine("</select>");
+            return html.ToString();
+        }
     }
 }
