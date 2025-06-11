@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -59,9 +59,6 @@
     <Reference Include="DocumentFormat.OpenXml, Version=3.3.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.3.3.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.3.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.3.0\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.12.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.12.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -106,6 +103,24 @@
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Models\Operation.cs" />
     <Compile Include="Models\Position.cs" />
+    <Compile Include="Views\AddForms\AddFormOperation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AddForms\AddFormOperation.Designer.cs">
+      <DependentUpon>AddFormOperation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddForms\AddFormPosition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AddForms\AddFormPosition.Designer.cs">
+      <DependentUpon>AddFormPosition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddForms\AddFormUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AddForms\AddFormUser.Designer.cs">
+      <DependentUpon>AddFormUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Authorize.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +144,9 @@
     <Compile Include="Views\TestForm.Designer.cs">
       <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\AddForms\AddFormUser.resx">
+      <DependentUpon>AddFormUser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorize.resx">
       <DependentUpon>Authorize.cs</DependentUpon>
     </EmbeddedResource>
@@ -175,6 +193,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\UpdateForms\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3296.44\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3296.44\build\Microsoft.Web.WebView2.targets')" />

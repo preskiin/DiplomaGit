@@ -16,16 +16,24 @@ namespace Diploma
     public partial class Form1 : Form
     {
         private DocumentController docController;
+        private String _connection = "Data Source=PRESKIIN-NOTEBO;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         public Form1()
         {
             InitializeComponent();
         }
 
+        private void onContextMenuRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs e)
+        {
+            e.Handled = true;
+
+        }
+
         private async void Form1_Load(object sender, EventArgs e)
         {
-            await webView21.EnsureCoreWebView2Async();
             textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\1.docx");//адрес файла docx для чтения
-            docController = new DocumentController();
+            await webView21.EnsureCoreWebView2Async();
+            this.webView21.CoreWebView2.ContextMenuRequested += onContextMenuRequested;
+            docController = new DocumentController(_connection);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -54,11 +62,12 @@ namespace Diploma
         private async void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             await webView21.CoreWebView2.ExecuteScriptAsync("document.body.contentEditable = 'true'; document.designMode = 'on';");
+            
         }
 
         private async void button4_Click(object sender, EventArgs e)
         {
-            await webView21.EnsureCoreWebView2Async();
+            //await webView21.EnsureCoreWebView2Async();
             String html = docController.createListInput(DocumentController.usingCRUD.positions);
             string script = $@"
         (function() {{

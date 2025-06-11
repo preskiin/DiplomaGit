@@ -21,7 +21,7 @@ namespace Diploma.Controllers
         }
 
         //возвращает хэш, созданный из переданной строки
-        private String get_sha256(String text_to_sha256)
+        private static String get_sha256(String text_to_sha256)
         {
             using SHA256 sha256 = SHA256.Create();
             byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(text_to_sha256));

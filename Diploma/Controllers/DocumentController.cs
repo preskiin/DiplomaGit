@@ -24,15 +24,13 @@ namespace Diploma.Controllers
             people
         }
 
-        private String _connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        private String _connection;
         private String htmlCode;
         //private String text;
 
-        public DocumentController()
+        public DocumentController(String con)
         {
-            
-            
-            
+            _connection = con;
         }
 
 

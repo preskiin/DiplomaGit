@@ -194,6 +194,25 @@ namespace Diploma.Controllers
             connection.Close();
             return result;
         }
+        
+        public static List<Position> getAllPositions(String connection)
+        {
+            List<Position> positions = new();
+            String sql_exp = @"
+            SELECT * FROM Positions
+            ORDER BY Name ASC";
+            SqlConnection con = new(connection);
+            SqlCommand command = new SqlCommand(sql_exp, con);
+            con.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                positions.Add(Position.FromDataReader(reader));
+            }
+            reader.Close();
+            con.Close();
+            return positions;
+        }
 
         //создает html-код выпадающего списка со значениями должностей из базы
         public static string generatePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
