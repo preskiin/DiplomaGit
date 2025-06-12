@@ -103,23 +103,23 @@
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Models\Operation.cs" />
     <Compile Include="Models\Position.cs" />
-    <Compile Include="Views\AddForms\AddFormOperation.cs">
+    <Compile Include="Views\ClassForms\FormOperation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\AddForms\AddFormOperation.Designer.cs">
-      <DependentUpon>AddFormOperation.cs</DependentUpon>
+    <Compile Include="Views\ClassForms\FormOperation.Designer.cs">
+      <DependentUpon>FormOperation.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddForms\AddFormPosition.cs">
+    <Compile Include="Views\ClassForms\FormPosition.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\AddForms\AddFormPosition.Designer.cs">
-      <DependentUpon>AddFormPosition.cs</DependentUpon>
+    <Compile Include="Views\ClassForms\FormPosition.Designer.cs">
+      <DependentUpon>FormPosition.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddForms\AddFormUser.cs">
+    <Compile Include="Views\ClassForms\FormUser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\AddForms\AddFormUser.Designer.cs">
-      <DependentUpon>AddFormUser.cs</DependentUpon>
+    <Compile Include="Views\ClassForms\FormUser.Designer.cs">
+      <DependentUpon>FormUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Authorize.cs">
       <SubType>Form</SubType>
@@ -144,8 +144,8 @@
     <Compile Include="Views\TestForm.Designer.cs">
       <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Views\AddForms\AddFormUser.resx">
-      <DependentUpon>AddFormUser.cs</DependentUpon>
+    <EmbeddedResource Include="Views\ClassForms\FormUser.resx">
+      <DependentUpon>FormUser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorize.resx">
       <DependentUpon>Authorize.cs</DependentUpon>
@@ -194,9 +194,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\UpdateForms\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3296.44\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3296.44\build\Microsoft.Web.WebView2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

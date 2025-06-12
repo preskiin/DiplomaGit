@@ -6,10 +6,11 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Diploma.Models
 {
-    internal class User
+    public class User
     {
         Int32 _id;
         Int32 _id_position;
@@ -52,6 +53,18 @@ namespace Diploma.Models
             this._password = (String)password;
         }
 
+        //конструктор копирования
+        public User(User userToCopy)
+        {
+            this._id = userToCopy._id;
+            this._name = userToCopy._name;
+            this._surname= userToCopy._surname;
+            this._id_position= userToCopy._id_position;
+            this._place_num= userToCopy._place_num;
+            this._login = userToCopy._login;
+            this._password = userToCopy._password;
+        }
+
         // Создание объекта из SqlDataReader
         public static User FromDataReader(SqlDataReader reader)
         {
@@ -66,6 +79,22 @@ namespace Diploma.Models
                 password: reader.GetString(reader.GetOrdinal("Password"))
             );
             return tmp;
+        }
+
+        //Получение пользователя из ряда датагрида
+        public User(DataGridViewRow row)
+        {
+            if (row != null)
+            {
+                _id = Convert.ToInt32(row.Cells["id"].Value);
+                _id_position = Convert.ToInt32(row.Cells["Id_position"].Value);
+                _name = row.Cells["Name"].Value.ToString();
+                _surname = row.Cells["Surname"].Value.ToString();
+                _patronymic = row.Cells["Patronymic"].Value.ToString();
+                _place_num = Convert.ToInt32(row.Cells["Place"].Value);
+                _login = row.Cells["Login"].Value.ToString();
+                _password = row.Cells["Password"].Value.ToString();
+            }
         }
 
         //Проверка валидности данных

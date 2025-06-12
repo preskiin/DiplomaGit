@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Diploma.Views.AddForms
 {
-    public partial class AddFormOperation : Form
+    public partial class FormOperation : Form
     {
-        public AddFormOperation()
+        public FormOperation()
         {
             InitializeComponent();
         }

@@ -31,6 +31,7 @@ namespace Diploma.Controllers
                 SqlConnection con = new SqlConnection(_connectionString);
                 String sql_exp = @"
                 INSERT INTO People (Id_position, Name, Surname, Patronymic, Place, Login, Password) 
+                OUTPUT INSERTED.id
                 VALUES (@id_pos, @name, @surname, @patro, @place, @log, @pas)";
                 SqlCommand command = new SqlCommand(sql_exp, con);
                 command.Parameters.Add(new SqlParameter("@id_pos", new_user.IdPosition));
@@ -66,6 +67,30 @@ namespace Diploma.Controllers
             }
             else
                 tmp_user= null;
+            reader.Close();
+            connection.Close();
+            return tmp_user;
+        }
+
+        //возвращает user с указанным ID
+        public User read(Int32 id)
+        {
+            SqlConnection connection = new SqlConnection(_connectionString);
+            String sql_exp = @"
+            SELECT * 
+            FROM People 
+            WHERE id = @id";
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            command.Parameters.Add(new SqlParameter("@id", id));
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            User tmp_user;
+            if (reader.Read())
+            {
+                tmp_user = User.FromDataReader(reader);
+            }
+            else
+                tmp_user = null;
             reader.Close();
             connection.Close();
             return tmp_user;
@@ -152,7 +177,7 @@ namespace Diploma.Controllers
             else
             {
                 String sql_exp = @"
-                UPDATE Users
+                UPDATE People
                 SET
                     Id_position=@IdPosition,
                     Name = @Name,
@@ -183,7 +208,7 @@ namespace Diploma.Controllers
         //Удаляет пользователя по ID. 
         public void delete(User userToDel)
         {
-            String sql_exp = "DELETE FROM Users WHERE id = @Id";
+            String sql_exp = "DELETE FROM People WHERE id = @Id";
             SqlConnection connection = new SqlConnection(_connectionString);
             SqlCommand command = new SqlCommand(sql_exp, connection);
             command.Parameters.AddWithValue("@Id", userToDel.Id);
