@@ -15,7 +15,7 @@ using Diploma.Views.AddForms;
 
 namespace Diploma.Views
 {
-    public partial class TestForm : Form
+    public partial class EditForm : Form
     {
         private String _connection_string = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         private CRUD_Positions _posCRUD;
@@ -32,7 +32,7 @@ namespace Diploma.Views
             positions
         }
 
-        public TestForm()
+        public EditForm()
         {
             InitializeComponent();
         }
@@ -58,6 +58,7 @@ namespace Diploma.Views
                 _usersCRUD = new CRUD_Users(_connection_string);
             _currentTable = _usersCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
             //bindingSource1.DataSource = _currentTable;
             //dataGridView1.DataSource = bindingSource1;
         }
@@ -77,6 +78,9 @@ namespace Diploma.Views
         //функция, которая должна подготовить форму к новым данным
         private void clearTable()
         {
+            this.dataGridView1.DataSource = null;
+            this.dataGridView1.Rows.Clear();
+            this.dataGridView1.Columns.Clear();
             this._currentPage = 1;
             this.bindingNavigatorPositionItem.Text = Convert.ToString(this._currentPage);
         }
@@ -98,7 +102,6 @@ namespace Diploma.Views
                 avokeAddForm(_usingObj);
             }
         }
-
 
         private void изменитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -124,26 +127,27 @@ namespace Diploma.Views
             }
         }
 
-        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
-        {
-            //chosenIdTable = dataGridView1.Rows.
-        }
-
+        //перелистывание страниц коллекции из базы
         private void bindingNavigatorMoveNextItem_Click(object sender, EventArgs e)
         {
             _currentPage++;
             this.bindingNavigatorPositionItem.Text = Convert.ToString(this._currentPage);
+            slidePage(_usingObj);
         }
 
+        //перелистывание страниц коллекции из базы
         private void bindingNavigatorMovePreviousItem_Click(object sender, EventArgs e)
         {
             _currentPage--;
             this.bindingNavigatorPositionItem.Text = Convert.ToString(this._currentPage);
+            slidePage(_usingObj);
         }
 
+        //вызов формы для добавления записи
         private void avokeAddForm(_currentObj index)
         {
             Int32 result = 0;
+            
             switch ((int)index)
             {
                 case 0:
@@ -156,6 +160,7 @@ namespace Diploma.Views
                             result = _usersCRUD.create(user);
                             _currentTable = _usersCRUD.getPageAsDataTable(_currentPage);
                             dataGridView1.DataSource = _currentTable;
+                            correctView(index);
                         }
                         break;
                     }
@@ -173,7 +178,7 @@ namespace Diploma.Views
                     break;
             }
         }
-
+        //вызов формы для редактирования записи
         private void avokeEditForm(_currentObj index)
         {
             Int32 result = 0;
@@ -206,6 +211,7 @@ namespace Diploma.Views
                     break;
             }
         }
+        //вызов диалогового окна для удаления записи
         private void avokeDeleteForm(_currentObj index)
         {
             switch ((int)index)
@@ -218,6 +224,62 @@ namespace Diploma.Views
                             _usersCRUD.delete(new User(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]));
                             _currentTable = _usersCRUD.getPageAsDataTable(_currentPage);
                             dataGridView1.DataSource = _currentTable;
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+
+        //обновление данных таблицы после перелистывания
+        private void slidePage(_currentObj index)
+        {
+            switch ((int)index)
+            {
+                case 0:
+                    {
+                        _currentTable = _usersCRUD.getPageAsDataTable(_currentPage);
+                        dataGridView1.DataSource = _currentTable;
+                        break;
+                    }
+                case 1:
+                    {
+                        _currentTable = _operationsCRUD.getPageAsDataTable(_currentPage);
+                        dataGridView1.DataSource = _currentTable;
+                        break;
+                    }
+                case 2:
+                    {
+                        _currentTable = _posCRUD.getPageAsDataTable(_currentPage);
+                        dataGridView1.DataSource = _currentTable;
+                        break;
+                    }
+                default:
+                    break;
+            }
+        
+        }
+
+        private void correctView(_currentObj index)
+        {
+            switch ((int)index)
+            {
+                case 0:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["Id_position"].Visible = false;
+                        DataGridViewColumn positionColumn = new DataGridViewTextBoxColumn();
+                        positionColumn.Name = "PositionName";
+                        positionColumn.HeaderText = "Должность";
+                        positionColumn.DisplayIndex = 2;
+                        dataGridView1.Columns.Add(positionColumn);
+                        List<Position> list = CRUD_Positions.getAllPositions(_connection_string);
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            row.Cells["PositionName"].Value = CRUD_Positions.findNameInList(list, Convert.ToInt32(row.Cells["Id_position"].Value));
                         }
                         break;
                     }

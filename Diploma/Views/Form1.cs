@@ -16,7 +16,7 @@ namespace Diploma
     public partial class Form1 : Form
     {
         private DocumentController docController;
-        private String _connection = "Data Source=PRESKIIN-NOTEBO;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        private String _connection = "Data Source=PRESKIIN-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         public Form1()
         {
             InitializeComponent();

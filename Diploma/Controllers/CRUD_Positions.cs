@@ -154,23 +154,15 @@ namespace Diploma.Controllers
         }
 
         //Удаляет позицию по ID. 
-        public bool delete(Position posToDel)
+        public void delete(Position posToDel)
         {
-            bool result;
-            if (checkPosInBase(posToDel))
-            {
-                String sql_exp = "DELETE FROM Positions WHERE id = @Id";
-                SqlConnection connection = new SqlConnection(_connectionString);
-                SqlCommand command = new SqlCommand(sql_exp, connection);
-                command.Parameters.AddWithValue("@Id", posToDel.Id);
-                connection.Open();
-                command.ExecuteNonQuery();
-                connection.Close();
-                result = true;
-            }
-            else
-                result = false;
-            return result;
+            String sql_exp = "DELETE FROM Positions WHERE id = @Id";
+            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            command.Parameters.AddWithValue("@Id", posToDel.Id);
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
         }
 
         //Проверяет, есть ли должность с таким же названием в базе
@@ -238,6 +230,18 @@ namespace Diploma.Controllers
             connection.Close();
             html.AppendLine("</select>");
             return html.ToString();
+        }
+
+        public static String findNameInList(List<Position> list, Int32 indexToFind)
+        {
+            foreach (var position in list)
+            {
+                if (position.Id == indexToFind)
+                {
+                    return position.Name;
+                }
+            }
+            return "Нет";
         }
     }
 }
