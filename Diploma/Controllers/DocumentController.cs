@@ -148,14 +148,34 @@ namespace Diploma.Controllers
         }
 
         //сохраняет html-код на рабочий стол
-        public void saveHtml()
+        public async void saveHtml(Microsoft.Web.WebView2.WinForms.WebView2 webView)
         {
             if (this.htmlCode != null)
             {
+                this.htmlCode =  await getHtmlFromWebView2(webView);
                 File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\MyHtml.html", this.htmlCode);
             }
         }
 
+        public async Task<string> getHtmlFromWebView2(Microsoft.Web.WebView2.WinForms.WebView2 webView)
+        {
+            try
+            {
+                // Получаем HTML с помощью JavaScript
+                string encodedHtml = await webView.CoreWebView2.ExecuteScriptAsync(
+                    "document.documentElement.outerHTML;"
+                );
+
+                // Декодируем JSON-строку (удаляем кавычки и экранированные символы)
+                string cleanHtml = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(encodedHtml);
+                return cleanHtml;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении HTML: {ex.Message}");
+                return null;
+            }
+        }
 
         //public void addListInput(Int32 textPos)
         //{

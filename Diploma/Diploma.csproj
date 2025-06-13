@@ -71,6 +71,9 @@
     <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.3296.44, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.WebView2.1.0.3296.44\lib\net462\Microsoft.Web.WebView2.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="ReachFramework" />
@@ -101,8 +104,12 @@
     <Compile Include="Controllers\CRUD_Operations.cs" />
     <Compile Include="Controllers\CRUD_Positions.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Models\Counteragent.cs" />
     <Compile Include="Models\Operation.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\Position.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="Views\ClassForms\FormOperation.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,7 +134,7 @@
     <Compile Include="Views\Authorize.Designer.cs">
       <DependentUpon>Authorize.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\Authorization.cs" />
+    <Compile Include="Controllers\MyAuthorization.cs" />
     <Compile Include="Views\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +151,9 @@
     <Compile Include="Views\EditForm.Designer.cs">
       <DependentUpon>EditForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\ClassForms\FormPosition.resx">
+      <DependentUpon>FormPosition.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\ClassForms\FormUser.resx">
       <DependentUpon>FormUser.cs</DependentUpon>
     </EmbeddedResource>

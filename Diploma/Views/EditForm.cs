@@ -279,7 +279,7 @@ namespace Diploma.Views
                         List<Position> list = CRUD_Positions.getAllPositions(_connection_string);
                         foreach (DataGridViewRow row in dataGridView1.Rows)
                         {
-                            row.Cells["PositionName"].Value = CRUD_Positions.findNameInList(list, Convert.ToInt32(row.Cells["Id_position"].Value));
+                            row.Cells["PositionName"].Value = Position.findNameInList(list, Convert.ToInt32(row.Cells["Id_position"].Value));
                         }
                         break;
                     }

@@ -1,6 +1,7 @@
 ﻿using Diploma.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -13,16 +14,16 @@ namespace Diploma.Controllers
     internal class CRUD_Positions
     {
         private String _connectionString;
-        private Int32 _pageSize = 50;
+        private int _pageSize = 50;
         public CRUD_Positions(String connectionString)
         {
             _connectionString = connectionString /*?? throw new ArgumentNullException(nameof(connectionString))*/;
         }
 
         // Создает новую запись в таблице Positions.
-        public Int32 create(Position position)
+        public Int64 create(Position position)
         {
-            Int32 tmp;
+            Int64 tmp;
             if (!position.IsValid())
                 tmp = -1; //возврат неверного ввода данных
             else if (checkPosInBase(position))
@@ -40,14 +41,14 @@ namespace Diploma.Controllers
                 command.Parameters.AddWithValue("@Department", position.Department);
                 command.Parameters.AddWithValue("@Level", position.Level);
                 connection.Open();
-                tmp = (Int32)command.ExecuteScalar();// Возвращает ID новой записи
+                tmp = (Int64)command.ExecuteScalar();// Возвращает ID новой записи
                 connection.Close();
             }
             return tmp;
         }
 
         //Получает записи с пагинацией
-        public List<Position> getPage(Int32 pageNumber)
+        public List<Position> getPage(int pageNumber)
         {
             //if (pageNumber < 1)
             //    throw new ArgumentException("Номер страницы должен быть >= 1");
@@ -60,7 +61,7 @@ namespace Diploma.Controllers
             FETCH NEXT @PageSize ROWS ONLY";
             SqlConnection connection = new(_connectionString);
             SqlCommand command = new SqlCommand(sql_exp, connection);
-            Int32 offset = (pageNumber - 1) * _pageSize;
+            int offset = (pageNumber - 1) * _pageSize;
             command.Parameters.AddWithValue("@Offset", offset);
             command.Parameters.AddWithValue("@PageSize", _pageSize);
             connection.Open();
@@ -75,7 +76,7 @@ namespace Diploma.Controllers
         }
 
         //Получает записи с заданной пагинацией для вывода в dataGridView
-        public System.Data.DataTable getPageAsDataTable(Int32 pageNumber)
+        public System.Data.DataTable getPageAsDataTable(int pageNumber)
         {
             if (pageNumber < 1)
                 throw new ArgumentException("Номер страницы должен быть >= 1");
@@ -100,7 +101,7 @@ namespace Diploma.Controllers
         }
 
         // Получает позицию по ID.
-        public Position read(Int32 id)
+        public Position read(Int64 id)
         {
             String sql_exp = "SELECT * FROM Positions WHERE id = @Id";
             SqlConnection connection = new SqlConnection(_connectionString);
@@ -123,9 +124,9 @@ namespace Diploma.Controllers
         }
 
         // Обновляет существующую позицию.
-        public Int32 update(Position position)
+        public Int64 update(Position position)
         {
-            Int32 result;
+            Int64 result;
             if (!position.IsValid())
                 result = -1; //Индекс неверных данных
             else
@@ -207,41 +208,127 @@ namespace Diploma.Controllers
         }
 
         //создает html-код выпадающего списка со значениями должностей из базы
+        //public static string generatePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        //{
+        //    var html = new StringBuilder();
+        //    string sql = "SELECT id, Name FROM Positions ORDER BY Name";
+        //    var connection = new SqlConnection(connectionString);
+        //    var command = new SqlCommand(sql, connection);
+        //    connection.Open();
+        //    var reader = command.ExecuteReader();
+        //    html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
+        //    html.AppendLine("<option value=''>-- Выберите должность --</option>");
+        //    while (reader.Read())
+        //    {
+        //        Int64 id = reader.GetInt64(0);
+        //        string name = reader.GetString(1);
+        //        bool isSelected = id.ToString() == currentValue;
+        //        html.AppendLine(
+        //            $"<option value='{id}' {(isSelected ? "selected" : "")}>{name}</option>"
+        //        );
+        //    }
+        //    reader.Close();
+        //    connection.Close();
+        //    html.AppendLine("</select>");
+        //    return html.ToString();
+        //}
+
         public static string generatePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
         {
             var html = new StringBuilder();
             string sql = "SELECT id, Name FROM Positions ORDER BY Name";
             var connection = new SqlConnection(connectionString);
             var command = new SqlCommand(sql, connection);
+
+            // Получаем список всех должностей для проверки введенного значения
+            var positions = new Dictionary<string, long>();
             connection.Open();
             var reader = command.ExecuteReader();
-            html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
-            html.AppendLine("<option value=''>-- Выберите должность --</option>");
             while (reader.Read())
             {
-                int id = reader.GetInt32(0);
+                long id = reader.GetInt64(0);
                 string name = reader.GetString(1);
-                bool isSelected = id.ToString() == currentValue;
-                html.AppendLine(
-                    $"<option value='{id}' {(isSelected ? "selected" : "")}>{name}</option>"
-                );
+                positions[name] = id;
             }
             reader.Close();
             connection.Close();
-            html.AppendLine("</select>");
+
+            // Определяем текущее название должности по ID (если currentValue - это ID)
+            string currentName = "";
+            if (!string.IsNullOrEmpty(currentValue))
+            {
+                if (long.TryParse(currentValue, out long currentId))
+                {
+                    currentName = positions.FirstOrDefault(x => x.Value == currentId).Key ?? "";
+                }
+                else
+                {
+                    // Если currentValue - это название, проверяем его наличие в списке
+                    if (positions.ContainsKey(currentValue))
+                    {
+                        currentName = currentValue;
+                    }
+                }
+            }
+
+            // Создаем input с datalist
+            html.AppendLine($"<input list='{dropdownName}-list' name='{dropdownName}' id='{dropdownName}' value='{currentName}' class='form-control' placeholder='-- Выберите должность --'>");
+            html.AppendLine($"<datalist id='{dropdownName}-list'>");
+
+            // Добавляем варианты в datalist
+            foreach (var position in positions)
+            {
+                html.AppendLine($"<option value='{position.Key}' data-id='{position.Value}'>");
+            }
+
+            html.AppendLine("</datalist>");
+
+            // Добавляем скрытое поле для хранения ID
+            html.AppendLine($"<input type='hidden' name='{dropdownName}-id' id='{dropdownName}-id' value='{currentValue}'>");
+
+            // Добавляем JavaScript для валидации введенного значения
+            html.AppendLine(@"
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const input = document.getElementById('positionId');
+                const options = document.getElementById('positionId-list').options;
+                const hiddenField = document.getElementById('positionId-id');
+                
+                // Основная функция валидации
+                function validateInput() {
+                    let isValid = false;
+                    for(let i = 0; i < options.length; i++) {
+                        if(options[i].value === input.value) {
+                            isValid = true;
+                            hiddenField.value = options[i].getAttribute('data-id');
+                            break;
+                        }
+                    }
+                    
+                    if(!isValid) {
+                        input.value = '';
+                        hiddenField.value = '';
+                    }
+                }
+                
+                // Обработчики событий для WebView2
+                input.addEventListener('blur', validateInput); // При потере фокуса
+                input.addEventListener('keydown', function(e) {
+                    if(e.key === 'Enter') validateInput(); // При нажатии Enter
+                });
+                
+                // Дополнительная проверка перед отправкой формы
+                document.querySelector('form')?.addEventListener('submit', function(e) {
+                    validateInput();
+                    if(!hiddenField.value) {
+                        e.preventDefault();
+                        alert('Выберите корректную должность из списка!');
+                    }
+                });
+            });
+            </script>");
             return html.ToString();
         }
 
-        public static String findNameInList(List<Position> list, Int32 indexToFind)
-        {
-            foreach (var position in list)
-            {
-                if (position.Id == indexToFind)
-                {
-                    return position.Name;
-                }
-            }
-            return "Нет";
-        }
     }
 }

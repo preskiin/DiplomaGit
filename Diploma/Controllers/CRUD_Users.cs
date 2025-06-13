@@ -12,16 +12,16 @@ namespace Diploma.Controllers
     internal class CRUD_Users
     {
         private String _connectionString;
-        private Int32 _pageSize=50;
+        private int _pageSize=50;
         public CRUD_Users(string con_str)
         {
             _connectionString = con_str;
         }
 
         //Возвращает либо индекс созданной записи, либо индекс ошибки
-        public Int32 create(User new_user)
+        public Int64 create(User new_user)
         {
-            Int32 res;
+            Int64 res;
             if (is_in_base(new_user.Login))
                 res = -2; //Индекс, указывающий, что такой логин в базе уже есть
             else if (!new_user.IsValid())
@@ -42,7 +42,7 @@ namespace Diploma.Controllers
                 command.Parameters.Add(new SqlParameter("@log", new_user.Login));
                 command.Parameters.Add(new SqlParameter("@pas", new_user.Password));
                 con.Open();
-                res = (Int32)command.ExecuteScalar();
+                res = (Int64)command.ExecuteScalar();
                 con.Close();
             }
             return res;
@@ -73,7 +73,7 @@ namespace Diploma.Controllers
         }
 
         //возвращает user с указанным ID
-        public User read(Int32 id)
+        public User read(Int64 id)
         {
             SqlConnection connection = new SqlConnection(_connectionString);
             String sql_exp = @"
@@ -97,7 +97,7 @@ namespace Diploma.Controllers
         }
 
         //Возвращает страницу из пользователей (заданное число записей)
-        public IEnumerable<User> getPage(Int32 pageNumber)
+        public IEnumerable<User> getPage(int pageNumber)
         {
             String sql = @"
             SELECT * FROM People
@@ -116,7 +116,7 @@ namespace Diploma.Controllers
             }
         }
 
-        public System.Data.DataTable getPageAsDataTable(Int32 pageNumber)
+        public System.Data.DataTable getPageAsDataTable(int pageNumber)
         {
             if (pageNumber < 1)
                 throw new ArgumentException("Номер страницы должен быть >= 1");
@@ -141,7 +141,7 @@ namespace Diploma.Controllers
         }
 
         //Получает всех пользователей, с указнной должностью
-        public List<User> readByPositionId(Int32 positionId, Int32 pageNum)
+        public List<User> readByPositionId(Int64 positionId, int pageNum)
         {
             var users = new List<User>();
             String sql_exp = "SELECT * FROM Users WHERE Id_position=@IdPosition";
@@ -153,7 +153,7 @@ namespace Diploma.Controllers
             //FETCH NEXT @PageSize ROWS ONLY";
             SqlConnection connection = new SqlConnection(_connectionString);
             SqlCommand command = new SqlCommand(@sql_exp, connection);
-            Int32 offset = (pageNum-1) * _pageSize;
+            int offset = (pageNum-1) * _pageSize;
             //command.Parameters.AddWithValue("Offset", offset);
            // command.Parameters.AddWithValue("@PageSize", _pageSize);
             command.Parameters.AddWithValue("@IdPosition", positionId);
@@ -169,9 +169,9 @@ namespace Diploma.Controllers
         }
 
         //Отправляет запрос на обновление указанного экземпляра по ID
-        public Int32 update(User user)
+        public Int64 update(User user)
         {
-            Int32 result;
+            Int64 result;
             if (!user.IsValid())
                 result = -1; //индекс неверных данных
             else
@@ -277,7 +277,7 @@ namespace Diploma.Controllers
             html.AppendLine("<option value=''>-- Выберите сотрудника --</option>");
             while (reader.Read())
             {
-                int id = reader.GetInt32(0);
+                int id = reader.GetInt64(0);
                 string fIO = reader.GetString(1)+" " +reader.GetString(2)+" "+  reader.GetString(3);
                 bool isSelected = id.ToString() == currentValue;
                 html.AppendLine(

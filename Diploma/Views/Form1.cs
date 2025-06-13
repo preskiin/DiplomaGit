@@ -30,8 +30,12 @@ namespace Diploma
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\1.docx");//адрес файла docx для чтения
+            textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
             await webView21.EnsureCoreWebView2Async();
+            this.webView21.CoreWebView2.Settings.IsScriptEnabled = true;
+            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
+            webView21.CoreWebView2.NavigateToString(htmlContent);
+            //this.webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
             this.webView21.CoreWebView2.ContextMenuRequested += onContextMenuRequested;
             docController = new DocumentController(_connection);
         }
@@ -50,7 +54,7 @@ namespace Diploma
 
         private void button2_Click(object sender, EventArgs e)
         {
-            docController.saveHtml();
+            docController.saveHtml(this.webView21);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -95,5 +99,6 @@ namespace Diploma
 
             await webView21.CoreWebView2.ExecuteScriptAsync(script);
         }
+       
     }
 }

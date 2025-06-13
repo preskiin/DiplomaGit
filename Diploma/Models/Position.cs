@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace Diploma.Models
 {
-    internal class Position
+    public class Position
     {
-        private Int32 _id;
+        private Int64 _id;
         private String _name;
-        private Int32 _sector;
-        private Int32 _department;
-        private Int32 _level;
+        private Int64 _sector;
+        private Int64 _department;
+        private Int64 _level;
 
-        public Int32 Id => _id;
+        public Int64 Id => _id;
         public String Name => _name;
-        public Int32 Sector => _sector;
-        public Int32 Department => _department;
-        public Int32 Level => _level;
+        public Int64 Sector => _sector;
+        public Int64 Department => _department;
+        public Int64 Level => _level;
 
         // Конструктор для инициализации всех полей
-        public Position(Int32 id, String name, Int32 sector, Int32 department, Int32 level)
+        public Position(Int64 id, String name, Int64 sector, Int64 department, Int64 level)
         {
             _id = id;
             _name = name;
@@ -30,6 +30,7 @@ namespace Diploma.Models
             _department = department;
             _level = level;
         }
+
         public Position()
         {
             _id = 1003;
@@ -43,11 +44,11 @@ namespace Diploma.Models
         public static Position FromDataReader(SqlDataReader reader)
         {
             Position tmp = new Position(
-                id: reader.GetInt32(reader.GetOrdinal("id")),
+                id: reader.GetInt64(reader.GetOrdinal("id")),
                 name: reader.GetString(reader.GetOrdinal("Name")),
-                sector: reader.GetInt32(reader.GetOrdinal("Sector")),
-                department: reader.GetInt32(reader.GetOrdinal("Department")),
-                level: reader.GetInt32(reader.GetOrdinal("Leve1"))
+                sector: reader.GetInt64(reader.GetOrdinal("Sector")),
+                department: reader.GetInt64(reader.GetOrdinal("Department")),
+                level: reader.GetInt64(reader.GetOrdinal("Leve1"))
             );
             return tmp;
         }
@@ -59,6 +60,19 @@ namespace Diploma.Models
                && _sector > 0
                && _department > 0
                && _level > 0);
+        }
+
+        //поиск названия в списке по переданному ID
+        public static String findNameInList(List<Position> list, Int64 indexToFind)
+        {
+            foreach (var position in list)
+            {
+                if (position.Id == indexToFind)
+                {
+                    return position.Name;
+                }
+            }
+            return "Нет";
         }
 
     }

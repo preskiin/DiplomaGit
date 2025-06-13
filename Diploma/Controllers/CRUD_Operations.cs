@@ -11,16 +11,16 @@ namespace Diploma.Controllers
     internal class CRUD_Operations
     {
         private String _connectionString;
-        private Int32 _pageSize = 50;
+        private int _pageSize = 50;
         public CRUD_Operations(String connectionString)
         {
             _connectionString = connectionString;
         }
 
         // Создает новую операцию (возвращает ID созданной записи)
-        public Int32 create(Operation operation)
+        public Int64 create(Operation operation)
         {
-            Int32 result;
+            Int64 result;
             if (!operation.IsValid())
                 result = -1; //Индекс неверного ввода данных
             else if (checkOperInBase(operation))
@@ -37,14 +37,14 @@ namespace Diploma.Controllers
                 command.Parameters.AddWithValue("@Name", operation.Name);
                 command.Parameters.AddWithValue("@Description", operation.Description);
                 connection.Open();
-                result = (Int32)command.ExecuteScalar();
+                result = (Int64)command.ExecuteScalar();
                 connection.Close();
             }
             return result;
         }
 
         // Получает операцию по ID
-        public Operation read(Int32 id)
+        public Operation read(Int64 id)
         {
             Operation tmp;
             String sql_exp = "SELECT * FROM Operations WHERE id = @Id";
@@ -62,7 +62,7 @@ namespace Diploma.Controllers
         }
 
         // Получает все операции для указанной должности (Id_position)
-        public List<Operation> readByPositionId(Int32 positionId)
+        public List<Operation> readByPositionId(Int64 positionId)
         {
             List<Operation> operations = new List<Operation>();
             String sql_exp = "SELECT * FROM Operations WHERE Id_position = @PositionId";
@@ -81,7 +81,7 @@ namespace Diploma.Controllers
         }
 
         //Получает записи операций с пагинацией
-        public System.Data.DataTable getPageAsDataTable(Int32 pageNumber)
+        public System.Data.DataTable getPageAsDataTable(int pageNumber)
         {
             if (pageNumber < 1)
                 throw new ArgumentException("Номер страницы должен быть >= 1");
@@ -105,9 +105,9 @@ namespace Diploma.Controllers
         }
 
         //Обновляет сущетсвующую в базе запись, которая передана в экземпляре (передавать надо уже измененную)
-        public Int32 update(Operation operation)
+        public Int64 update(Operation operation)
         {
-            Int32 result;
+            Int64 result;
             if (!operation.IsValid())
             {
                 result = -1;//индекс неверных данных в обновлении
@@ -183,7 +183,7 @@ namespace Diploma.Controllers
             html.AppendLine("<option value=''>-- Выберите действие --</option>");
             while (reader.Read())
             {
-                int id = reader.GetInt32(0);
+                Int64 id = reader.GetInt64(0);
                 string operation = reader.GetString(1);
                 bool isSelected = id.ToString() == currentValue;
                 html.AppendLine(
