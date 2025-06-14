@@ -15,7 +15,7 @@ using Diploma.Views.AddForms;
 
 namespace Diploma.Views
 {
-    public partial class EditForm : Form
+    public partial class EditDBForm : Form
     {
         private String _connection_string = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         private CRUD_Positions _posCRUD;
@@ -32,7 +32,7 @@ namespace Diploma.Views
             positions
         }
 
-        public EditForm()
+        public EditDBForm()
         {
             InitializeComponent();
         }
@@ -146,7 +146,7 @@ namespace Diploma.Views
         //вызов формы для добавления записи
         private void avokeAddForm(_currentObj index)
         {
-            Int32 result = 0;
+            Int64 result = 0;
             
             switch ((int)index)
             {
@@ -181,7 +181,7 @@ namespace Diploma.Views
         //вызов формы для редактирования записи
         private void avokeEditForm(_currentObj index)
         {
-            Int32 result = 0;
+            Int64 result = 0;
             switch ((int)index)
             {
                 case 0:

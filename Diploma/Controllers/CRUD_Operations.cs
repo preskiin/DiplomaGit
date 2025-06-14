@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Diploma.Controllers
 {
-    internal class CRUD_Operations
+    public class CRUD_Operations
     {
         private String _connectionString;
         private int _pageSize = 50;

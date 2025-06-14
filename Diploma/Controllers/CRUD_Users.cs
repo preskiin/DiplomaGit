@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Diploma.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Newtonsoft.Json.Schema;
 
 namespace Diploma.Controllers
 {
@@ -145,17 +147,9 @@ namespace Diploma.Controllers
         {
             var users = new List<User>();
             String sql_exp = "SELECT * FROM Users WHERE Id_position=@IdPosition";
-            //String sql_exp = @"
-            //SELECT * FROM Users
-            //WHERE Id_position = @IdPosition
-            //ORDER BY id
-            //OFFSET @Offset ROWS
-            //FETCH NEXT @PageSize ROWS ONLY";
             SqlConnection connection = new SqlConnection(_connectionString);
             SqlCommand command = new SqlCommand(@sql_exp, connection);
             int offset = (pageNum-1) * _pageSize;
-            //command.Parameters.AddWithValue("Offset", offset);
-           // command.Parameters.AddWithValue("@PageSize", _pageSize);
             command.Parameters.AddWithValue("@IdPosition", positionId);
             connection.Open();
             SqlDataReader reader = command.ExecuteReader();
@@ -264,29 +258,118 @@ namespace Diploma.Controllers
             }
         }
 
-        //создает html-код выпадающего списка со значениями людей из базы
-        public static string generateUsersDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        //создает html-код выпадающего списка со значениями ФИО людей из базы
+        public static string generateUsersDropdown(string connectionString, int counter, string currentValue = "")
         {
+            String dropdownName = "element" + Convert.ToString(counter);
             var html = new StringBuilder();
             string sql = "SELECT id, Name, Surname, Patronymic FROM People ORDER BY Name";
             var connection = new SqlConnection(connectionString);
             var command = new SqlCommand(sql, connection);
             connection.Open();
             var reader = command.ExecuteReader();
-            html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
-            html.AppendLine("<option value=''>-- Выберите сотрудника --</option>");
-            while (reader.Read())
+            var users = new Dictionary<string, long>();
+            while (reader.Read()) 
             {
-                int id = reader.GetInt64(0);
-                string fIO = reader.GetString(1)+" " +reader.GetString(2)+" "+  reader.GetString(3);
-                bool isSelected = id.ToString() == currentValue;
-                html.AppendLine(
-                    $"<option value='{id}' {(isSelected ? "selected" : "")}>{fIO}</option>"
-                );
+                users[reader.GetString(2) + " " + reader.GetString(1) + " " + reader.GetString(3)] = reader.GetInt64(0);
             }
-            reader.Close();
-            connection.Close();
-            html.AppendLine("</select>");
+            // Определяем текущее название должности по ID (если currentValue - это ID)
+            string currentName = "";
+            if (!string.IsNullOrEmpty(currentValue))
+            {
+                if (long.TryParse(currentValue, out long currentId))
+                {
+                    currentName = users.FirstOrDefault(x => x.Value == currentId).Key ?? "";
+                }
+                else
+                {
+                    // Если currentValue - это название, проверяем его наличие в списке
+                    if (users.ContainsKey(currentValue))
+                    {
+                        currentName = currentValue;
+                    }
+                }
+            }
+            html.AppendLine(@$"
+                <div class='template2003' 
+                data-name-element='{dropdownName}'
+                data-show-field='null'
+                data-name-to-connect='base'
+                data-is-filled='false'
+                data-value='null'
+                data-class-name='user'>
+                ");
+
+            // Создаем input с datalist
+            html.AppendLine($"<input list='{dropdownName}-list' name='{dropdownName}' id='{dropdownName}' value='{currentName}' class='form-control' placeholder='-- {dropdownName} --'>");
+            html.AppendLine($"<datalist id='{dropdownName}-list'>");
+
+            // Добавляем варианты в datalist
+            foreach (var user in users)
+            {
+                html.AppendLine($"<option value='{user.Key}' data-id='{user.Value}'>");
+            }
+
+            html.AppendLine("</datalist>");
+
+            // Добавляем скрытое поле для хранения ID
+            html.AppendLine($"<input type='hidden' name='{dropdownName}-id' id='{dropdownName}-id' value='{currentValue}'>");
+
+            // Добавляем JavaScript для валидации введенного значения
+            html.AppendLine($@"
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {{
+                const input{counter} = document.getElementById('{dropdownName}');
+                const options{counter} = document.getElementById('{dropdownName}-list').options;
+                const hiddenField{counter} = document.getElementById('{dropdownName}-id');
+                let isSending=false;
+                // Основная функция валидации
+                function validateInput() 
+                {{
+                    if (isSending)return;
+                    isSending=true;
+                    let isValid = false;
+                    for(let i = 0; i < options{counter}.length; i++) 
+                    {{
+                        if(options{counter}[i].value === input{counter}.value) 
+                        {{
+                            isValid = true;
+                            const selectedId = options{counter}[i].getAttribute('data-id');
+                            hiddenField{counter}.value = selectedId;
+                            // Формируем сообщение для отправки
+                            const message = JSON.stringify({{
+                            listId: '{dropdownName}',
+                            selectedId: selectedId
+                            }});
+                            // Отправляем ID в C# код
+                            if(window.chrome && chrome.webview) 
+                            {{
+                                chrome.webview.postMessage(message);
+                            }}
+                            break;
+                        }}
+                    }}
+                    if(!isValid) 
+                    {{
+                        input{counter}.value = '';
+                        hiddenField{counter}.value = '';
+                    }}
+                    setTimeout(() => {{ isSending = false; }}, 100);
+                }}
+                
+                // Обработчики событий
+                input{counter}.addEventListener('blur', validateInput); // При потере фокуса
+                
+                input{counter}.addEventListener('keydown', function(e) 
+                {{
+                    if (e.key === 'Enter' && e.currentTarget === input{counter}) 
+                    {{
+                        validateInput();
+                    }}
+                }});
+            }});
+            </script>
+            </div>");
             return html.ToString();
         }
     }

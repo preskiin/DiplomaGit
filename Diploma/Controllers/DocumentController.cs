@@ -12,16 +12,29 @@ using Aspose.Words.Saving;
 using Diploma.Controllers;
 using Diploma.Models;
 using System.Data.SqlClient;
+using HtmlAgilityPack;
 
 namespace Diploma.Controllers
 {
-    internal class DocumentController
+    public class DocumentController
     {
         public enum usingCRUD
         {
+            people,
             positions,
             operations,
-            people
+            counteragents,
+            products
+        }
+
+        public struct elemToCreate
+        {
+            public string name_element;
+            public string show_field;
+            public string name_to_connect_element;
+            public bool is_filled;
+            public string value;
+            public string className;
         }
 
         private String _connection;
@@ -34,11 +47,11 @@ namespace Diploma.Controllers
         }
 
 
-        public void openDocument(System.Windows.Forms.WebBrowser myWeb)
-        {
-            
+        //public void loadDocument()
+        //{
 
-        }
+
+        //}
 
         //с помощью Aspose.Words формирует html-код страницу
         public bool docxToHtml(string docxPath)
@@ -120,7 +133,7 @@ namespace Diploma.Controllers
             return tmpStr;
         }
 
-        //Возвращает строку html-кода страницы, ранее прочитанной из файла
+        //Возвращает строку html-кода
         public String getHtml()
         {
             if (htmlCode != null)
@@ -157,6 +170,7 @@ namespace Diploma.Controllers
             }
         }
 
+        //создает строку html из страницы, которая отображена сейчас в webView2
         public async Task<string> getHtmlFromWebView2(Microsoft.Web.WebView2.WinForms.WebView2 webView)
         {
             try
@@ -168,6 +182,7 @@ namespace Diploma.Controllers
 
                 // Декодируем JSON-строку (удаляем кавычки и экранированные символы)
                 string cleanHtml = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(encodedHtml);
+                this.htmlCode = cleanHtml;
                 return cleanHtml;
             }
             catch (Exception ex)
@@ -181,9 +196,31 @@ namespace Diploma.Controllers
         //{
         //    this.htmlCode = this.htmlCode.Insert(textPos, CRUD_Positions.generatePositionsDropdown(this._connection));
         //}
+        public List<elemToCreate> getElementsFromHtml(String classToFind)
+        {
+            List<elemToCreate> elements = new List<elemToCreate>();
+            var htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            htmlDoc.LoadHtml(this.htmlCode);
+            // Ищем все элементы с классом template2003
+            var nodes = htmlDoc.DocumentNode.SelectNodes($"//*[contains(@class, '{classToFind}')]");
+            if (nodes!=null)
+            {
+                foreach (var node in nodes)
+                {
+                    elemToCreate elem = new elemToCreate();
+                    elem.name_element = node.Attributes["data-name-element"].Value;
+                    elem.show_field = node.Attributes["data-show-field"].Value;
+                    elem.name_to_connect_element = node.Attributes["data-name-to-connect"].Value;
+                    elem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
+                    elem.value = node.Attributes["data-value"].Value;
+                    elem.className = node.Attributes["data-class-name"].Value;
+                    elements.Add(elem);
+                }
+            }
+            return elements;
+        }
 
-
-        public String createListInput(usingCRUD dataNeeded)
+        public String createListInput(usingCRUD dataNeeded, int amountOfEls)
         {
             String htmlString = "";
             switch (dataNeeded)
@@ -200,7 +237,17 @@ namespace Diploma.Controllers
                     }
                 case usingCRUD.people:
                     {
-                        htmlString = CRUD_Users.generateUsersDropdown(this._connection);
+                        htmlString = CRUD_Users.generateUsersDropdown(connectionString:this._connection, amountOfEls+1);
+                        break;
+                    }
+                case usingCRUD.counteragents:
+                    {
+                        //htmlString = CRUD_Counteragents.generateCounteragentsDropdown(this._connection);
+                        break;
+                    }
+                case usingCRUD.products:
+                    {
+                        //htmlString = CRUD_Products.generateProductsDropdown(this._connection);
                         break;
                     }
                 default:

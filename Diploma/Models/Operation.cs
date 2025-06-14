@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Diploma.Models
 {
-    internal class Operation
+    public class Operation
     {
-        private readonly Int64 _id;
-        private readonly Int64 _idPosition;
-        private readonly String _name;
-        private readonly String _description;
+        private Int64 _id;
+        private Int64 _idPosition;
+        private String _name;
+        private String _description;
 
         public Int64 Id => _id;
         public Int64 IdPosition => _idPosition;

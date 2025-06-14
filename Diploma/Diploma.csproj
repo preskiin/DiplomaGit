@@ -135,21 +135,27 @@
       <DependentUpon>Authorize.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\MyAuthorization.cs" />
-    <Compile Include="Views\Form1.cs">
+    <Compile Include="Views\FormChooseList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Views\FormChooseList.Designer.cs">
+      <DependentUpon>FormChooseList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TemplateForm.Designer.cs">
+      <DependentUpon>TemplateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\CRUD_Users.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\EditForm.cs">
+    <Compile Include="Views\EditDBForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\EditForm.Designer.cs">
-      <DependentUpon>EditForm.cs</DependentUpon>
+    <Compile Include="Views\EditDBForm.Designer.cs">
+      <DependentUpon>EditDBForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Views\ClassForms\FormPosition.resx">
       <DependentUpon>FormPosition.cs</DependentUpon>
@@ -169,11 +175,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Views\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Views\FormChooseList.resx">
+      <DependentUpon>FormChooseList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\EditForm.resx">
-      <DependentUpon>EditForm.cs</DependentUpon>
+    <EmbeddedResource Include="Views\TemplateForm.resx">
+      <DependentUpon>TemplateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditDBForm.resx">
+      <DependentUpon>EditDBForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

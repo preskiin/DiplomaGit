@@ -287,45 +287,40 @@ namespace Diploma.Controllers
             html.AppendLine($"<input type='hidden' name='{dropdownName}-id' id='{dropdownName}-id' value='{currentValue}'>");
 
             // Добавляем JavaScript для валидации введенного значения
-            html.AppendLine(@"
+            html.AppendLine($@"
             <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const input = document.getElementById('positionId');
-                const options = document.getElementById('positionId-list').options;
-                const hiddenField = document.getElementById('positionId-id');
+            document.addEventListener('DOMContentLoaded', function() {{
+                const input = document.getElementById('{dropdownName}');
+                const options = document.getElementById('{dropdownName}-list').options;
+                const hiddenField = document.getElementById('{dropdownName}-id');
                 
                 // Основная функция валидации
-                function validateInput() {
+                function validateInput() 
+                {{
                     let isValid = false;
-                    for(let i = 0; i < options.length; i++) {
-                        if(options[i].value === input.value) {
+                    for(let i = 0; i < options.length; i++) 
+                    {{
+                        if(options[i].value === input.value) 
+                        {{
                             isValid = true;
                             hiddenField.value = options[i].getAttribute('data-id');
                             break;
-                        }
-                    }
-                    
-                    if(!isValid) {
+                        }}
+                    }}
+                    if(!isValid) 
+                    {{
                         input.value = '';
                         hiddenField.value = '';
-                    }
-                }
+                    }}
+                }}
                 
-                // Обработчики событий для WebView2
+                // Обработчики событий
                 input.addEventListener('blur', validateInput); // При потере фокуса
-                input.addEventListener('keydown', function(e) {
+                input.addEventListener('keydown', function(e) 
+                {{
                     if(e.key === 'Enter') validateInput(); // При нажатии Enter
-                });
-                
-                // Дополнительная проверка перед отправкой формы
-                document.querySelector('form')?.addEventListener('submit', function(e) {
-                    validateInput();
-                    if(!hiddenField.value) {
-                        e.preventDefault();
-                        alert('Выберите корректную должность из списка!');
-                    }
-                });
-            });
+                }});
+            }});
             </script>");
             return html.ToString();
         }

@@ -12,14 +12,14 @@ namespace Diploma.Models
 {
     public class User
     {
-        Int64 _id;
-        Int64 _id_position;
-        String _name;
-        String _surname;
-        String _patronymic;
-        Int64 _place_num;
-        String _login;
-        String _password;
+        private Int64 _id;
+        private Int64 _id_position;
+        private String _name;
+        private String _surname;
+        private String _patronymic;
+        private Int64 _place_num;
+        private String _login;
+        private String _password;
         public Int64 Id { get { return _id; } }
         public Int64 IdPosition { get { return _id_position; } }
         public String Name { get { return _name; } }
