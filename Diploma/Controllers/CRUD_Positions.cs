@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Diploma.Controllers
 {
-    internal class CRUD_Positions
+    public class CRUD_Positions
     {
         private String _connectionString;
         private int _pageSize = 50;

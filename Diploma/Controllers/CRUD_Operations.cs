@@ -153,7 +153,7 @@ namespace Diploma.Controllers
             bool result;
             String sql_exp = @"
             SELECT * 
-            FROM Positions 
+            FROM Operations 
             WHERE Name COLLATE Latin1_General_CS_AS =@Name AND IdPosition=@IdPosition";
             SqlConnection connection = new SqlConnection(_connectionString);
             SqlCommand cmd = new SqlCommand(sql_exp, connection);

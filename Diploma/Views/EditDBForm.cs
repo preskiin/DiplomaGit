@@ -10,17 +10,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Diploma.Controllers;
-using Diploma.Controllers.Diploma.Controllers;
 using Diploma.Models;
 using Diploma.Views.AddForms;
-//using DocumentFormat.OpenXml.Drawing.Charts;
-
+using Diploma.Views.ClassForms;
 namespace Diploma.Views
 {
     public partial class EditDBForm : Form
     {
         private String _connection_string = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
-        private CRUD_Positions _posCRUD;
+        private CRUD_Positions _positionsCRUD;
         private CRUD_Operations _operationsCRUD;
         private CRUD_Users _usersCRUD;
         private CRUD_Counteragents _counteragentsCRUD;
@@ -81,9 +79,9 @@ namespace Diploma.Views
         {
             clearTable();
             _usingObj = _currentObj.positions;
-            if (_posCRUD == null)
-                _posCRUD = new CRUD_Positions(_connection_string);
-            _currentTable = _posCRUD.getPageAsDataTable(1);
+            if (_positionsCRUD == null)
+                _positionsCRUD = new CRUD_Positions(_connection_string);
+            _currentTable = _positionsCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
             //bindingSource1.DataSource = _currentTable;
             //dataGridView1.DataSource = bindingSource1;
@@ -216,9 +214,9 @@ namespace Diploma.Views
         {
             Int64 result = 0;
             
-            switch ((int)index)
+            switch (index)
             {
-                case 0:
+                case _currentObj.users:
                     {
                         User user;
                         FormUser addForm = new FormUser(_connection_string);
@@ -232,27 +230,137 @@ namespace Diploma.Views
                         }
                         break;
                     }
-                case 1:
+                case _currentObj.positions:
                     {
-                        FormPosition addForm = new FormPosition();
+                        Position position;
+                        FormPosition addForm = new FormPosition(_connection_string);
+                        if (addForm.ShowDialog() == DialogResult.OK)
+                        {
+                            position = addForm.positionTmp;
+                            result = _positionsCRUD.create(position);
+                            _currentTable = _positionsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
-                case 2:
+                case _currentObj.operations:
                     {
-                        FormOperation addForm = new FormOperation();
+                        Operation operation;
+                        FormOperation addForm = new FormOperation(_connection_string);
+                        if (addForm.ShowDialog() == DialogResult.OK)
+                        {
+                            operation = addForm.operationTmp;
+                            result = _operationsCRUD.create(operation);
+                            _currentTable = _operationsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
-                default:
+                case _currentObj.agents:
+                    {
+                        Counteragent agent;
+                        FormCounteragent addForm = new FormCounteragent(_connection_string);
+                        if (addForm.ShowDialog() == DialogResult.OK)
+                        {
+                            agent = addForm.counteragentTmp;
+                            result = _counteragentsCRUD.create(agent);
+                            _currentTable = _counteragentsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
+                        break;
+
+                    }
+            case _currentObj.orders:
+                {
+                    Order order;
+                    FormOrder addForm = new FormOrder(_connection_string);
+                    if (addForm.ShowDialog() == DialogResult.OK)
+                    {
+                        order = addForm.orderTmp;
+                        result = _ordersCRUD.create(order);
+                        _currentTable = _ordersCRUD.getPageAsDataTable(_currentPage);
+                        dataGridView1.DataSource = _currentTable;
+                        correctView(index);
+                    }
                     break;
+                }
+            case _currentObj.orderItems:
+                {
+                    OrderChooseForm orderForm = new OrderChooseForm();
+                    if (orderForm.ShowDialog() == DialogResult.OK)
+                    {
+                        Int64 tmpOrder = orderForm.orderNumber;
+                        OrderItem orderItem;
+                        FormOrderItem addForm = new FormOrderItem(_connection_string, tmpOrder);
+                        if (addForm.ShowDialog() == DialogResult.OK)
+                        {
+                            orderItem = addForm.orderItemTmp;
+                            result = _orderItemsCRUD.create(orderItem);
+                            _currentTable = _orderItemsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
+                    }
+                    break;
+                }
+            case _currentObj.products:
+                {
+                    Product product;
+                    FormProduct addForm = new FormProduct(_connection_string);
+                    if (addForm.ShowDialog() == DialogResult.OK)
+                    {
+                        product = addForm.productTmp;
+                        result = _productsCRUD.create(product);
+                        _currentTable = _productsCRUD.getPageAsDataTable(_currentPage);
+                        dataGridView1.DataSource = _currentTable;
+                        correctView(index);
+                    }
+                    break;
+                }
+            case _currentObj.documents:
+                {
+                    Document document;
+                    FormDocument addForm = new FormDocument(_connection_string);
+                    if (addForm.ShowDialog() == DialogResult.OK)
+                    {
+                        document = addForm.documentTmp;
+                        result = _documentsCRUD.create(document);
+                        _currentTable = _documentsCRUD.getPageAsDataTable(_currentPage);
+                        dataGridView1.DataSource = _currentTable;
+                        correctView(index);
+                    }
+                    break;
+                }
+            case _currentObj.templates:
+                {
+                    Template template;
+                    FormTemplate addForm = new FormTemplate(_connection_string);
+                    if (addForm.ShowDialog() == DialogResult.OK)
+                    {
+                        template = addForm.templateTmp;
+                        result = _templatesCRUD.create(template);
+                        _currentTable = _templatesCRUD.getPageAsDataTable(_currentPage);
+                        dataGridView1.DataSource = _currentTable;
+                        correctView(index);
+                    }
+                    break;
+                }
+
+            default:
+                break;
             }
+            
         }
         //вызов формы для редактирования записи
         private void avokeEditForm(_currentObj index)
         {
             Int64 result = 0;
-            switch ((int)index)
+            switch (index)
             {
-                case 0:
+                case _currentObj.users:
                     {
                         User user = new User(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]);
                         FormUser editForm = new FormUser(_connection_string, user);
@@ -266,14 +374,46 @@ namespace Diploma.Views
                         }
                         break;
                     }
-                case 1:
+                case _currentObj.positions:
                     {
-                        FormPosition editForm = new FormPosition();
+                        Position position = new Position(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]);
+                        FormPosition editForm = new FormPosition(_connection_string, position);
+                        if (editForm.ShowDialog() == DialogResult.OK)
+                        {
+                            position = editForm.positionTmp;
+                            result = _positionsCRUD.update(position);
+                            _currentTable = _positionsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
-                case 2:
+                case _currentObj.operations:
                     {
-                        FormOperation editForm = new FormOperation();
+                        Operation operation = new Operation(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]);
+                        FormOperation editForm = new FormOperation(_connection_string, operation);
+                        if (editForm.ShowDialog() == DialogResult.OK)
+                        {
+                            operation = editForm.operationTmp;
+                            result = _operationsCRUD.update(operation);
+                            _currentTable = _operationsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
+                        break;
+                    }
+                case _currentObj.agents:
+                    {
+                        Counteragent agent = new Counteragent(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]);
+                        FormCounteragent editForm = new FormCounteragent(_connection_string, agent);
+                        if (editForm.ShowDialog() == DialogResult.OK)
+                        {
+                            agent = editForm.counteragentTmp;
+                            result = _counteragentsCRUD.update(agent);
+                            _currentTable = _operationsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
                 default:
@@ -283,9 +423,9 @@ namespace Diploma.Views
         //вызов диалогового окна для удаления записи
         private void avokeDeleteForm(_currentObj index)
         {
-            switch ((int)index)
+            switch (index)
             {
-                case 0:
+                case _currentObj.users:
                     {
                         DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранного пользователя?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (result == DialogResult.Yes)
@@ -295,6 +435,58 @@ namespace Diploma.Views
                             dataGridView1.DataSource = _currentTable;
                             correctView(index);
                         }
+                        break;
+                    }
+                case _currentObj.positions:
+                    {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранную должность?",
+                                   "Подтверждение удаления",
+                                   MessageBoxButtons.YesNo,
+                                   MessageBoxIcon.Question);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            _positionsCRUD.delete(new Position(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]));
+                            _currentTable = _positionsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
+                        break;
+                    }
+                case _currentObj.operations:
+                    {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранную операцию?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            _operationsCRUD.delete(new Operation(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]));
+                            _currentTable = _operationsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
+                        break;
+                    }
+                case _currentObj.agents:
+                    {
+                        break;
+                    }
+                case _currentObj.orders:
+                    {
+                        break;
+                    }
+                case _currentObj.orderItems:
+                    { 
+                        break; 
+                    }
+                case _currentObj.products:
+                    {
+                        break;
+                    }
+                case _currentObj.documents:
+                    {
+                        break;
+                    }
+                case _currentObj.templates:
+                    {
                         break;
                     }
                 default:
@@ -323,7 +515,7 @@ namespace Diploma.Views
                     }
                 case 2:
                     {
-                        _currentTable = _posCRUD.getPageAsDataTable(_currentPage);
+                        _currentTable = _positionsCRUD.getPageAsDataTable(_currentPage);
                         dataGridView1.DataSource = _currentTable;
                         break;
                     }
@@ -335,9 +527,9 @@ namespace Diploma.Views
 
         private void correctView(_currentObj index)
         {
-            switch ((int)index)
+            switch (index)
             {
-                case 0:
+                case _currentObj.users:
                     {
                         dataGridView1.Columns["id"].Visible = false;
                         dataGridView1.Columns["IdPosition"].Visible = false;
@@ -352,13 +544,20 @@ namespace Diploma.Views
                         List<Position> list = CRUD_Positions.getAllPositions(_connection_string);
                         foreach (DataGridViewRow row in dataGridView1.Rows)
                         {
-                            row.Cells["PositionName"].Value = Position.findNameInList(list, Convert.ToInt64(row.Cells["IdPosition"].Value));
+                            if (row.Cells["IdPosition"].Value != null && row.Cells["IdPosition"].Value != DBNull.Value)
+                            {
+                                row.Cells["PositionName"].Value = Position.findNameInList(list, Convert.ToInt64(row.Cells["IdPosition"].Value));
+                                
+                            }
+                            else
+                            {
+                                row.Cells["PositionName"].Value = "null";
+                            }
                         }
                         break;
                     }
             }
         }
 
-        
     }
 }

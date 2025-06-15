@@ -245,7 +245,7 @@ namespace Diploma.Controllers
                     {
 
                         //this.counter++;
-                        //htmlString = CRUD_Users.generateUsersDropdown(connectionString: this._connection, counter+1);
+                        htmlString = CRUD_Users.generateUsersDropdown(connectionString: this._connection, counter+1);
                         break;
                     }
                 case usingCRUD.counteragents:

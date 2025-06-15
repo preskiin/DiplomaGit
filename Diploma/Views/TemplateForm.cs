@@ -53,8 +53,8 @@ namespace Diploma
             textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
             await webView21.EnsureCoreWebView2Async();
             this.webView21.CoreWebView2.Settings.IsScriptEnabled = true;
-            //string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
-            //webView21.CoreWebView2.NavigateToString(htmlContent);
+            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
+            webView21.CoreWebView2.NavigateToString(htmlContent);
             //////this.webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
 
             //this.webView21.CoreWebView2.Navigate("about:blank");

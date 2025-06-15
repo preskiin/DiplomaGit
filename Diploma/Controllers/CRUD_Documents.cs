@@ -70,7 +70,7 @@ namespace Diploma.Controllers
         }
 
         // Создать документ
-        public long Create(Document document)
+        public long create(Document document)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -90,7 +90,7 @@ namespace Diploma.Controllers
         }
 
         // Обновить документ
-        public void Update(Document document)
+        public void update(Document document)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -114,7 +114,7 @@ namespace Diploma.Controllers
         }
 
         // Удалить документ
-        public void Delete(long id)
+        public void delete(long id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

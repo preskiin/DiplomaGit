@@ -19,7 +19,7 @@ namespace Diploma.Controllers
         }
 
         // Создание контрагента (возвращает ID созданной записи или -1 при ошибке)
-        public long Create(Counteragent agent)
+        public long create(Counteragent agent)
         {
             if (!agent.IsValid())
                 return -1;
@@ -113,7 +113,7 @@ namespace Diploma.Controllers
         }
 
         // Обновление контрагента
-        public int Update(Counteragent agent)
+        public int update(Counteragent agent)
         {
             if (!agent.IsValid())
                 return -1;
@@ -137,7 +137,7 @@ namespace Diploma.Controllers
         }
 
         // Удаление контрагента
-        public void Delete(long id)
+        public void delete(long id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -177,12 +177,12 @@ namespace Diploma.Controllers
         }
 
         // Получение всех контрагентов
-        public List<Counteragent> GetAll()
+        public static List<Counteragent> getAllCounteragents(String connection_string)
         {
             var agents = new List<Counteragent>();
             string sql = "SELECT * FROM Counteragents ORDER BY Name";
 
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(connection_string))
             {
                 var command = new SqlCommand(sql, connection);
 

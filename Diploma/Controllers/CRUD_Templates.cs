@@ -57,11 +57,11 @@ namespace Diploma.Controllers
                     if (reader.Read())
                     {
                         return new Template
-                        {
-                            id = reader.GetInt64(reader.GetOrdinal("id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                            Content = reader["Content"] as byte[]
-                        };
+                        (
+                            Id: reader.GetInt64(reader.GetOrdinal("id")),
+                            Name: reader.GetString(reader.GetOrdinal("Name")),
+                            Content: reader["Content"] as byte[]
+                        );
                     }
                 }
             }
@@ -69,7 +69,7 @@ namespace Diploma.Controllers
         }
 
         // Создать шаблон
-        public long Create(Template template)
+        public long create(Template template)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -79,8 +79,8 @@ namespace Diploma.Controllers
             VALUES (@Name, @Content)";
 
                 var command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Name", template.Name);
-                command.Parameters.AddWithValue("@Content", template.Content ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@Name", template.name);
+                command.Parameters.AddWithValue("@Content", template.content ?? (object)DBNull.Value);
 
                 connection.Open();
                 return (long)command.ExecuteScalar();
@@ -88,7 +88,7 @@ namespace Diploma.Controllers
         }
 
         // Обновить шаблон
-        public void Update(Template template)
+        public void update(Template template)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -101,8 +101,8 @@ namespace Diploma.Controllers
 
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@id", template.id);
-                command.Parameters.AddWithValue("@Name", template.Name);
-                command.Parameters.AddWithValue("@Content", template.Content ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@Name", template.name);
+                command.Parameters.AddWithValue("@Content", template.content ?? (object)DBNull.Value);
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -110,7 +110,7 @@ namespace Diploma.Controllers
         }
 
         // Удалить шаблон
-        public void Delete(long id)
+        public void delete(long id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -122,5 +122,26 @@ namespace Diploma.Controllers
                 command.ExecuteNonQuery();
             }
         }
+
+        public static List<Template> getAllNamesTemplates(string _connection)
+        {
+            List<Template> templates = new List<Template>();
+            String sql_exp = @"
+            SELECT id, Name FROM Templates
+            ORDER BY Name ASC";
+            SqlConnection con = new SqlConnection(_connection);
+            SqlCommand command = new SqlCommand(sql_exp, con);
+            con.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                templates.Add(Template.FromDataReader(reader));
+            }
+            reader.Close();
+            con.Close();
+            return templates;
+        }
+        
+
     }
 }

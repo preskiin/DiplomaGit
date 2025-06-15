@@ -88,7 +88,7 @@ namespace Diploma.Views
                 textBox1.Text = userTmp.Name;
                 textBox2.Text = userTmp.Surname;
                 textBox3.Text = userTmp.Patronymic;
-                comboBox1.SelectedValue = userTmp.IdPosition;
+                comboBox1.SelectedValue = userTmp.IdPosition==null? comboBox1.SelectedValue = -1 : userTmp.IdPosition;
                 textBox4.Text = Convert.ToString(userTmp.Place);
                 textBox5.Text = userTmp.Login;
                 textBox5.Enabled = false;

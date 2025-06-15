@@ -186,7 +186,7 @@
             // добавитьToolStripMenuItem1
             // 
             this.добавитьToolStripMenuItem1.Name = "добавитьToolStripMenuItem1";
-            this.добавитьToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.добавитьToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.добавитьToolStripMenuItem1.Text = "Добавить";
             // 
             // изменитьToolStripMenuItem1

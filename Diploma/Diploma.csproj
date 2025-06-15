@@ -118,17 +118,53 @@
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Template.cs" />
+    <Compile Include="Views\ClassForms\FormCounteragent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormCounteragent.Designer.cs">
+      <DependentUpon>FormCounteragent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormDocument.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormDocument.Designer.cs">
+      <DependentUpon>FormDocument.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ClassForms\FormOperation.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ClassForms\FormOperation.Designer.cs">
       <DependentUpon>FormOperation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\ClassForms\FormOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormOrder.Designer.cs">
+      <DependentUpon>FormOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormOrderItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormOrderItem.Designer.cs">
+      <DependentUpon>FormOrderItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ClassForms\FormPosition.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ClassForms\FormPosition.Designer.cs">
       <DependentUpon>FormPosition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormProduct.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormProduct.Designer.cs">
+      <DependentUpon>FormProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ClassForms\FormTemplate.Designer.cs">
+      <DependentUpon>FormTemplate.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ClassForms\FormUser.cs">
       <SubType>Form</SubType>
@@ -143,6 +179,12 @@
       <DependentUpon>Authorize.cs</DependentUpon>
     </Compile>
     <Compile Include="Controllers\MyAuthorization.cs" />
+    <Compile Include="Views\ClassForms\OrderChooseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ClassForms\OrderChooseForm.Designer.cs">
+      <DependentUpon>OrderChooseForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\FormChooseList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,8 +207,29 @@
     <Compile Include="Views\EditDBForm.Designer.cs">
       <DependentUpon>EditDBForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\ClassForms\FormCounteragent.resx">
+      <DependentUpon>FormCounteragent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ClassForms\FormDocument.resx">
+      <DependentUpon>FormDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ClassForms\FormOperation.resx">
+      <DependentUpon>FormOperation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ClassForms\FormOrder.resx">
+      <DependentUpon>FormOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ClassForms\FormOrderItem.resx">
+      <DependentUpon>FormOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\ClassForms\FormPosition.resx">
       <DependentUpon>FormPosition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ClassForms\FormProduct.resx">
+      <DependentUpon>FormProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ClassForms\FormTemplate.resx">
+      <DependentUpon>FormTemplate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ClassForms\FormUser.resx">
       <DependentUpon>FormUser.cs</DependentUpon>
@@ -183,6 +246,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\ClassForms\OrderChooseForm.resx">
+      <DependentUpon>OrderChooseForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\FormChooseList.resx">
       <DependentUpon>FormChooseList.cs</DependentUpon>
     </EmbeddedResource>

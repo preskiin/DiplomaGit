@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Diploma.Models
 {
@@ -45,6 +46,16 @@ namespace Diploma.Models
             return new Operation(id, idPosition, name, description);
         }
 
+        public Operation(DataGridViewRow row)
+        {
+            if (row != null)
+            {
+                _id = Convert.ToInt64(row.Cells["id"].Value);
+                _idPosition = Convert.ToInt64(row.Cells["IdPosition"].Value);
+                _name = row.Cells["Name"].Value.ToString();
+                _description = row.Cells["Description"].Value?.ToString() ?? string.Empty;
+            }
+        }
         // Проверяет валидность данных
         public Boolean IsValid()
         {

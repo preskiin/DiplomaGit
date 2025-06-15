@@ -20,7 +20,7 @@ namespace Diploma.Controllers
         }
 
         // Создание заказа (возвращает ID созданной записи или -1 при ошибке)
-        public long Create(Order order)
+        public long create(Order order)
         {
             if (!order.IsValid())
                 return -1;
@@ -129,7 +129,7 @@ namespace Diploma.Controllers
         }
 
         // Обновление заказа
-        public int Update(Order order)
+        public int update(Order order)
         {
             if (!order.IsValid())
                 return -1;
@@ -165,7 +165,7 @@ namespace Diploma.Controllers
         }
 
         // Удаление заказа
-        public void Delete(long id)
+        public void delete(long id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -230,5 +230,25 @@ namespace Diploma.Controllers
             }
             return orders;
         }
+
+        public static List<Order> getAllNumOrders(String connection)
+        {
+            List<Order> orders = new();
+            String sql_exp = @"
+            SELECT * FROM Orders
+            ORDER BY OrderDate ASC";
+            SqlConnection con = new(connection);
+            SqlCommand command = new SqlCommand(sql_exp, con);
+            con.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                orders.Add(Order.FromDataReader(reader));
+            }
+            reader.Close();
+            con.Close();
+            return orders;
+        }
+
     }
 }

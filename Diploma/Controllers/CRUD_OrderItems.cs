@@ -20,7 +20,7 @@ namespace Diploma.Controllers
         }
 
         // Создание элемента заказа
-        public long Create(OrderItem item)
+        public long create(OrderItem item)
         {
             if (!item.IsValid())
                 return -1;
