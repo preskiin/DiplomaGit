@@ -72,6 +72,18 @@ namespace Diploma.Models
             }
         }
 
+        public static String findNameInList(List<Product> list, Int64 indexToFind)
+        {
+            foreach (Product product in list)
+            {
+                if (product.Id == indexToFind)
+                {
+                    return product.Name;
+                }
+            }
+            return "Не найдено";
+        }
+
         // Проверка валидности данных
         public Boolean IsValid()
         {

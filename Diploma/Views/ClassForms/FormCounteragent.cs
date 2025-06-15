@@ -70,8 +70,11 @@ namespace Diploma.Views.ClassForms
 
         private void FormCounteragent_Load(object sender, EventArgs e)
         {
+            this.Text = "Добавление контрагента";
             if (counteragentTmp != null)
             {
+
+                this.Text = "Редактирование контрагента";
                 textBox1.Text = counteragentTmp.Name;
             }
         }

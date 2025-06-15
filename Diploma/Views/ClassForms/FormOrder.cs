@@ -79,6 +79,7 @@ namespace Diploma.Views.ClassForms
         private void FormOrder_Load(object sender, EventArgs e)
         {
             // Загрузка контрагентов в комбобокс
+            this.Text = "Добавление заказа";
             comboBoxCounteragent.DataSource = CRUD_Counteragents.getAllCounteragents(_connection);
             comboBoxCounteragent.DisplayMember = "Name";
             comboBoxCounteragent.ValueMember = "id";
@@ -90,6 +91,7 @@ namespace Diploma.Views.ClassForms
             // Если редактируем существующий заказ
             if (orderTmp != null)
             {
+                this.Text = "Редактирование заказа";
                 textBoxNumber.Text = orderTmp.Number?.ToString() ?? "";
                 comboBoxCounteragent.SelectedValue = orderTmp.IdCounteragent ?? -1;
                 dateTimePickerOrderDate.Value = orderTmp.OrderDate;

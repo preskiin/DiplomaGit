@@ -33,6 +33,9 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.textBoxDescription = new System.Windows.Forms.RichTextBox();
             this.numericUpDownPrice = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPrice)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,25 +61,52 @@
             // 
             // textBoxName
             // 
-            this.textBoxName.Location = new System.Drawing.Point(98, 9);
+            this.textBoxName.Location = new System.Drawing.Point(115, 9);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(193, 20);
+            this.textBoxName.Size = new System.Drawing.Size(176, 20);
             this.textBoxName.TabIndex = 2;
             // 
             // textBoxDescription
             // 
-            this.textBoxDescription.Location = new System.Drawing.Point(98, 61);
+            this.textBoxDescription.Location = new System.Drawing.Point(115, 61);
             this.textBoxDescription.Name = "textBoxDescription";
-            this.textBoxDescription.Size = new System.Drawing.Size(193, 96);
+            this.textBoxDescription.Size = new System.Drawing.Size(176, 96);
             this.textBoxDescription.TabIndex = 3;
             this.textBoxDescription.Text = "";
             // 
             // numericUpDownPrice
             // 
-            this.numericUpDownPrice.Location = new System.Drawing.Point(98, 35);
+            this.numericUpDownPrice.Location = new System.Drawing.Point(115, 35);
             this.numericUpDownPrice.Name = "numericUpDownPrice";
-            this.numericUpDownPrice.Size = new System.Drawing.Size(193, 20);
+            this.numericUpDownPrice.Size = new System.Drawing.Size(176, 20);
             this.numericUpDownPrice.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(95, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Название товара";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 37);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Цена";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 64);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(57, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Описание";
             // 
             // FormProduct
             // 
@@ -84,6 +114,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(306, 219);
             this.ControlBox = false;
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.numericUpDownPrice);
             this.Controls.Add(this.textBoxDescription);
             this.Controls.Add(this.textBoxName);
@@ -105,5 +138,8 @@
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.RichTextBox textBoxDescription;
         private System.Windows.Forms.NumericUpDown numericUpDownPrice;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }

@@ -58,6 +58,7 @@ namespace Diploma.Views
                 _operationsCRUD = new CRUD_Operations(_connection_string);
             _currentTable = _operationsCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
             //bindingSource1.DataSource = _currentTable;
             //dataGridView1.DataSource = bindingSource1;
         }
@@ -83,6 +84,7 @@ namespace Diploma.Views
                 _positionsCRUD = new CRUD_Positions(_connection_string);
             _currentTable = _positionsCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
             //bindingSource1.DataSource = _currentTable;
             //dataGridView1.DataSource = bindingSource1;
         }
@@ -95,6 +97,7 @@ namespace Diploma.Views
                 _counteragentsCRUD = new CRUD_Counteragents(_connection_string);
             _currentTable = _counteragentsCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
         }
 
         private void шаблоныToolStripMenuItem_Click(object sender, EventArgs e)
@@ -105,6 +108,7 @@ namespace Diploma.Views
                 _templatesCRUD = new CRUD_Templates(_connection_string);
             _currentTable = _templatesCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
         }
 
         private void заказыToolStripMenuItem_Click(object sender, EventArgs e)
@@ -115,6 +119,7 @@ namespace Diploma.Views
                 _ordersCRUD = new CRUD_Orders(_connection_string);
             _currentTable = _ordersCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
         }
 
         private void деталиЗаказовToolStripMenuItem_Click(object sender, EventArgs e)
@@ -125,6 +130,7 @@ namespace Diploma.Views
                 _orderItemsCRUD = new CRUD_OrderItems(_connection_string);
             _currentTable = _orderItemsCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
         }
 
         private void товарыToolStripMenuItem_Click(object sender, EventArgs e)
@@ -135,16 +141,7 @@ namespace Diploma.Views
                 _productsCRUD = new CRUD_Products(_connection_string);
             _currentTable = _productsCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
-        }
-
-        //функция, которая должна подготовить форму к новым данным
-        private void clearTable()
-        {
-            this.dataGridView1.DataSource = null;
-            this.dataGridView1.Rows.Clear();
-            this.dataGridView1.Columns.Clear();
-            this._currentPage = 1;
-            this.bindingNavigatorPositionItem.Text = Convert.ToString(this._currentPage);
+            correctView(_usingObj);
         }
 
         private void документыToolStripMenuItem_Click(object sender, EventArgs e)
@@ -155,6 +152,17 @@ namespace Diploma.Views
                 _documentsCRUD = new CRUD_Documents(_connection_string);
             _currentTable = _documentsCRUD.getPageAsDataTable(1);
             dataGridView1.DataSource = _currentTable;
+            correctView(_usingObj);
+        }
+
+        //функция, которая должна подготовить форму к новым данным
+        private void clearTable()
+        {
+            this.dataGridView1.DataSource = null;
+            this.dataGridView1.Rows.Clear();
+            this.dataGridView1.Columns.Clear();
+            this._currentPage = 1;
+            this.bindingNavigatorPositionItem.Text = Convert.ToString(this._currentPage);
         }
 
         private void добавитьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -289,7 +297,7 @@ namespace Diploma.Views
                 }
             case _currentObj.orderItems:
                 {
-                    OrderChooseForm orderForm = new OrderChooseForm();
+                    OrderChooseForm orderForm = new OrderChooseForm(_connection_string);
                     if (orderForm.ShowDialog() == DialogResult.OK)
                     {
                         Int64 tmpOrder = orderForm.orderNumber;
@@ -533,6 +541,12 @@ namespace Diploma.Views
                     {
                         dataGridView1.Columns["id"].Visible = false;
                         dataGridView1.Columns["IdPosition"].Visible = false;
+                        dataGridView1.Columns["Name"].HeaderText = "Имя";
+                        dataGridView1.Columns["Surname"].HeaderText = "Фамилия";
+                        dataGridView1.Columns["Patronymic"].HeaderText = "Отчество";
+                        dataGridView1.Columns["Place"].HeaderText = "№ рабочего места";
+                        dataGridView1.Columns["Login"].Visible = false;
+                        dataGridView1.Columns["Password"].Visible = false;
                         if (!dataGridView1.Columns.Contains("PositionName"))
                         {
                             DataGridViewColumn positionColumn = new DataGridViewTextBoxColumn();
@@ -547,13 +561,169 @@ namespace Diploma.Views
                             if (row.Cells["IdPosition"].Value != null && row.Cells["IdPosition"].Value != DBNull.Value)
                             {
                                 row.Cells["PositionName"].Value = Position.findNameInList(list, Convert.ToInt64(row.Cells["IdPosition"].Value));
-                                
                             }
                             else
                             {
                                 row.Cells["PositionName"].Value = "null";
                             }
                         }
+                        break;
+                    }
+                case _currentObj.operations:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["IdPosition"].Visible=false;
+                        dataGridView1.Columns["Name"].HeaderText = "Деятельности";
+                        dataGridView1.Columns["Description"].HeaderText = "Описание";
+                        List<Position> list = CRUD_Positions.getAllPositions(_connection_string);
+                        if (!dataGridView1.Columns.Contains("PositionName"))
+                        {
+                            DataGridViewColumn positionColumn = new DataGridViewTextBoxColumn();
+                            positionColumn.Name = "PositionName";
+                            positionColumn.HeaderText = "Должность";
+                            positionColumn.DisplayIndex = 2;
+                            dataGridView1.Columns.Add(positionColumn);
+                        }
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            if (row.Cells["IdPosition"].Value != null && row.Cells["IdPosition"].Value != DBNull.Value)
+                            {
+                                row.Cells["PositionName"].Value = Position.findNameInList(list, Convert.ToInt64(row.Cells["IdPosition"].Value));
+                            }
+                            else
+                            {
+                                row.Cells["PositionName"].Value = "null";
+                            }
+                        }
+                        break;
+                    }
+                case _currentObj.positions:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["Name"].HeaderText = "Должность";
+                        dataGridView1.Columns["Sector"].HeaderText = "Сектор";
+                        dataGridView1.Columns["Department"].HeaderText = "Отдел";
+                        dataGridView1.Columns["Leve1"].HeaderText = "Уровень допуска";
+                        break;
+                    }
+                case _currentObj.agents:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["Name"].HeaderText = "Контрагент";
+                        break;
+                    }
+                case _currentObj.products:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["Name"].HeaderText = "Название";
+                        dataGridView1.Columns["Description"].HeaderText = "Описание";
+                        dataGridView1.Columns["Price"].HeaderText = "Цена";
+                        break;
+                    }
+                case _currentObj.orders:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["Number"].HeaderText = "Номер заказа";
+                        dataGridView1.Columns["IdCounteragent"].Visible = false;
+                        dataGridView1.Columns["OrderDate"].HeaderText = "Дата заказа";
+                        dataGridView1.Columns["DeliveryDate"].HeaderText = "Дата доставки";
+                        dataGridView1.Columns["Comment"].HeaderText = "Комментарий";
+                        if (!dataGridView1.Columns.Contains("AgentName"))
+                        {
+                            DataGridViewColumn agentColumn = new DataGridViewTextBoxColumn();
+                            agentColumn.Name = "AgentName";
+                            agentColumn.HeaderText = "Контрагент";
+                            agentColumn.DisplayIndex = 3;
+                            dataGridView1.Columns.Add(agentColumn);
+                        }
+                        List<Counteragent> agents = CRUD_Counteragents.getAllCounteragents(_connection_string);
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            if (row.Cells["IdCounteragent"].Value != null && row.Cells["IdCounteragent"].Value != DBNull.Value)
+                            {
+                                row.Cells["AgentName"].Value = Counteragent.findNameInList(agents, Convert.ToInt64(row.Cells["IdCounteragent"].Value));
+                            }
+                            else
+                            {
+                                row.Cells["AgentName"].Value = "null";
+                            }
+                        }
+                        break;
+                    }
+                case _currentObj.orderItems:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["IdProduct"].Visible = false;
+                        dataGridView1.Columns["IdOrder"].Visible = false;
+                        dataGridView1.Columns["Price"].HeaderText = "Цена";
+                        dataGridView1.Columns["Amount"].HeaderText = "Количество";
+                        if (!dataGridView1.Columns.Contains("NumberOrder"))
+                        {
+                            DataGridViewColumn numberColumn = new DataGridViewTextBoxColumn();
+                            numberColumn.Name = "NumberOrder";
+                            numberColumn.HeaderText = "Номер заказа";
+                            numberColumn.DisplayIndex = 3;
+                            dataGridView1.Columns.Add(numberColumn);
+                            DataGridViewColumn productColumn = new DataGridViewTextBoxColumn();
+                            productColumn.Name = "ProductName";
+                            productColumn.HeaderText = "Название товара";
+                            productColumn.DisplayIndex = 4;
+                            dataGridView1.Columns.Add(productColumn);
+                        }
+                        List<Product> products = CRUD_Products.getAllProducts(_connection_string);
+                        List<Order> orders = CRUD_Orders.getAllOrders(_connection_string);
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            if (row.Cells["IdProduct"].Value != null && row.Cells["IdProduct"].Value != DBNull.Value)
+                            {
+                                row.Cells["ProductName"].Value = Product.findNameInList(products, Convert.ToInt64(row.Cells["IdProduct"].Value));
+                            }
+                            else
+                            {
+                                row.Cells["ProductName"].Value = "null";
+                            }
+                            if (row.Cells["IdOrder"].Value != null && row.Cells["IdOrder"].Value != DBNull.Value)
+                            {
+                                row.Cells["NumberOrder"].Value = Order.findNumberInList(orders, Convert.ToInt64(row.Cells["IdOrder"].Value));
+                            }
+                            else
+                            {
+                                row.Cells["NumberOrder"].Value="null";
+                            }
+                        }
+                        break;
+                    }
+                case _currentObj.documents:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["Name"].HeaderText = "Название документа";
+                        dataGridView1.Columns["IdTemplate"].Visible = false;
+                        if (!dataGridView1.Columns.Contains("TemplateName"))
+                        {
+                            DataGridViewColumn templateName = new DataGridViewTextBoxColumn();
+                            templateName.Name = "TemplateName";
+                            templateName.HeaderText = "Название шаблона";
+                            templateName.DisplayIndex = 3;
+                            dataGridView1.Columns.Add(templateName);
+                        }
+                        List<Template> templates = CRUD_Templates.getAllNamesTemplates(_connection_string);
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            if (row.Cells["IdTemplate"].Value != null && row.Cells["IdTemplate"].Value != DBNull.Value)
+                            {
+                                row.Cells["TemplateName"].Value = Template.findNameInList(templates, Convert.ToInt64(row.Cells["IdTemplate"].Value));
+                            }
+                            else
+                            {
+                                row.Cells["TemplateName"].Value = "null";
+                            }
+                        }
+                        break;
+                    }
+                case _currentObj.templates:
+                    {
+                        dataGridView1.Columns["id"].Visible = false;
+                        dataGridView1.Columns["Name"].HeaderText = "Название шаблона";
                         break;
                     }
             }

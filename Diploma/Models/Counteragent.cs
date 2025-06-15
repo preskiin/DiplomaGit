@@ -57,10 +57,21 @@ namespace Diploma.Models
             }
         }
 
+        public static String findNameInList(List<Counteragent> list, Int64 indexToFind)
+        {
+            foreach (Counteragent agent in list)
+            {
+                if (agent.Id == indexToFind)
+                {
+                    return agent.Name;
+                }
+            }
+            return "Не найдено";
+        }
         // Проверка валидности данных
         public Boolean IsValid()
         {
-            return (!String.IsNullOrEmpty(_name) && _id > 0);
+            return (!String.IsNullOrEmpty(_name));
         }
     }
 }

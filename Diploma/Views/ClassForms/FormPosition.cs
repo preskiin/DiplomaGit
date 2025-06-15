@@ -86,8 +86,11 @@ namespace Diploma.Views.AddForms
 
         private void FormPosition_Load(object sender, EventArgs e)
         {
+            this.Text = "Добавление должности";
             if (positionTmp != null)
             {
+
+                this.Text = "Редактирование должности";
                 textBox1.Text = positionTmp.Name;
                 textBox2.Text = Convert.ToString(positionTmp.Sector);
                 textBox3.Text = Convert.ToString(positionTmp.Department);

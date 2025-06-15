@@ -80,15 +80,15 @@ namespace Diploma.Views.AddForms
             comboBox1.DataSource = CRUD_Positions.getAllPositions(_connection);
             comboBox1.DisplayMember = "Name";
             comboBox1.ValueMember = "id";
-
+            this.Text = "Добавление операции";
             if (operationTmp != null)
             {
+                this.Text = "Редактирование операции";
                 textBox1.Text = operationTmp.Name;
                 textBox2.Text = operationTmp.Description;
                 comboBox1.SelectedValue = operationTmp.IdPosition;
-
-                
             }
+
         }
 
         private bool CheckAllFields()

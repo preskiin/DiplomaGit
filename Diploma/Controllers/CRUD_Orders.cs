@@ -231,7 +231,7 @@ namespace Diploma.Controllers
             return orders;
         }
 
-        public static List<Order> getAllNumOrders(String connection)
+        public static List<Order> getAllOrders(String connection)
         {
             List<Order> orders = new();
             String sql_exp = @"

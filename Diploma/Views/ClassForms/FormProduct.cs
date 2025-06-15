@@ -76,9 +76,11 @@ namespace Diploma.Views.ClassForms
 
         private void FormProduct_Load(object sender, EventArgs e)
         {
+            this.Text = "Добавление товара";
             // Если редактируем существующий продукт
             if (productTmp != null)
             {
+                this.Text = "Редактирование товара";
                 textBoxName.Text = productTmp.Name;
                 textBoxDescription.Text = productTmp.Description ?? string.Empty;
                 numericUpDownPrice.Value = productTmp.Price;

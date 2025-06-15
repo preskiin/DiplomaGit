@@ -82,6 +82,7 @@ namespace Diploma.Views.ClassForms
         private void FormOrderItem_Load(object sender, EventArgs e)
         {
             // Загрузка списка товаров в комбобокс
+            this.Text = "Добавление позиции заказа";
             comboBoxProduct.DataSource = CRUD_Products.getAllProducts(_connection);
             comboBoxProduct.DisplayMember = "Name"; // Предполагается, что у Product есть свойство Name
             comboBoxProduct.ValueMember = "id";
@@ -89,6 +90,7 @@ namespace Diploma.Views.ClassForms
             // Если редактируем существующий элемент
             if (orderItemTmp != null)
             {
+                this.Text = "Редактирование позиции заказа";
                 comboBoxProduct.SelectedValue = orderItemTmp.IdProduct ?? -1;
                 numericUpDownPrice.Value = orderItemTmp.Price;
                 numericUpDownAmount.Value = orderItemTmp.Amount;

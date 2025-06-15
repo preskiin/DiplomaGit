@@ -37,5 +37,14 @@ namespace Diploma.Models
             );
             return tmp;
         }
+        public static String findNameInList(List<Template> list, Int64 indexToFind)
+        {
+            foreach (Template template in list)
+            {
+                if (template.id == indexToFind)
+                    return template.name;
+            }
+            return "Не найдено";
+        }
     }
 }

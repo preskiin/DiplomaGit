@@ -13,7 +13,7 @@ namespace Diploma.Views.ClassForms
 {
     public partial class OrderChooseForm : Form
     {
-        public Int64 orderNumber;
+        public Int64 orderNumber = -1;
         private String _connection;
         public OrderChooseForm()
         {
@@ -27,13 +27,15 @@ namespace Diploma.Views.ClassForms
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            orderNumber = (Int64)comboBox1.SelectedValue;
             DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void OrderChooseForm_Load(object sender, EventArgs e)
         {
-            comboBox1.DataSource = CRUD_Orders.getAllNumOrders(_connection);
+            this.Text = "Выбор заказа для работы";
+            comboBox1.DataSource = CRUD_Orders.getAllOrders(_connection);
             comboBox1.DisplayMember = "Number";
             comboBox1.ValueMember = "id";
         }
@@ -44,9 +46,5 @@ namespace Diploma.Views.ClassForms
             this.Close();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            orderNumber = (Int64)comboBox1.SelectedValue;
-        }
     }
 }

@@ -80,11 +80,13 @@ namespace Diploma.Views
 
         private void AddFormUser_Load(object sender, EventArgs e)
         {
+            this.Text = "Добавление пользователя";
             comboBox1.DataSource = CRUD_Positions.getAllPositions(_connection);
             comboBox1.DisplayMember = "Name";
             comboBox1.ValueMember = "id";
             if (userTmp != null)
             {
+                this.Text = "Редактирование пользователя";
                 textBox1.Text = userTmp.Name;
                 textBox2.Text = userTmp.Surname;
                 textBox3.Text = userTmp.Patronymic;

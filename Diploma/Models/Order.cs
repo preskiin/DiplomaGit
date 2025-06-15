@@ -93,6 +93,17 @@ namespace Diploma.Models
             }
         }
 
+        public static String findNumberInList(List<Order> list, Int64 indexToFind)
+        {
+            foreach (Order order in list)
+            {
+                if (order.Id == indexToFind)
+                {
+                    return Convert.ToString(order.Number);
+                }
+            }
+            return "Не найдено";
+        }
         // Проверка валидности данных
         public Boolean IsValid()
         {

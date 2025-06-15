@@ -84,7 +84,7 @@ namespace Diploma.Models
                     return position.Name;
                 }
             }
-            return "Нет";
+            return "Не найдено";
         }
 
     }

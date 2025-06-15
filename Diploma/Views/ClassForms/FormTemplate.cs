@@ -35,9 +35,11 @@ namespace Diploma.Views.ClassForms
 
         private void FormTemplate_Load(object sender, EventArgs e)
         {
+            this.Text = "Добавление шаблона";
             // Если редактируем существующий шаблон
             if (templateTmp != null)
             {
+                this.Text = "Редактирование шаблона";
                 textBoxName.Text = templateTmp.name;
 
                     // Отображаем информацию о загруженном файле
@@ -53,7 +55,7 @@ namespace Diploma.Views.ClassForms
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Все файлы (*.*)|*.*";
+                openFileDialog.Filter = "Файлы HTML (*.html)|*.html";
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)

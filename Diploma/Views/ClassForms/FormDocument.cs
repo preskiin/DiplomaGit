@@ -38,10 +38,12 @@ namespace Diploma.Views.ClassForms
         {
             // Загрузка списка шаблонов в комбобокс
             LoadTemplates();
-
+            this.Text = "Добавление документа";
             // Если редактируем существующий документ
             if (documentTmp != null)
             {
+
+                this.Text = "Редактирование документа";
                 textBoxName.Text = documentTmp.Name;
                 comboBoxTemplate.SelectedValue = documentTmp.IdTemplate;
 
@@ -58,8 +60,7 @@ namespace Diploma.Views.ClassForms
         {
             // Здесь должен быть код загрузки шаблонов из БД
             // Например:
-            var templates = CRUD_Templates.getAllNamesTemplates(_connectionString);
-            comboBoxTemplate.DataSource = templates;
+            comboBoxTemplate.DataSource = CRUD_Templates.getAllNamesTemplates(_connectionString);
             comboBoxTemplate.DisplayMember = "Name";
             comboBoxTemplate.ValueMember = "id";
         }
