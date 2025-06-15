@@ -349,7 +349,7 @@ namespace Diploma.Views
                     if (addForm.ShowDialog() == DialogResult.OK)
                     {
                         template = addForm.templateTmp;
-                        result = _templatesCRUD.create(template);
+                        //result = _templatesCRUD.create(template);
                         _currentTable = _templatesCRUD.getPageAsDataTable(_currentPage);
                         dataGridView1.DataSource = _currentTable;
                         correctView(index);

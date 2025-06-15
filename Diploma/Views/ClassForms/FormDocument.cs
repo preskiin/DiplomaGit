@@ -60,8 +60,10 @@ namespace Diploma.Views.ClassForms
         {
             // Здесь должен быть код загрузки шаблонов из БД
             // Например:
-            comboBoxTemplate.DataSource = CRUD_Templates.getAllNamesTemplates(_connectionString);
-            comboBoxTemplate.DisplayMember = "Name";
+            comboBoxTemplate.DataSource = null;
+            var tmp = CRUD_Templates.getAllNamesTemplates(_connectionString);
+            comboBoxTemplate.DataSource = tmp;
+            comboBoxTemplate.DisplayMember = "name";
             comboBoxTemplate.ValueMember = "id";
         }
 

@@ -11,13 +11,13 @@ namespace Diploma.Models
 {
     public class Template
     {
-        public long id;
-        public string name;
-        public byte[] content;
+        private long id;
+        private String name;
+        private byte[] content;
 
-        //public Int64 Id { get { return _id; } }
-        //public String Name { get { return _name; } }
-        //public byte[] Content { get { return _content; } }
+        public long Id { get { return id; } }
+        public String Name { get { return name; } }
+        public byte[] Content { get { return content; } }
 
         public Template(Int64 Id, String Name, byte[] Content)
         {
@@ -25,15 +25,25 @@ namespace Diploma.Models
             name = Name;
             content = Content;
         }
+
+        public static Template forShowFromReader(SqlDataReader reader)
+        {
+            Template tmp = new Template(
+                Id: reader.GetInt64(reader.GetOrdinal("id")),
+                Name: reader.GetString(reader.GetOrdinal("Name")), 
+                Content: null
+            );
+            return tmp;
+        }
         // Создание объекта из SqlDataReader
         public static Template FromDataReader(SqlDataReader reader)
         {
             Template tmp = new Template(
                 Id: reader.GetInt64(reader.GetOrdinal("id")),
                 Name: reader.GetString(reader.GetOrdinal("Name")),
-                Content: reader.IsDBNull(reader.GetOrdinal("Content"))
+                Content: reader.IsDBNull(reader.GetOrdinal("FileContent"))
                        ? null
-                       : (byte[])reader["Content"]
+                       : (byte[])reader["FileContent"]
             );
             return tmp;
         }

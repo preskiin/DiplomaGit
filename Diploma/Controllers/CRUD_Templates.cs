@@ -60,7 +60,7 @@ namespace Diploma.Controllers
                         (
                             Id: reader.GetInt64(reader.GetOrdinal("id")),
                             Name: reader.GetString(reader.GetOrdinal("Name")),
-                            Content: reader["Content"] as byte[]
+                            Content: reader["FileContent"] as byte[]
                         );
                     }
                 }
@@ -74,13 +74,13 @@ namespace Diploma.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 string sql = @"
-            INSERT INTO Templates (Name, Content)
+            INSERT INTO Templates (Name, FileContent)
             OUTPUT INSERTED.id
             VALUES (@Name, @Content)";
 
                 var command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Name", template.name);
-                command.Parameters.AddWithValue("@Content", template.content ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@Name", template.Name);
+                command.Parameters.AddWithValue("@Content", template.Content ?? (object)DBNull.Value);
 
                 connection.Open();
                 return (long)command.ExecuteScalar();
@@ -96,13 +96,13 @@ namespace Diploma.Controllers
             UPDATE Templates
             SET 
                 Name = @Name,
-                Content = @Content
+                FileContent = @Content
             WHERE id = @id";
 
                 var command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@id", template.id);
-                command.Parameters.AddWithValue("@Name", template.name);
-                command.Parameters.AddWithValue("@Content", template.content ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("@id", template.Id);
+                command.Parameters.AddWithValue("@Name", template.Name);
+                command.Parameters.AddWithValue("@Content", template.Content ?? (object)DBNull.Value);
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -135,7 +135,7 @@ namespace Diploma.Controllers
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                templates.Add(Template.FromDataReader(reader));
+                templates.Add(Template.forShowFromReader(reader));
             }
             reader.Close();
             con.Close();

@@ -40,13 +40,13 @@ namespace Diploma.Views.ClassForms
             if (templateTmp != null)
             {
                 this.Text = "Редактирование шаблона";
-                textBoxName.Text = templateTmp.name;
+                textBoxName.Text = templateTmp.Name;
 
                     // Отображаем информацию о загруженном файле
-                    if (templateTmp.content != null)
+                    if (templateTmp.Content != null)
                 {
-                    labelFileInfo.Text = $"Размер файла: {templateTmp.content.Length / 1024} KB";
-                    _fileContent = templateTmp.content;
+                    labelFileInfo.Text = $"Размер файла: {templateTmp.Content.Length / 1024} KB";
+                    _fileContent = templateTmp.Content;
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace Diploma.Views.ClassForms
                 try
                 {
                     var template = new Template(
-                        Id: templateTmp?.id ?? 0,
+                        Id: templateTmp?.Id ?? 0,
                         Name: textBoxName.Text,
                         Content: _fileContent
                     );
