@@ -9,12 +9,12 @@ using System.Data;
 
 namespace Diploma.Controllers
 {
-    public class CRUD_Order
+    public class CRUD_Orders
     {
         private readonly string _connectionString;
         private const int _pageSize = 50;
 
-        public CRUD_Order(string connectionString)
+        public CRUD_Orders(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -97,7 +97,7 @@ namespace Diploma.Controllers
         }
 
         // Получение страницы в виде DataTable
-        public DataTable GetPageAsDataTable(int pageNumber)
+        public DataTable getPageAsDataTable(int pageNumber)
         {
             if (pageNumber < 1)
                 throw new ArgumentException("Номер страницы должен быть >= 1");

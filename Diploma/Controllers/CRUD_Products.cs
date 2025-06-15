@@ -34,7 +34,7 @@ namespace Diploma.Controllers
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     string sql = @"
-                INSERT INTO Product (Name, Description, Price)
+                INSERT INTO Products (Name, Description, Price)
                 OUTPUT INSERTED.id
                 VALUES (@Name, @Description, @Price)";
 
@@ -54,7 +54,7 @@ namespace Diploma.Controllers
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    string sql = "SELECT * FROM Product WHERE id = @id";
+                    string sql = "SELECT * FROM Products WHERE id = @id";
                     var command = new SqlCommand(sql, connection);
                     command.Parameters.AddWithValue("@id", id);
 
@@ -74,7 +74,7 @@ namespace Diploma.Controllers
             public IEnumerable<Product> GetPage(int pageNumber)
             {
                 string sql = @"
-            SELECT * FROM Product
+            SELECT * FROM Products
             ORDER BY id
             OFFSET @Offset ROWS
             FETCH NEXT @PageSize ROWS ONLY";
@@ -97,7 +97,7 @@ namespace Diploma.Controllers
             }
 
             // Получение страницы в виде DataTable
-            public DataTable GetPageAsDataTable(int pageNumber)
+            public DataTable getPageAsDataTable(int pageNumber)
             {
                 if (pageNumber < 1)
                     throw new ArgumentException("Номер страницы должен быть >= 1");
@@ -105,7 +105,7 @@ namespace Diploma.Controllers
                 var dataTable = new DataTable();
                 string sql = @"
             SELECT id, Name, Description, Price
-            FROM Product
+            FROM Products
             ORDER BY id
             OFFSET @Offset ROWS 
             FETCH NEXT @PageSize ROWS ONLY";
@@ -131,7 +131,7 @@ namespace Diploma.Controllers
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     string sql = @"
-                UPDATE Product
+                UPDATE Products
                 SET 
                     Name = @Name,
                     Description = @Description,
@@ -156,7 +156,7 @@ namespace Diploma.Controllers
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    string sql = "DELETE FROM Product WHERE id = @id";
+                    string sql = "DELETE FROM Products WHERE id = @id";
                     var command = new SqlCommand(sql, connection);
                     command.Parameters.AddWithValue("@id", id);
 
@@ -170,7 +170,7 @@ namespace Diploma.Controllers
             {
                 var products = new List<Product>();
                 string sql = @"
-            SELECT * FROM Product
+            SELECT * FROM Products
             WHERE Name LIKE @SearchTerm
             ORDER BY Name";
 

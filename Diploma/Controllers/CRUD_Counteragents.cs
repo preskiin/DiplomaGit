@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using System.Data;
 namespace Diploma.Controllers
 {
-    public class CRUD_Counteragent
+    public class CRUD_Counteragents
     {
         private readonly string _connectionString;
         private const int _pageSize = 50;
 
-        public CRUD_Counteragent(string connectionString)
+        public CRUD_Counteragents(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -27,7 +27,7 @@ namespace Diploma.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 string sql = @"
-                INSERT INTO Counteragent (Name)
+                INSERT INTO Counteragents (Name)
                 OUTPUT INSERTED.id
                 VALUES (@Name)";
 
@@ -44,7 +44,7 @@ namespace Diploma.Controllers
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string sql = "SELECT * FROM Counteragent WHERE id = @id";
+                string sql = "SELECT * FROM Counteragents WHERE id = @id";
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@id", id);
 
@@ -64,7 +64,7 @@ namespace Diploma.Controllers
         public IEnumerable<Counteragent> GetPage(int pageNumber)
         {
             string sql = @"
-            SELECT * FROM Counteragent
+            SELECT * FROM Counteragents
             ORDER BY Name
             OFFSET @Offset ROWS
             FETCH NEXT @PageSize ROWS ONLY";
@@ -87,7 +87,7 @@ namespace Diploma.Controllers
         }
 
         // Получение страницы в виде DataTable
-        public DataTable GetPageAsDataTable(int pageNumber)
+        public DataTable getPageAsDataTable(int pageNumber)
         {
             if (pageNumber < 1)
                 throw new ArgumentException("Номер страницы должен быть >= 1");
@@ -95,7 +95,7 @@ namespace Diploma.Controllers
             var dataTable = new DataTable();
             string sql = @"
             SELECT id, Name
-            FROM Counteragent
+            FROM Counteragents
             ORDER BY Name
             OFFSET @Offset ROWS 
             FETCH NEXT @PageSize ROWS ONLY";
@@ -121,7 +121,7 @@ namespace Diploma.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 string sql = @"
-                UPDATE Counteragent
+                UPDATE Counteragents
                 SET 
                     Name = @Name
                 WHERE id = @id";
@@ -141,7 +141,7 @@ namespace Diploma.Controllers
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string sql = "DELETE FROM Counteragent WHERE id = @id";
+                string sql = "DELETE FROM Counteragents WHERE id = @id";
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@id", id);
 
@@ -155,7 +155,7 @@ namespace Diploma.Controllers
         {
             var agents = new List<Counteragent>();
             string sql = @"
-            SELECT * FROM Counteragent
+            SELECT * FROM Counteragents
             WHERE Name LIKE @SearchTerm
             ORDER BY Name";
 
@@ -180,7 +180,7 @@ namespace Diploma.Controllers
         public List<Counteragent> GetAll()
         {
             var agents = new List<Counteragent>();
-            string sql = "SELECT * FROM Counteragent ORDER BY Name";
+            string sql = "SELECT * FROM Counteragents ORDER BY Name";
 
             using (var connection = new SqlConnection(_connectionString))
             {

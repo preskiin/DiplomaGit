@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Diploma.Controllers;
+using Diploma.Controllers.Diploma.Controllers;
 using Diploma.Models;
 using Diploma.Views.AddForms;
 //using DocumentFormat.OpenXml.Drawing.Charts;
@@ -21,6 +23,12 @@ namespace Diploma.Views
         private CRUD_Positions _posCRUD;
         private CRUD_Operations _operationsCRUD;
         private CRUD_Users _usersCRUD;
+        private CRUD_Counteragents _counteragentsCRUD;
+        private CRUD_Documents _documentsCRUD;
+        private CRUD_Templates _templatesCRUD;
+        private CRUD_Orders _ordersCRUD;
+        private CRUD_OrderItems _orderItemsCRUD;
+        private CRUD_Products _productsCRUD;
         private DataTable _currentTable;
         private Int32 _currentPage = 1;
         private _currentObj _usingObj;
@@ -29,7 +37,13 @@ namespace Diploma.Views
         {
             users,
             operations,
-            positions
+            positions,
+            agents,
+            orders,
+            orderItems,
+            products,
+            documents,
+            templates,
         }
 
         public EditDBForm()
@@ -75,6 +89,56 @@ namespace Diploma.Views
             //dataGridView1.DataSource = bindingSource1;
         }
 
+        private void контрагентыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clearTable();
+            _usingObj = _currentObj.agents;
+            if (_counteragentsCRUD == null)
+                _counteragentsCRUD = new CRUD_Counteragents(_connection_string);
+            _currentTable = _counteragentsCRUD.getPageAsDataTable(1);
+            dataGridView1.DataSource = _currentTable;
+        }
+
+        private void шаблоныToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clearTable();
+            _usingObj = _currentObj.templates;
+            if (_templatesCRUD == null)
+                _templatesCRUD = new CRUD_Templates(_connection_string);
+            _currentTable = _templatesCRUD.getPageAsDataTable(1);
+            dataGridView1.DataSource = _currentTable;
+        }
+
+        private void заказыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clearTable();
+            _usingObj = _currentObj.orders;
+            if (_ordersCRUD == null)
+                _ordersCRUD = new CRUD_Orders(_connection_string);
+            _currentTable = _ordersCRUD.getPageAsDataTable(1);
+            dataGridView1.DataSource = _currentTable;
+        }
+
+        private void деталиЗаказовToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clearTable();
+            _usingObj = _currentObj.orderItems;
+            if (_orderItemsCRUD == null)
+                _orderItemsCRUD = new CRUD_OrderItems(_connection_string);
+            _currentTable = _orderItemsCRUD.getPageAsDataTable(1);
+            dataGridView1.DataSource = _currentTable;
+        }
+
+        private void товарыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clearTable();
+            _usingObj = _currentObj.products;
+            if (_productsCRUD == null)
+                _productsCRUD = new CRUD_Products(_connection_string);
+            _currentTable = _productsCRUD.getPageAsDataTable(1);
+            dataGridView1.DataSource = _currentTable;
+        }
+
         //функция, которая должна подготовить форму к новым данным
         private void clearTable()
         {
@@ -88,7 +152,11 @@ namespace Diploma.Views
         private void документыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             clearTable();
-
+            _usingObj = _currentObj.documents;
+            if (_documentsCRUD == null)
+                _documentsCRUD = new CRUD_Documents(_connection_string);
+            _currentTable = _documentsCRUD.getPageAsDataTable(1);
+            dataGridView1.DataSource = _currentTable;
         }
 
         private void добавитьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -290,5 +358,7 @@ namespace Diploma.Views
                     }
             }
         }
+
+        
     }
 }

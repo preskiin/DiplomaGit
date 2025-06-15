@@ -28,7 +28,7 @@ namespace Diploma.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 string sql = @"
-                INSERT INTO OrderItem (IdProduct, IdOrder, Price, Amount)
+                INSERT INTO OrderItems (IdProduct, IdOrder, Price, Amount)
                 OUTPUT INSERTED.id
                 VALUES (@IdProduct, @IdOrder, @Price, @Amount)";
 
@@ -49,7 +49,7 @@ namespace Diploma.Controllers
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string sql = "SELECT * FROM OrderItem WHERE id = @id";
+                string sql = "SELECT * FROM OrderItems WHERE id = @id";
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@id", id);
 
@@ -69,7 +69,7 @@ namespace Diploma.Controllers
         public List<OrderItem> GetItemsForOrder(long orderId)
         {
             var items = new List<OrderItem>();
-            string sql = "SELECT * FROM OrderItem WHERE IdOrder = @IdOrder ORDER BY id";
+            string sql = "SELECT * FROM OrderItems WHERE IdOrder = @IdOrder ORDER BY id";
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -89,12 +89,12 @@ namespace Diploma.Controllers
         }
 
         // Получение страницы элементов
-        public DataTable GetPageAsDataTable(int pageNumber)
+        public DataTable getPageAsDataTable(int pageNumber)
         {
             var dataTable = new DataTable();
             string sql = @"
             SELECT id, IdProduct, IdOrder, Price, Amount
-            FROM OrderItem
+            FROM OrderItems
             ORDER BY id
             OFFSET @Offset ROWS 
             FETCH NEXT @PageSize ROWS ONLY";
@@ -120,7 +120,7 @@ namespace Diploma.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 string sql = @"
-                UPDATE OrderItem
+                UPDATE OrderItems
                 SET 
                     IdProduct = @IdProduct,
                     IdOrder = @IdOrder,
@@ -147,7 +147,7 @@ namespace Diploma.Controllers
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string sql = "DELETE FROM OrderItem WHERE id = @id";
+                string sql = "DELETE FROM OrderItems WHERE id = @id";
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@id", id);
 
@@ -161,7 +161,7 @@ namespace Diploma.Controllers
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string sql = "DELETE FROM OrderItem WHERE IdOrder = @IdOrder";
+                string sql = "DELETE FROM OrderItems WHERE IdOrder = @IdOrder";
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@IdOrder", orderId);
 
@@ -175,7 +175,7 @@ namespace Diploma.Controllers
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string sql = "SELECT SUM(Price * Amount) FROM OrderItem WHERE IdOrder = @IdOrder";
+                string sql = "SELECT SUM(Price * Amount) FROM OrderItems WHERE IdOrder = @IdOrder";
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@IdOrder", orderId);
 

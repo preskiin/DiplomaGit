@@ -20,7 +20,7 @@ namespace Diploma.Controllers
         }
 
         // Получить страницу шаблонов (без Content)
-        public DataTable GetPageAsDataTable(int pageNumber)
+        public DataTable getPageAsDataTable(int pageNumber)
         {
             var dataTable = new DataTable();
             string sql = @"
