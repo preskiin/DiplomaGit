@@ -28,7 +28,7 @@ namespace Diploma.Controllers
             else
             {
                 String sql_exp = @"
-                INSERT INTO Operations (Id_position, Name, Description)
+                INSERT INTO Operations (IdPosition, Name, Description)
                 OUTPUT INSERTED.id
                 VALUES (@IdPosition, @Name, @Description)";
                 SqlConnection connection = new SqlConnection(_connectionString);
@@ -61,11 +61,11 @@ namespace Diploma.Controllers
             return tmp;
         }
 
-        // Получает все операции для указанной должности (Id_position)
+        // Получает все операции для указанной должности (IdPosition)
         public List<Operation> readByPositionId(Int64 positionId)
         {
             List<Operation> operations = new List<Operation>();
-            String sql_exp = "SELECT * FROM Operations WHERE Id_position = @PositionId";
+            String sql_exp = "SELECT * FROM Operations WHERE IdPosition = @PositionId";
             SqlConnection connection = new SqlConnection(_connectionString);
             SqlCommand command = new SqlCommand(sql_exp, connection);
             command.Parameters.AddWithValue("@PositionId", positionId);
@@ -87,7 +87,7 @@ namespace Diploma.Controllers
                 throw new ArgumentException("Номер страницы должен быть >= 1");
             var dataTable = new System.Data.DataTable();
             String sql_exp = @"
-            SELECT id, Id_position, Name, Description 
+            SELECT id, IdPosition, Name, Description 
             FROM Operations
             ORDER BY id
             OFFSET @Offset ROWS 
@@ -117,7 +117,7 @@ namespace Diploma.Controllers
                 String sql_exp = @"
                 UPDATE Operations
                 SET 
-                    Id_position = @IdPosition,
+                    IdPosition = @IdPosition,
                     Name = @Name,
                     Description = @Description
                 WHERE id = @Id";
@@ -154,7 +154,7 @@ namespace Diploma.Controllers
             String sql_exp = @"
             SELECT * 
             FROM Positions 
-            WHERE Name COLLATE Latin1_General_CS_AS =@Name AND Id_position=@IdPosition";
+            WHERE Name COLLATE Latin1_General_CS_AS =@Name AND IdPosition=@IdPosition";
             SqlConnection connection = new SqlConnection(_connectionString);
             SqlCommand cmd = new SqlCommand(sql_exp, connection);
             cmd.Parameters.AddWithValue("@Name", operation.Name);
@@ -170,31 +170,31 @@ namespace Diploma.Controllers
             return result;
         }
 
-        //создает html-код выпадающего списка со значениями людей из базы
-        public static string generateOperationsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
-        {
-            var html = new StringBuilder();
-            string sql = "SELECT id, Name FROM Operations ORDER BY Name";
-            var connection = new SqlConnection(connectionString);
-            var command = new SqlCommand(sql, connection);
-            connection.Open();
-            var reader = command.ExecuteReader();
-            html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
-            html.AppendLine("<option value=''>-- Выберите действие --</option>");
-            while (reader.Read())
-            {
-                Int64 id = reader.GetInt64(0);
-                string operation = reader.GetString(1);
-                bool isSelected = id.ToString() == currentValue;
-                html.AppendLine(
-                    $"<option value='{id}' {(isSelected ? "selected" : "")}>{operation}</option>"
-                );
-            }
-            reader.Close();
-            connection.Close();
-            html.AppendLine("</select>");
-            return html.ToString();
-        }
+        //создает html-код выпадающего списка со значениями операций из базы
+        //public static string generateOperationsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        //{
+        //    var html = new StringBuilder();
+        //    string sql = "SELECT id, Name FROM Operations ORDER BY Name";
+        //    var connection = new SqlConnection(connectionString);
+        //    var command = new SqlCommand(sql, connection);
+        //    connection.Open();
+        //    var reader = command.ExecuteReader();
+        //    html.AppendLine($"<select name='{dropdownName}' id='{dropdownName}' class='form-control'>");
+        //    html.AppendLine("<option value=''>-- Выберите действие --</option>");
+        //    while (reader.Read())
+        //    {
+        //        Int64 id = reader.GetInt64(0);
+        //        string operation = reader.GetString(1);
+        //        bool isSelected = id.ToString() == currentValue;
+        //        html.AppendLine(
+        //            $"<option value='{id}' {(isSelected ? "selected" : "")}>{operation}</option>"
+        //        );
+        //    }
+        //    reader.Close();
+        //    connection.Close();
+        //    html.AppendLine("</select>");
+        //    return html.ToString();
+        //}
     }
 }
 

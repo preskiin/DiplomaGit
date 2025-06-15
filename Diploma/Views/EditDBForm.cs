@@ -194,6 +194,7 @@ namespace Diploma.Views
                             result = _usersCRUD.update(user);
                             _currentTable = _usersCRUD.getPageAsDataTable(_currentPage);
                             dataGridView1.DataSource = _currentTable;
+                            correctView(index);
                         }
                         break;
                     }
@@ -224,6 +225,7 @@ namespace Diploma.Views
                             _usersCRUD.delete(new User(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index]));
                             _currentTable = _usersCRUD.getPageAsDataTable(_currentPage);
                             dataGridView1.DataSource = _currentTable;
+                            correctView(index);
                         }
                         break;
                     }
@@ -270,16 +272,19 @@ namespace Diploma.Views
                 case 0:
                     {
                         dataGridView1.Columns["id"].Visible = false;
-                        dataGridView1.Columns["Id_position"].Visible = false;
-                        DataGridViewColumn positionColumn = new DataGridViewTextBoxColumn();
-                        positionColumn.Name = "PositionName";
-                        positionColumn.HeaderText = "Должность";
-                        positionColumn.DisplayIndex = 2;
-                        dataGridView1.Columns.Add(positionColumn);
+                        dataGridView1.Columns["IdPosition"].Visible = false;
+                        if (!dataGridView1.Columns.Contains("PositionName"))
+                        {
+                            DataGridViewColumn positionColumn = new DataGridViewTextBoxColumn();
+                            positionColumn.Name = "PositionName";
+                            positionColumn.HeaderText = "Должность";
+                            positionColumn.DisplayIndex = 2;
+                            dataGridView1.Columns.Add(positionColumn);
+                        }
                         List<Position> list = CRUD_Positions.getAllPositions(_connection_string);
                         foreach (DataGridViewRow row in dataGridView1.Rows)
                         {
-                            row.Cells["PositionName"].Value = Position.findNameInList(list, Convert.ToInt32(row.Cells["Id_position"].Value));
+                            row.Cells["PositionName"].Value = Position.findNameInList(list, Convert.ToInt64(row.Cells["IdPosition"].Value));
                         }
                         break;
                     }

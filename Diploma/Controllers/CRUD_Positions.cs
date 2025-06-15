@@ -233,97 +233,97 @@ namespace Diploma.Controllers
         //    return html.ToString();
         //}
 
-        public static string generatePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
-        {
-            var html = new StringBuilder();
-            string sql = "SELECT id, Name FROM Positions ORDER BY Name";
-            var connection = new SqlConnection(connectionString);
-            var command = new SqlCommand(sql, connection);
+        //public static string generatePositionsDropdown(string connectionString, string currentValue = "", string dropdownName = "positionId")
+        //{
+        //    var html = new StringBuilder();
+        //    string sql = "SELECT id, Name FROM Positions ORDER BY Name";
+        //    var connection = new SqlConnection(connectionString);
+        //    var command = new SqlCommand(sql, connection);
 
-            // Получаем список всех должностей для проверки введенного значения
-            var positions = new Dictionary<string, long>();
-            connection.Open();
-            var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                long id = reader.GetInt64(0);
-                string name = reader.GetString(1);
-                positions[name] = id;
-            }
-            reader.Close();
-            connection.Close();
+        //    // Получаем список всех должностей для проверки введенного значения
+        //    var positions = new Dictionary<string, long>();
+        //    connection.Open();
+        //    var reader = command.ExecuteReader();
+        //    while (reader.Read())
+        //    {
+        //        long id = reader.GetInt64(0);
+        //        string name = reader.GetString(1);
+        //        positions[name] = id;
+        //    }
+        //    reader.Close();
+        //    connection.Close();
 
-            // Определяем текущее название должности по ID (если currentValue - это ID)
-            string currentName = "";
-            if (!string.IsNullOrEmpty(currentValue))
-            {
-                if (long.TryParse(currentValue, out long currentId))
-                {
-                    currentName = positions.FirstOrDefault(x => x.Value == currentId).Key ?? "";
-                }
-                else
-                {
-                    // Если currentValue - это название, проверяем его наличие в списке
-                    if (positions.ContainsKey(currentValue))
-                    {
-                        currentName = currentValue;
-                    }
-                }
-            }
+        //    // Определяем текущее название должности по ID (если currentValue - это ID)
+        //    string currentName = "";
+        //    if (!string.IsNullOrEmpty(currentValue))
+        //    {
+        //        if (long.TryParse(currentValue, out long currentId))
+        //        {
+        //            currentName = positions.FirstOrDefault(x => x.Value == currentId).Key ?? "";
+        //        }
+        //        else
+        //        {
+        //            // Если currentValue - это название, проверяем его наличие в списке
+        //            if (positions.ContainsKey(currentValue))
+        //            {
+        //                currentName = currentValue;
+        //            }
+        //        }
+        //    }
 
-            // Создаем input с datalist
-            html.AppendLine($"<input list='{dropdownName}-list' name='{dropdownName}' id='{dropdownName}' value='{currentName}' class='form-control' placeholder='-- Выберите должность --'>");
-            html.AppendLine($"<datalist id='{dropdownName}-list'>");
+        //    // Создаем input с datalist
+        //    html.AppendLine($"<input list='{dropdownName}-list' name='{dropdownName}' id='{dropdownName}' value='{currentName}' class='form-control' placeholder='-- Выберите должность --'>");
+        //    html.AppendLine($"<datalist id='{dropdownName}-list'>");
 
-            // Добавляем варианты в datalist
-            foreach (var position in positions)
-            {
-                html.AppendLine($"<option value='{position.Key}' data-id='{position.Value}'>");
-            }
+        //    // Добавляем варианты в datalist
+        //    foreach (var position in positions)
+        //    {
+        //        html.AppendLine($"<option value='{position.Key}' data-id='{position.Value}'>");
+        //    }
 
-            html.AppendLine("</datalist>");
+        //    html.AppendLine("</datalist>");
 
-            // Добавляем скрытое поле для хранения ID
-            html.AppendLine($"<input type='hidden' name='{dropdownName}-id' id='{dropdownName}-id' value='{currentValue}'>");
+        //    // Добавляем скрытое поле для хранения ID
+        //    html.AppendLine($"<input type='hidden' name='{dropdownName}-id' id='{dropdownName}-id' value='{currentValue}'>");
 
-            // Добавляем JavaScript для валидации введенного значения
-            html.AppendLine($@"
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {{
-                const input = document.getElementById('{dropdownName}');
-                const options = document.getElementById('{dropdownName}-list').options;
-                const hiddenField = document.getElementById('{dropdownName}-id');
+        //    // Добавляем JavaScript для валидации введенного значения
+        //    html.AppendLine($@"
+        //    <script>
+        //    document.addEventListener('DOMContentLoaded', function() {{
+        //        const input = document.getElementById('{dropdownName}');
+        //        const options = document.getElementById('{dropdownName}-list').options;
+        //        const hiddenField = document.getElementById('{dropdownName}-id');
                 
-                // Основная функция валидации
-                function validateInput() 
-                {{
-                    let isValid = false;
-                    for(let i = 0; i < options.length; i++) 
-                    {{
-                        if(options[i].value === input.value) 
-                        {{
-                            isValid = true;
-                            hiddenField.value = options[i].getAttribute('data-id');
-                            break;
-                        }}
-                    }}
-                    if(!isValid) 
-                    {{
-                        input.value = '';
-                        hiddenField.value = '';
-                    }}
-                }}
+        //        // Основная функция валидации
+        //        function validateInput() 
+        //        {{
+        //            let isValid = false;
+        //            for(let i = 0; i < options.length; i++) 
+        //            {{
+        //                if(options[i].value === input.value) 
+        //                {{
+        //                    isValid = true;
+        //                    hiddenField.value = options[i].getAttribute('data-id');
+        //                    break;
+        //                }}
+        //            }}
+        //            if(!isValid) 
+        //            {{
+        //                input.value = '';
+        //                hiddenField.value = '';
+        //            }}
+        //        }}
                 
-                // Обработчики событий
-                input.addEventListener('blur', validateInput); // При потере фокуса
-                input.addEventListener('keydown', function(e) 
-                {{
-                    if(e.key === 'Enter') validateInput(); // При нажатии Enter
-                }});
-            }});
-            </script>");
-            return html.ToString();
-        }
+        //        // Обработчики событий
+        //        input.addEventListener('blur', validateInput); // При потере фокуса
+        //        input.addEventListener('keydown', function(e) 
+        //        {{
+        //            if(e.key === 'Enter') validateInput(); // При нажатии Enter
+        //        }});
+        //    }});
+        //    </script>");
+        //    return html.ToString();
+        //}
 
     }
 }

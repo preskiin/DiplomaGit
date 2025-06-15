@@ -17,10 +17,6 @@ namespace Diploma
 {
     public partial class TemplateForm : Form
     {
-        int counter = 0;
-        List<DocumentController.elemToCreate> elements;
-        
-
         private DocumentController docController;
         private String _connection = "Data Source=PRESKIIN-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         public TemplateForm()
@@ -36,11 +32,19 @@ namespace Diploma
 
         private void onAnswerFromWeb(object sender, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
         {
-            if (e.TryGetWebMessageAsString().StartsWith("{\"listId"))
+            if (e.TryGetWebMessageAsString().StartsWith("{\"nameElement"))
             {
                 var message = JsonConvert.DeserializeObject<string>(e.WebMessageAsJson);
                 dynamic data = JsonConvert.DeserializeObject(message);
-                MessageBox.Show($"В выпадающем списке с названием: {data.listId} \nБыл выбран элемент с ID: {data.selectedId}");
+                var tmpElem = new DocumentController.elemToCreate();
+                tmpElem.name_element = data.nameElement;
+                tmpElem.show_field = data.showField;
+                tmpElem.name_to_connect_element = data.nameToConnectElement;
+                tmpElem.is_filled = data.isFilled;
+                tmpElem.value = data.value;
+                tmpElem.className = data.className;
+                tmpElem.anotherTableField = data.anotherTableField;
+                docController.updateListElements(tmpElem);
             }
         }
 
@@ -49,8 +53,8 @@ namespace Diploma
             textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
             await webView21.EnsureCoreWebView2Async();
             this.webView21.CoreWebView2.Settings.IsScriptEnabled = true;
-            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
-            webView21.CoreWebView2.NavigateToString(htmlContent);
+            //string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
+            //webView21.CoreWebView2.NavigateToString(htmlContent);
             //////this.webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
 
             //this.webView21.CoreWebView2.Navigate("about:blank");
@@ -90,15 +94,13 @@ namespace Diploma
         private async void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             await webView21.CoreWebView2.ExecuteScriptAsync("document.body.contentEditable = 'true'; document.designMode = 'on';");
-            elements = docController.getElementsFromHtml("template2003");
-            counter = elements.Count;
+            docController.getElementsFromHtml("template2003");
         }
 
         private async void button4_Click(object sender, EventArgs e)
         {
             //await webView21.EnsureCoreWebView2Async();
-            String html = docController.createListInput(DocumentController.usingCRUD.people, counter);
-            counter++;
+            String html = docController.createListInput(DocumentController.usingCRUD.people);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
         }
 
@@ -132,17 +134,17 @@ namespace Diploma
 
         private async void работникиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String html = docController.createListInput(DocumentController.usingCRUD.people, counter);
-            counter++;
+            String html = docController.createListInput(DocumentController.usingCRUD.people);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            //docController.getElementsFromHtml("template2003");
         }
 
-        private void привязанноеПолеToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void привязанноеПолеToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<DocumentController.elemToCreate> tmp_list = new List<DocumentController.elemToCreate>();
-            foreach (var element in elements)
+            foreach (var element in docController.elements)
             {
-                if (element.name_to_connect_element == "base")
+                if (element.name_to_connect_element !="null")
                 {
                     tmp_list.Add(element);
                 }
@@ -150,9 +152,12 @@ namespace Diploma
             FormChooseList formChoice = new FormChooseList(tmp_list);
             if (DialogResult.OK ==formChoice.ShowDialog())
             {
+                String html = docController.createBoundField(formChoice.currentElement);
+                await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+                docController.getElementsFromHtml("template2003");
                 //забираем с формы chooseList объект определенного класса, и кидаем нужны значения в наш объект elements
-                
             }
+            
         }
  
     }

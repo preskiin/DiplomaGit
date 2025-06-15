@@ -19,7 +19,7 @@ namespace Diploma
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TemplateForm());
+            Application.Run(new EditDBForm());
 
         }
     }

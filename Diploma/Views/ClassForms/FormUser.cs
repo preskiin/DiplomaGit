@@ -41,7 +41,7 @@ namespace Diploma.Views
             {
                 if (userTmp == null)
                 {
-                    userTmp = new User(id: 0, id_position: (Int32)comboBox1.SelectedValue, name: textBox1.Text,
+                    userTmp = new User(id: 0, id_position: (Int64)comboBox1.SelectedValue, name: textBox1.Text,
                         surname: textBox2.Text, patronymic: textBox3.Text, place_num: Convert.ToInt32(textBox4.Text),
                         login: MyAuthorization.get_sha256(textBox5.Text), password: MyAuthorization.get_sha256(textBox6.Text));
                     DialogResult = DialogResult.OK;
@@ -49,7 +49,7 @@ namespace Diploma.Views
                 }
                 else
                 {
-                    userTmp = new User(id: userTmp.Id, id_position: (Int32)comboBox1.SelectedValue, name: textBox1.Text,
+                    userTmp = new User(id: userTmp.Id, id_position: (Int64)comboBox1.SelectedValue, name: textBox1.Text,
                         surname: textBox2.Text, patronymic: textBox3.Text, place_num: Convert.ToInt32(textBox4.Text),
                         login: textBox5.Text, password: textBox6.Text);
                     DialogResult = DialogResult.OK;

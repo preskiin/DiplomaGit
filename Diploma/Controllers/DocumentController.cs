@@ -29,16 +29,20 @@ namespace Diploma.Controllers
 
         public struct elemToCreate
         {
-            public string name_element;
-            public string show_field;
-            public string name_to_connect_element;
-            public bool is_filled;
-            public string value;
+            public string name_element;//название элемента
+            public string show_field;//Отображаемое значение (первое слово - таблица, в которой лежит искомое значение; второе слово - поле в таблице с искомым значением)
+            public string name_to_connect_element; // название элемента, к которому привязан (если не привязан - null, если является начальным списком - base)
+            public bool is_filled; //готов этот элемент к формированию документ или не готов
+            public string value;//значение, которые присвоено этому элементу. У List это ID, у привязанных полей - значение, которое берется из запроса в базу, у простых текстовых - значения в тексте 
             public string className;
+            public string anotherTableField;
         }
 
         private String _connection;
         private String htmlCode;
+        private int counter = 0;
+
+        public List<elemToCreate> elements;
         //private String text;
 
         public DocumentController(String con)
@@ -74,9 +78,10 @@ namespace Diploma.Controllers
                 }
                 stream.Close();
                 cleanFromWatermarks();
-                if (putStringAfter("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">", "<head>") != -1)
-                    return true;
-                else return false;
+                //getElementsFromHtml("template2003");
+                //this.counter = this.elements.Count;
+                //if (putStringAfter("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">", "<head>") != -1)
+                return true;
             }
             else
                 return false;
@@ -192,13 +197,9 @@ namespace Diploma.Controllers
             }
         }
 
-        //public void addListInput(Int32 textPos)
-        //{
-        //    this.htmlCode = this.htmlCode.Insert(textPos, CRUD_Positions.generatePositionsDropdown(this._connection));
-        //}
-        public List<elemToCreate> getElementsFromHtml(String classToFind)
+        public void getElementsFromHtml(String classToFind)
         {
-            List<elemToCreate> elements = new List<elemToCreate>();
+            this.elements = new List<elemToCreate>();
             var htmlDoc = new HtmlAgilityPack.HtmlDocument();
             htmlDoc.LoadHtml(this.htmlCode);
             // Ищем все элементы с классом template2003
@@ -214,39 +215,49 @@ namespace Diploma.Controllers
                     elem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
                     elem.value = node.Attributes["data-value"].Value;
                     elem.className = node.Attributes["data-class-name"].Value;
-                    elements.Add(elem);
+                    elem.anotherTableField = node.Attributes["data-another-table-field"].Value;
+                    this.elements.Add(elem);
                 }
+                this.counter = this.elements.Count;
             }
-            return elements;
         }
 
-        public String createListInput(usingCRUD dataNeeded, int amountOfEls)
+        public String createListInput(usingCRUD dataNeeded)
         {
             String htmlString = "";
             switch (dataNeeded)
             {
                 case usingCRUD.positions:
                     {
-                        htmlString = CRUD_Positions.generatePositionsDropdown(this._connection);
+
+                        //this.counter++;
+                        //htmlString = CRUD_Positions.generatePositionsDropdown(this._connection);
                         break;
                     }
                 case usingCRUD.operations:
                     {
-                        htmlString = CRUD_Operations.generateOperationsDropdown(this._connection);
+
+                        //this.counter++;
+                        //htmlString = CRUD_Operations.generateOperationsDropdown(this._connection);
                         break;
                     }
                 case usingCRUD.people:
                     {
-                        htmlString = CRUD_Users.generateUsersDropdown(connectionString:this._connection, amountOfEls+1);
+
+                        //this.counter++;
+                        //htmlString = CRUD_Users.generateUsersDropdown(connectionString: this._connection, counter+1);
                         break;
                     }
                 case usingCRUD.counteragents:
                     {
+
+                        //this.counter++;
                         //htmlString = CRUD_Counteragents.generateCounteragentsDropdown(this._connection);
                         break;
                     }
                 case usingCRUD.products:
                     {
+                        //this.counter++;
                         //htmlString = CRUD_Products.generateProductsDropdown(this._connection);
                         break;
                     }
@@ -256,7 +267,85 @@ namespace Diploma.Controllers
                         break;
                     }
             }
+            elemToCreate tmpToAdd = findTemplateInHtml(htmlString, "template2003");
+            if (tmpToAdd.name_element != null)
+            {
+                counter++;
+                elements.Add(tmpToAdd);
+            }
             return htmlString;
+        }
+
+        private elemToCreate findTemplateInHtml(String html, String templateToFind)
+        {
+            elemToCreate tmpElem = new elemToCreate();
+            var htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            htmlDoc.LoadHtml(html);
+            // Ищем все элементы с классом template2003
+            var nodes = htmlDoc.DocumentNode.SelectNodes($"//*[contains(@class, '{templateToFind}')]");
+            if (nodes != null)
+            {
+                foreach (var node in nodes)
+                {
+                    tmpElem.name_element = node.Attributes["data-name-element"].Value;
+                    tmpElem.show_field = node.Attributes["data-show-field"].Value;
+                    tmpElem.name_to_connect_element = node.Attributes["data-name-to-connect"].Value;
+                    tmpElem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
+                    tmpElem.value = node.Attributes["data-value"].Value;
+                    tmpElem.className = node.Attributes["data-class-name"].Value;
+                    tmpElem.anotherTableField = node.Attributes["data-another-table-field"].Value;
+                }
+            }
+            return tmpElem;
+           
+        }
+
+        public String createBoundField(elemToCreate element)
+        {
+            counter++;
+            element.name_element = "element"+Convert.ToString(this.counter);
+            StringBuilder html = new StringBuilder();
+            html.AppendLine(@$"<input type='text' class='template2003' 
+                data-name-element='{element.name_element}'
+                data-show-field={element.show_field}
+                data-name-to-connect={element.name_to_connect_element}
+                data-is-filled={element.is_filled}
+                data-value={element.value}
+                data-class-name='{element.className}'
+                data-another-table-field='{element.anotherTableField}'placeholder='--{element.name_element}--' readonly>
+                ");
+            return html.ToString();
+        }
+
+        public void updateListElements(elemToCreate updated_element)
+        {
+            int count = 0;
+            foreach (var elem in elements)
+            {
+                if (elem.name_element == updated_element.name_element)
+                {
+                    break;
+                }
+                count++;
+            }
+            elements[count] = updated_element;
+            updateBoundFieldElements(elements[count].name_element);
+        }
+
+        public void updateBoundFieldElements(String listName)
+        {
+            List<elemToCreate> elementsToUpdate = new List<elemToCreate>();
+            foreach (var elem in elements)
+            {
+                if (elem.name_to_connect_element == listName)
+                {
+                    elementsToUpdate.Add(elem);
+                }
+            }
+            foreach (var element in elementsToUpdate)
+            {
+                
+            }
         }
     }
 

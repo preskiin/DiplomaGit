@@ -11,18 +11,18 @@ namespace Diploma.Models
     {
         private Int64 _id;
         private String _name;
-        private Int64 _sector;
-        private Int64 _department;
-        private Int64 _level;
+        private Int32 _sector;
+        private Int32 _department;
+        private Int32 _level;
 
-        public Int64 Id => _id;
-        public String Name => _name;
-        public Int64 Sector => _sector;
-        public Int64 Department => _department;
-        public Int64 Level => _level;
+        public Int64 Id { get { return _id; } }
+        public String Name { get { return _name; } }
+        public Int32 Sector { get { return _sector; } }
+        public Int32 Department {  get { return _department; } }
+        public Int32 Level {  get { return _level; } }
 
         // Конструктор для инициализации всех полей
-        public Position(Int64 id, String name, Int64 sector, Int64 department, Int64 level)
+        public Position(Int64 id, String name, Int32 sector, Int32 department, Int32 level)
         {
             _id = id;
             _name = name;
@@ -46,9 +46,9 @@ namespace Diploma.Models
             Position tmp = new Position(
                 id: reader.GetInt64(reader.GetOrdinal("id")),
                 name: reader.GetString(reader.GetOrdinal("Name")),
-                sector: reader.GetInt64(reader.GetOrdinal("Sector")),
-                department: reader.GetInt64(reader.GetOrdinal("Department")),
-                level: reader.GetInt64(reader.GetOrdinal("Leve1"))
+                sector: reader.GetInt32(reader.GetOrdinal("Sector")),
+                department: reader.GetInt32(reader.GetOrdinal("Department")),
+                level: reader.GetInt32(reader.GetOrdinal("Leve1"))
             );
             return tmp;
         }

@@ -11,33 +11,33 @@ namespace Diploma.Models
     public class Order
     {
         private Int64 _id;
-        private Int64 _number;
-        private Int64 _idCounteragent;
+        private Int64? _number;          // Может быть null
+        private Int64? _idCounteragent;  // Может быть null
         private DateTime _orderDate;
-        private DateTime _deliveryDate;
-        private String _comment;
+        private DateTime? _deliveryDate; // Может быть null
+        private String _comment;         // Может быть null
 
         public Int64 Id { get { return _id; } }
-        public Int64 Number { get { return _number; } }
-        public Int64 IdCounteragent { get { return _idCounteragent; } }
+        public Int64? Number { get { return _number; } }
+        public Int64? IdCounteragent { get { return _idCounteragent; } }
         public DateTime OrderDate { get { return _orderDate; } }
-        public DateTime DeliveryDate { get { return _deliveryDate; } }
+        public DateTime? DeliveryDate { get { return _deliveryDate; } }
         public String Comment { get { return _comment; } }
 
         // Конструктор по умолчанию
         public Order()
         {
             this._id = 0;
-            this._number = 0;
-            this._idCounteragent = 0;
+            this._number = null;
+            this._idCounteragent = null;
             this._orderDate = DateTime.Now;
-            this._deliveryDate = DateTime.Now.AddDays(1);
-            this._comment = "Нет комментария";
+            this._deliveryDate = null;
+            this._comment = null;
         }
 
-        // Основной конструктор (обновлён)
-        public Order(Int64 id, Int64 number, Int64 idCounteragent,
-                    DateTime orderDate, DateTime deliveryDate, String comment)
+        // Основной конструктор
+        public Order(Int64 id, Int64? number, Int64? idCounteragent,
+                    DateTime orderDate, DateTime? deliveryDate, String comment)
         {
             this._id = id;
             this._number = number;
@@ -47,7 +47,7 @@ namespace Diploma.Models
             this._comment = comment;
         }
 
-        // Конструктор копирования (обновлён)
+        // Конструктор копирования
         public Order(Order orderToCopy)
         {
             this._id = orderToCopy._id;
@@ -58,43 +58,46 @@ namespace Diploma.Models
             this._comment = orderToCopy._comment;
         }
 
-        // Создание объекта из SqlDataReader (обновлён)
+        // Создание объекта из SqlDataReader
         public static Order FromDataReader(SqlDataReader reader)
         {
-            Order tmp = new Order(
+            return new Order(
                 id: reader.GetInt64(reader.GetOrdinal("id")),
-                number: reader.GetInt64(reader.GetOrdinal("Number")),
-                idCounteragent: reader.GetInt64(reader.GetOrdinal("IdCounteragent")),
+                number: reader.IsDBNull(reader.GetOrdinal("Number")) ?
+                       (Int64?)null : reader.GetInt64(reader.GetOrdinal("Number")),
+                idCounteragent: reader.IsDBNull(reader.GetOrdinal("IdCounteragent")) ?
+                              (Int64?)null : reader.GetInt64(reader.GetOrdinal("IdCounteragent")),
                 orderDate: reader.GetDateTime(reader.GetOrdinal("OrderDate")),
-                deliveryDate: reader.GetDateTime(reader.GetOrdinal("DeliveryDate")),
+                deliveryDate: reader.IsDBNull(reader.GetOrdinal("DeliveryDate")) ?
+                            (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("DeliveryDate")),
                 comment: reader.IsDBNull(reader.GetOrdinal("Comment")) ?
-                        string.Empty : reader.GetString(reader.GetOrdinal("Comment"))
+                       null : reader.GetString(reader.GetOrdinal("Comment"))
             );
-            return tmp;
         }
 
-        // Получение заказа из ряда DataGridView (обновлён)
+        // Получение заказа из ряда DataGridView
         public Order(DataGridViewRow row)
         {
             if (row != null)
             {
                 _id = Convert.ToInt64(row.Cells["id"].Value);
-                _number = Convert.ToInt64(row.Cells["Number"].Value);
-                _idCounteragent = Convert.ToInt64(row.Cells["IdCounteragent"].Value);
+                _number = row.Cells["Number"].Value == DBNull.Value ?
+                         (Int64?)null : Convert.ToInt64(row.Cells["Number"].Value);
+                _idCounteragent = row.Cells["IdCounteragent"].Value == DBNull.Value ?
+                                (Int64?)null : Convert.ToInt64(row.Cells["IdCounteragent"].Value);
                 _orderDate = Convert.ToDateTime(row.Cells["OrderDate"].Value);
-                _deliveryDate = Convert.ToDateTime(row.Cells["DeliveryDate"].Value);
-                _comment = row.Cells["Comment"].Value?.ToString() ?? string.Empty;
+                _deliveryDate = row.Cells["DeliveryDate"].Value == DBNull.Value ?
+                              (DateTime?)null : Convert.ToDateTime(row.Cells["DeliveryDate"].Value);
+                _comment = row.Cells["Comment"].Value == DBNull.Value ?
+                         null : row.Cells["Comment"].Value.ToString();
             }
         }
 
-        // Проверка валидности данных (обновлён)
+        // Проверка валидности данных
         public Boolean IsValid()
         {
             return (_id >= 0 &&
-                    _number > 0 &&  // Номер заказа должен быть положительным
-                    _idCounteragent > 0 &&
-                    _orderDate <= _deliveryDate);
-
+                   (_deliveryDate == null || _orderDate <= _deliveryDate));
         }
     }
 }

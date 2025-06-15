@@ -17,7 +17,7 @@ namespace Diploma.Models
         private String _name;
         private String _surname;
         private String _patronymic;
-        private Int64 _place_num;
+        private Int32 _place_num;
         private String _login;
         private String _password;
         public Int64 Id { get { return _id; } }
@@ -25,7 +25,7 @@ namespace Diploma.Models
         public String Name { get { return _name; } }
         public String Surname { get { return _surname; } }
         public String Patronymic { get { return _patronymic; } }
-        public Int64 Place { get { return _place_num; } }
+        public Int32 Place { get { return _place_num; } }
         public String Login { get { return _login; } }
         public String Password { get { return _password; } }
 
@@ -41,14 +41,14 @@ namespace Diploma.Models
             this._password = "C6C094BC0054F9CBE34102FF49F86B3928B5AC09F3D2AC87E170D0500675921F";
         }
 
-        public User(Int64 id, Int64 id_position, String name, String surname, String patronymic, Int64 place_num, String login, String password)
+        public User(Int64 id, Int64 id_position, String name, String surname, String patronymic, Int32 place_num, String login, String password)
         {
             this._id = (Int64)id;
             this._id_position = (Int64)id_position;
             this._name = (String)name;
             this._surname = (String)surname;
             this._patronymic = (String)patronymic;
-            this._place_num = (Int64)place_num;
+            this._place_num = (Int32)place_num;
             this._login = (String)login;
             this._password = (String)password;
         }
@@ -74,7 +74,7 @@ namespace Diploma.Models
                 name: reader.GetString(reader.GetOrdinal("Name")),
                 surname: reader.GetString(reader.GetOrdinal("Surname")),
                 patronymic: reader.GetString(reader.GetOrdinal("Patronymic")),
-                place_num: reader.GetInt64(reader.GetOrdinal("Place")),
+                place_num: reader.GetInt32(reader.GetOrdinal("Place")),
                 login: reader.GetString(reader.GetOrdinal("Login")),
                 password: reader.GetString(reader.GetOrdinal("Password"))
             );
@@ -87,11 +87,11 @@ namespace Diploma.Models
             if (row != null)
             {
                 _id = Convert.ToInt64(row.Cells["id"].Value);
-                _id_position = Convert.ToInt64(row.Cells["Id_position"].Value);
+                _id_position = Convert.ToInt64(row.Cells["IdPosition"].Value);
                 _name = row.Cells["Name"].Value.ToString();
                 _surname = row.Cells["Surname"].Value.ToString();
                 _patronymic = row.Cells["Patronymic"].Value.ToString();
-                _place_num = Convert.ToInt64(row.Cells["Place"].Value);
+                _place_num = Convert.ToInt32(row.Cells["Place"].Value);
                 _login = row.Cells["Login"].Value.ToString();
                 _password = row.Cells["Password"].Value.ToString();
             }
