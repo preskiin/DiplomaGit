@@ -191,6 +191,12 @@
     <Compile Include="Views\FormChooseList.Designer.cs">
       <DependentUpon>FormChooseList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\MainMenuForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MainMenuForm.Designer.cs">
+      <DependentUpon>MainMenuForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\TemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>

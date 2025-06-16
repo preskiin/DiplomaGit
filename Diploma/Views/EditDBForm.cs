@@ -335,7 +335,7 @@ namespace Diploma.Views
                     if (addForm.ShowDialog() == DialogResult.OK)
                     {
                         document = addForm.documentTmp;
-                        result = _documentsCRUD.create(document);
+                        //result = _documentsCRUD.create(document);
                         _currentTable = _documentsCRUD.getPageAsDataTable(_currentPage);
                         dataGridView1.DataSource = _currentTable;
                         correctView(index);

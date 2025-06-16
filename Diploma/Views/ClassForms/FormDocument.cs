@@ -60,8 +60,9 @@ namespace Diploma.Views.ClassForms
         {
             // Здесь должен быть код загрузки шаблонов из БД
             // Например:
-            comboBoxTemplate.DataSource = null;
+            //comboBoxTemplate.DataSource = null;
             var tmp = CRUD_Templates.getAllNamesTemplates(_connectionString);
+            //tmp.Add(new Template(Id: 0, Name: "Нет шаблона", Content: null));
             comboBoxTemplate.DataSource = tmp;
             comboBoxTemplate.DisplayMember = "name";
             comboBoxTemplate.ValueMember = "id";
@@ -158,14 +159,6 @@ namespace Diploma.Views.ClassForms
                 MessageBox.Show("Необходимо выбрать файл", "Ошибка");
                 return false;
             }
-
-            // Проверка шаблона
-            if (comboBoxTemplate.SelectedValue == null)
-            {
-                MessageBox.Show("Необходимо выбрать шаблон", "Ошибка");
-                return false;
-            }
-
             return true;
         }
     }
