@@ -729,5 +729,9 @@ namespace Diploma.Views
             }
         }
 
+        private void EditDBForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

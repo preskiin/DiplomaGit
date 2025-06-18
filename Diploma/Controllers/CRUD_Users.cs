@@ -15,6 +15,7 @@ namespace Diploma.Controllers
     {
         private String _connectionString;
         private int _pageSize=50;
+
         public CRUD_Users(string con_str)
         {
             _connectionString = con_str;
@@ -99,24 +100,24 @@ namespace Diploma.Controllers
         }
 
         //Возвращает страницу из пользователей (заданное число записей)
-        public IEnumerable<User> getPage(int pageNumber)
-        {
-            String sql = @"
-            SELECT * FROM People
-            ORDER BY id
-            OFFSET @Offset ROWS
-            FETCH NEXT @PageSize ROWS ONLY";
-            SqlConnection connection = new SqlConnection(_connectionString);
-            SqlCommand command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@Offset", (pageNumber - 1) * _pageSize);
-            command.Parameters.AddWithValue("@PageSize", _pageSize);
-            connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                yield return User.FromDataReader(reader);
-            }
-        }
+        //public IEnumerable<User> getPage(int pageNumber)
+        //{
+        //    String sql = @"
+        //    SELECT * FROM People
+        //    ORDER BY id
+        //    OFFSET @Offset ROWS
+        //    FETCH NEXT @PageSize ROWS ONLY";
+        //    SqlConnection connection = new SqlConnection(_connectionString);
+        //    SqlCommand command = new SqlCommand(sql, connection);
+        //    command.Parameters.AddWithValue("@Offset", (pageNumber - 1) * _pageSize);
+        //    command.Parameters.AddWithValue("@PageSize", _pageSize);
+        //    connection.Open();
+        //    SqlDataReader reader = command.ExecuteReader();
+        //    while (reader.Read())
+        //    {
+        //        yield return User.FromDataReader(reader);
+        //    }
+        //}
 
         public System.Data.DataTable getPageAsDataTable(int pageNumber)
         {

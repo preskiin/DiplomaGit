@@ -96,6 +96,7 @@
             this.button3.TabIndex = 5;
             this.button3.Text = "Сохранить HTML после DOCX";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // webView21
@@ -107,7 +108,7 @@
             this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
             this.webView21.Location = new System.Drawing.Point(299, 12);
             this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(860, 603);
+            this.webView21.Size = new System.Drawing.Size(849, 603);
             this.webView21.TabIndex = 6;
             this.webView21.ZoomFactor = 1D;
             this.webView21.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.webView21_NavigationCompleted);
@@ -225,7 +226,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1171, 645);
+            this.ClientSize = new System.Drawing.Size(1160, 645);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);

@@ -57,12 +57,12 @@ namespace Diploma.Controllers
                     if (reader.Read())
                     {
                         return new Document
-                        {
-                            id = reader.GetInt64(reader.GetOrdinal("id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                            FileContent = reader["FileContent"] as byte[],
-                            IdTemplate = reader.GetInt64(reader.GetOrdinal("IdTemplate"))
-                        };
+                        (
+                            id : reader.GetInt64(reader.GetOrdinal("id")),
+                            name: reader.GetString(reader.GetOrdinal("Name")),
+                            fileContent: reader["FileContent"] as byte[],
+                            idTemplate: reader.GetInt64(reader.GetOrdinal("IdTemplate"))
+                        );
                     }
                 }
             }
@@ -103,7 +103,7 @@ namespace Diploma.Controllers
             WHERE id = @id";
 
                 var command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@id", document.id);
+                command.Parameters.AddWithValue("@id", document.Id);
                 command.Parameters.AddWithValue("@Name", document.Name);
                 command.Parameters.AddWithValue("@FileContent", document.FileContent ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@IdTemplate", document.IdTemplate);

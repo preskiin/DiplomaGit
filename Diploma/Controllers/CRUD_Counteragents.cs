@@ -150,33 +150,34 @@ namespace Diploma.Controllers
             }
         }
 
-        // Поиск контрагентов по имени
-        public List<Counteragent> SearchByName(string searchTerm)
-        {
-            var agents = new List<Counteragent>();
-            string sql = @"
-            SELECT * FROM Counteragents
-            WHERE Name LIKE @SearchTerm
-            ORDER BY Name";
+        //// Поиск контрагентов по имени
+        //public List<Counteragent> SearchByName(string searchTerm)
+        //{
+        //    var agents = new List<Counteragent>();
+        //    string sql = @"
+        //    SELECT * FROM Counteragents
+        //    WHERE Name LIKE @SearchTerm
+        //    ORDER BY Name";
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                var command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
+        //    using (var connection = new SqlConnection(_connectionString))
+        //    {
+        //        var command = new SqlCommand(sql, connection);
+        //        command.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
 
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        agents.Add(Counteragent.FromDataReader(reader));
-                    }
-                }
-            }
-            return agents;
-        }
+        //        connection.Open();
+        //        using (var reader = command.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                agents.Add(Counteragent.FromDataReader(reader));
+        //            }
+        //        }
+        //    }
+        //    return agents;
+        //}
 
         // Получение всех контрагентов
+
         public static List<Counteragent> getAllCounteragents(String connection_string)
         {
             var agents = new List<Counteragent>();

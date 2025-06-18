@@ -24,18 +24,21 @@ namespace Diploma.Controllers
             positions,
             operations,
             counteragents,
-            products
+            products,
+            order,
+            orderItems,
         }
 
         public struct elemToCreate
         {
-            public string name_element;//название элемента
-            public string show_field;//Отображаемое значение (первое слово - таблица, в которой лежит искомое значение; второе слово - поле в таблице с искомым значением)
-            public string name_to_connect_element; // название элемента, к которому привязан (если не привязан - null, если является начальным списком - base)
-            public bool is_filled; //готов этот элемент к формированию документ или не готов
-            public string value;//значение, которые присвоено этому элементу. У List это ID, у привязанных полей - значение, которое берется из запроса в базу, у простых текстовых - значения в тексте 
-            public string className;
-            public string anotherTableField;
+            public string name_element;
+            public string name_to_connect_element;
+            public string need_field;
+            public string need_table;
+            public string current_field;
+            public string current_table;
+            public string value;
+            public bool is_filled;
         }
 
         private String _connection;
@@ -43,21 +46,13 @@ namespace Diploma.Controllers
         private int counter = 0;
 
         public List<elemToCreate> elements;
-        //private String text;
+       
 
         public DocumentController(String con)
         {
             _connection = con;
         }
 
-
-        //public void loadDocument()
-        //{
-
-
-        //}
-
-        //с помощью Aspose.Words формирует html-код страницу
         public bool docxToHtml(string docxPath)
         {
             if (System.IO.File.Exists(docxPath))
@@ -78,9 +73,6 @@ namespace Diploma.Controllers
                 }
                 stream.Close();
                 cleanFromWatermarks();
-                //getElementsFromHtml("template2003");
-                //this.counter = this.elements.Count;
-                //if (putStringAfter("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">", "<head>") != -1)
                 return true;
             }
             else
@@ -166,35 +158,18 @@ namespace Diploma.Controllers
         }
 
         //сохраняет html-код на рабочий стол
-        public async void saveHtml(Microsoft.Web.WebView2.WinForms.WebView2 webView)
+        public void saveHtml(string htmlString)
         {
             if (this.htmlCode != null)
             {
-                this.htmlCode =  await getHtmlFromWebView2(webView);
+                this.htmlCode =  htmlString;
                 File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\MyHtml.html", this.htmlCode);
             }
         }
 
-        //создает строку html из страницы, которая отображена сейчас в webView2
-        public async Task<string> getHtmlFromWebView2(Microsoft.Web.WebView2.WinForms.WebView2 webView)
+        public void setHtml(String htmlString)
         {
-            try
-            {
-                // Получаем HTML с помощью JavaScript
-                string encodedHtml = await webView.CoreWebView2.ExecuteScriptAsync(
-                    "document.documentElement.outerHTML;"
-                );
-
-                // Декодируем JSON-строку (удаляем кавычки и экранированные символы)
-                string cleanHtml = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(encodedHtml);
-                this.htmlCode = cleanHtml;
-                return cleanHtml;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при получении HTML: {ex.Message}");
-                return null;
-            }
+            this.htmlCode=htmlString;
         }
 
         public void getElementsFromHtml(String classToFind)
@@ -210,12 +185,13 @@ namespace Diploma.Controllers
                 {
                     elemToCreate elem = new elemToCreate();
                     elem.name_element = node.Attributes["data-name-element"].Value;
-                    elem.show_field = node.Attributes["data-show-field"].Value;
                     elem.name_to_connect_element = node.Attributes["data-name-to-connect"].Value;
-                    elem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
+                    elem.need_field = node.Attributes["data-need-field"].Value;
+                    elem.need_table = node.Attributes["data-need-table"].Value;
+                    elem.current_field = node.Attributes["data-current-field"].Value;
+                    elem.current_table = node.Attributes["data-current-table"].Value;
                     elem.value = node.Attributes["data-value"].Value;
-                    elem.className = node.Attributes["data-class-name"].Value;
-                    elem.anotherTableField = node.Attributes["data-another-table-field"].Value;
+                    elem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
                     this.elements.Add(elem);
                 }
                 this.counter = this.elements.Count;
@@ -288,12 +264,13 @@ namespace Diploma.Controllers
                 foreach (var node in nodes)
                 {
                     tmpElem.name_element = node.Attributes["data-name-element"].Value;
-                    tmpElem.show_field = node.Attributes["data-show-field"].Value;
                     tmpElem.name_to_connect_element = node.Attributes["data-name-to-connect"].Value;
-                    tmpElem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
+                    tmpElem.need_field = node.Attributes["data-need-field"].Value;
+                    tmpElem.need_table = node.Attributes["data-need-table"].Value;
+                    tmpElem.current_field = node.Attributes["data-current-field"].Value;
+                    tmpElem.current_table = node.Attributes["data-current-field"].Value;
                     tmpElem.value = node.Attributes["data-value"].Value;
-                    tmpElem.className = node.Attributes["data-class-name"].Value;
-                    tmpElem.anotherTableField = node.Attributes["data-another-table-field"].Value;
+                    tmpElem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
                 }
             }
             return tmpElem;
@@ -307,12 +284,14 @@ namespace Diploma.Controllers
             StringBuilder html = new StringBuilder();
             html.AppendLine(@$"<input type='text' class='template2003' 
                 data-name-element='{element.name_element}'
-                data-show-field={element.show_field}
                 data-name-to-connect={element.name_to_connect_element}
-                data-is-filled={element.is_filled}
+                data-need-field={element.need_field}
+                data-need-table={element.need_table}
+                data-current-field={element.current_field}
+                data-current-field={element.current_table}
                 data-value={element.value}
-                data-class-name='{element.className}'
-                data-another-table-field='{element.anotherTableField}'placeholder='--{element.name_element}--' readonly>
+                data-is-filled={element.is_filled}
+                'placeholder='--{element.name_element}--' readonly>
                 ");
             return html.ToString();
         }

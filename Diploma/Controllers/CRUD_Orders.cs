@@ -34,8 +34,7 @@ namespace Diploma.Controllers
 
                 var command = new SqlCommand(sql, connection);
 
-                command.Parameters.AddWithValue("@Number",
-                    order.Number.HasValue ? (object)order.Number.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@Number", order.Number);
                 command.Parameters.AddWithValue("@IdCounteragent",
                     order.IdCounteragent.HasValue ? (object)order.IdCounteragent.Value : DBNull.Value);
                 command.Parameters.AddWithValue("@OrderDate", order.OrderDate);
@@ -148,8 +147,7 @@ namespace Diploma.Controllers
 
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@id", order.Id);
-                command.Parameters.AddWithValue("@Number",
-                    order.Number.HasValue ? (object)order.Number.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@Number", order.Number);
                 command.Parameters.AddWithValue("@IdCounteragent",
                     order.IdCounteragent.HasValue ? (object)order.IdCounteragent.Value : DBNull.Value);
                 command.Parameters.AddWithValue("@OrderDate", order.OrderDate);

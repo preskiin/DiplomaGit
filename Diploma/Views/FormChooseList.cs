@@ -46,7 +46,7 @@ namespace Diploma.Views
             {
                 if (element.name_element == listNameChoice)
                 {
-                    listClassChoice = element.className;
+                    //listClassChoice = element.className;
                     break;
                 }
             }
@@ -114,97 +114,97 @@ namespace Diploma.Views
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             var showNameChoice = Convert.ToString(comboBox2.Items[comboBox2.SelectedIndex]);
-            switch (showNameChoice)
-            {
-                case "Должность человека":
-                    {
-                        this.currentElement.className = "User";
-                        this.currentElement.show_field = "IdPosition";
-                        break;
-                    }
-                case "Номер рабочего места":
-                    {
-                        this.currentElement.className = "User";
-                        this.currentElement.show_field = "Place";
-                        break;
-                    }
-                case "Сектор должности":
-                    {
-                        this.currentElement.className = "Position";
-                        this.currentElement.show_field = "Sector";
-                        break;
-                    }
-                case "Отдел должности":
-                    {
-                        this.currentElement.className = "Position";
-                        this.currentElement.show_field = "Department";
-                        break;
-                    }
-                case "Должность, которая это может выполнить":
-                    {
-                        this.currentElement.className = "Operation";
-                        this.currentElement.show_field = "IdPosition";
-                        break;
-                    }
-                case "Название действия":
-                    {
-                        this.currentElement.className = "Operation";
-                        this.currentElement.show_field = "Name";
-                        break;
-                    }
-                case "Описание действия":
-                    {
-                        this.currentElement.className = "Operation";
-                        this.currentElement.show_field = "Description";
-                        break;
-                    }
-                case "Описание товара":
-                    {
-                        this.currentElement.className = "Product";
-                        this.currentElement.show_field = "Description";
-                        break;
-                    }
-                case "Цена товара":
-                    {
-                        this.currentElement.className = "Product";
-                        this.currentElement.show_field = "Price";
-                        break;
-                    }
-                case "Контрагент":
-                    {
-                        this.currentElement.className = "Order";
-                        this.currentElement.show_field = "IdCounteragent";
-                        break;
-                    }
-                case "Номер заказа":
-                    {
-                        this.currentElement.className = "Order";
-                        this.currentElement.show_field = "Number";
-                        break;
-                    }
-                case "Дата заказа":
-                    {
-                        this.currentElement.className = "Order";
-                        this.currentElement.show_field = "OrderDate";
-                        break;
-                    }
-                case "Дата доставки":
-                    {
-                        this.currentElement.className = "Order";
-                        this.currentElement.show_field = "DeliveryDate";
-                        break;
-                    }
-                case "Комментарий к заказу":
-                    {
-                        this.currentElement.className = "Order";
-                        this.currentElement.show_field = "Comment";
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
-            }
+            //switch (showNameChoice)
+            //{
+            //    case "Должность человека":
+            //        {
+            //            this.currentElement.className = "User";
+            //            this.currentElement.show_field = "IdPosition";
+            //            break;
+            //        }
+            //    case "Номер рабочего места":
+            //        {
+            //            this.currentElement.className = "User";
+            //            this.currentElement.show_field = "Place";
+            //            break;
+            //        }
+            //    case "Сектор должности":
+            //        {
+            //            this.currentElement.className = "Position";
+            //            this.currentElement.show_field = "Sector";
+            //            break;
+            //        }
+            //    case "Отдел должности":
+            //        {
+            //            this.currentElement.className = "Position";
+            //            this.currentElement.show_field = "Department";
+            //            break;
+            //        }
+            //    case "Должность, которая это может выполнить":
+            //        {
+            //            this.currentElement.className = "Operation";
+            //            this.currentElement.show_field = "IdPosition";
+            //            break;
+            //        }
+            //    case "Название действия":
+            //        {
+            //            this.currentElement.className = "Operation";
+            //            this.currentElement.show_field = "Name";
+            //            break;
+            //        }
+            //    case "Описание действия":
+            //        {
+            //            this.currentElement.className = "Operation";
+            //            this.currentElement.show_field = "Description";
+            //            break;
+            //        }
+            //    case "Описание товара":
+            //        {
+            //            this.currentElement.className = "Product";
+            //            this.currentElement.show_field = "Description";
+            //            break;
+            //        }
+            //    case "Цена товара":
+            //        {
+            //            this.currentElement.className = "Product";
+            //            this.currentElement.show_field = "Price";
+            //            break;
+            //        }
+            //    case "Контрагент":
+            //        {
+            //            this.currentElement.className = "Order";
+            //            this.currentElement.show_field = "IdCounteragent";
+            //            break;
+            //        }
+            //    case "Номер заказа":
+            //        {
+            //            this.currentElement.className = "Order";
+            //            this.currentElement.show_field = "Number";
+            //            break;
+            //        }
+            //    case "Дата заказа":
+            //        {
+            //            this.currentElement.className = "Order";
+            //            this.currentElement.show_field = "OrderDate";
+            //            break;
+            //        }
+            //    case "Дата доставки":
+            //        {
+            //            this.currentElement.className = "Order";
+            //            this.currentElement.show_field = "DeliveryDate";
+            //            break;
+            //        }
+            //    case "Комментарий к заказу":
+            //        {
+            //            this.currentElement.className = "Order";
+            //            this.currentElement.show_field = "Comment";
+            //            break;
+            //        }
+            //    default:
+            //        {
+            //            break;
+            //        }
+            //}
         }
     }
 }

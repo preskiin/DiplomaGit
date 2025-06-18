@@ -38,12 +38,13 @@ namespace Diploma
                 dynamic data = JsonConvert.DeserializeObject(message);
                 var tmpElem = new DocumentController.elemToCreate();
                 tmpElem.name_element = data.nameElement;
-                tmpElem.show_field = data.showField;
-                tmpElem.name_to_connect_element = data.nameToConnectElement;
-                tmpElem.is_filled = data.isFilled;
+                tmpElem.name_to_connect_element = data.nameToConnect;
+                tmpElem.need_field = data.needField;
+                tmpElem.need_table = data.needTable;
+                tmpElem.current_field = data.currentField;
+                tmpElem.current_table = data.currentTable;
                 tmpElem.value = data.value;
-                tmpElem.className = data.className;
-                tmpElem.anotherTableField = data.anotherTableField;
+                tmpElem.is_filled = Convert.ToBoolean(data.isFilled);
                 docController.updateListElements(tmpElem);
             }
         }
@@ -53,7 +54,7 @@ namespace Diploma
             textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
             await webView21.EnsureCoreWebView2Async();
             this.webView21.CoreWebView2.Settings.IsScriptEnabled = true;
-            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
+            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/Test.html");
             webView21.CoreWebView2.NavigateToString(htmlContent);
             //////this.webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
 
@@ -63,9 +64,9 @@ namespace Diploma
             this.webView21.CoreWebView2.ContextMenuRequested += onContextMenuRequested; //подписка на событие о нажатии ПКМ внутри webview2
             this.webView21.CoreWebView2.WebMessageReceived += onAnswerFromWeb; //подписка на событие об ответе с webview2 о выборе элемента в списке
             docController = new DocumentController(_connection);
-            await docController.getHtmlFromWebView2(this.webView21);
+            String htmlCodeFromWV = await getHtmlFromWebView2();
+            docController.setHtml(htmlCodeFromWV);
             
-        
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -80,11 +81,33 @@ namespace Diploma
             }    
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
-            docController.saveHtml(this.webView21);
+            String htmlCodeFormWV = await getHtmlFromWebView2();
+            docController.saveHtml(htmlCodeFormWV);
         }
 
+
+        //создает строку html из страницы, которая отображена сейчас в webView2
+        public async Task<string> getHtmlFromWebView2()
+        {
+            try
+            {
+                // Получаем HTML с помощью JavaScript
+                string encodedHtml = await webView21.CoreWebView2.ExecuteScriptAsync(
+                    "document.documentElement.outerHTML;"
+                );
+
+                // Декодируем JSON-строку (удаляем кавычки и экранированные символы)
+                string cleanHtml = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(encodedHtml);
+                return cleanHtml;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении HTML: {ex.Message}");
+                return null;
+            }
+        }
         private void button3_Click(object sender, EventArgs e)
         {
             //docController.addListInput(docController.getHtml().IndexOf("<div>") + 5);

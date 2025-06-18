@@ -258,6 +258,9 @@
     <EmbeddedResource Include="Views\FormChooseList.resx">
       <DependentUpon>FormChooseList.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\MainMenuForm.resx">
+      <DependentUpon>MainMenuForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\TemplateForm.resx">
       <DependentUpon>TemplateForm.cs</DependentUpon>
     </EmbeddedResource>

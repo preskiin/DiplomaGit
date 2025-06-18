@@ -43,7 +43,7 @@ namespace Diploma.Views.ClassForms
                 {
                     orderTmp = new Order(
                         id: 0,
-                        number: String.IsNullOrEmpty(textBoxNumber.Text) ? null : (Int64?)Convert.ToInt64(textBoxNumber.Text),
+                        number: Convert.ToInt64(textBoxNumber.Text),
                         idCounteragent: (Int64?)comboBoxCounteragent.SelectedValue,
                         orderDate: dateTimePickerOrderDate.Value,
                         deliveryDate: checkBoxDeliveryDate.Checked ? dateTimePickerDeliveryDate.Value : (DateTime?)null,
@@ -55,7 +55,7 @@ namespace Diploma.Views.ClassForms
                 {
                     orderTmp = new Order(
                         id: orderTmp.Id,
-                        number: String.IsNullOrEmpty(textBoxNumber.Text) ? null : (Int64?)Convert.ToInt64(textBoxNumber.Text),
+                        number: Convert.ToInt64(textBoxNumber.Text),
                         idCounteragent: (Int64?)comboBoxCounteragent.SelectedValue,
                         orderDate: dateTimePickerOrderDate.Value,
                         deliveryDate: checkBoxDeliveryDate.Checked ? dateTimePickerDeliveryDate.Value : (DateTime?)null,
@@ -92,7 +92,7 @@ namespace Diploma.Views.ClassForms
             if (orderTmp != null)
             {
                 this.Text = "Редактирование заказа";
-                textBoxNumber.Text = orderTmp.Number?.ToString() ?? "";
+                textBoxNumber.Text = orderTmp.Number.ToString();
                 comboBoxCounteragent.SelectedValue = orderTmp.IdCounteragent ?? -1;
                 dateTimePickerOrderDate.Value = orderTmp.OrderDate;
 

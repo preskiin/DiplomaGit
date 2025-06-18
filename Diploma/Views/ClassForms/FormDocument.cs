@@ -98,12 +98,12 @@ namespace Diploma.Views.ClassForms
                 try
                 {
                     var document = new Document
-                    {
-                        id = documentTmp?.id ?? 0,
-                        Name = textBoxName.Text,
-                        FileContent = _fileContent,
-                        IdTemplate = (long)comboBoxTemplate.SelectedValue
-                    };
+                    (
+                        id: documentTmp.Id ,
+                        name: textBoxName.Text,
+                        fileContent: _fileContent,
+                        idTemplate: (long)comboBoxTemplate.SelectedValue
+                    );
 
                     var crud = new CRUD_Documents(_connectionString);
 
