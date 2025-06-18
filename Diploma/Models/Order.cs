@@ -11,14 +11,14 @@ namespace Diploma.Models
     public class Order
     {
         private Int64 _id;
-        private Int64? _number;          // Может быть null
-        private Int64? _idCounteragent;  // Может быть null
+        private Int64 _number;          
+        private Int64? _idCounteragent;
         private DateTime _orderDate;
-        private DateTime? _deliveryDate; // Может быть null
-        private String _comment;         // Может быть null
+        private DateTime? _deliveryDate;
+        private String _comment;
 
         public Int64 Id { get { return _id; } }
-        public Int64? Number { get { return _number; } }
+        public Int64 Number { get { return _number; } } 
         public Int64? IdCounteragent { get { return _idCounteragent; } }
         public DateTime OrderDate { get { return _orderDate; } }
         public DateTime? DeliveryDate { get { return _deliveryDate; } }
@@ -28,7 +28,7 @@ namespace Diploma.Models
         public Order()
         {
             this._id = 0;
-            this._number = null;
+            this._number = 0;  
             this._idCounteragent = null;
             this._orderDate = DateTime.Now;
             this._deliveryDate = null;
@@ -36,11 +36,11 @@ namespace Diploma.Models
         }
 
         // Основной конструктор
-        public Order(Int64 id, Int64? number, Int64? idCounteragent,
+        public Order(Int64 id, Int64 number, Int64? idCounteragent,  
                     DateTime orderDate, DateTime? deliveryDate, String comment)
         {
             this._id = id;
-            this._number = number;
+            this._number = number;       
             this._idCounteragent = idCounteragent;
             this._orderDate = orderDate;
             this._deliveryDate = deliveryDate;
@@ -58,41 +58,50 @@ namespace Diploma.Models
             this._comment = orderToCopy._comment;
         }
 
-        // Создание объекта из SqlDataReader
+        // Создание из SqlDataReader
         public static Order FromDataReader(SqlDataReader reader)
         {
             return new Order(
                 id: reader.GetInt64(reader.GetOrdinal("id")),
-                number: reader.IsDBNull(reader.GetOrdinal("Number")) ?
-                       (Int64?)null : reader.GetInt64(reader.GetOrdinal("Number")),
-                idCounteragent: reader.IsDBNull(reader.GetOrdinal("IdCounteragent")) ?
-                              (Int64?)null : reader.GetInt64(reader.GetOrdinal("IdCounteragent")),
+                number: reader.IsDBNull(reader.GetOrdinal("Number"))
+                       ? 0 
+                       : reader.GetInt64(reader.GetOrdinal("Number")),
+                idCounteragent: reader.IsDBNull(reader.GetOrdinal("IdCounteragent"))
+                              ? null
+                              : reader.GetInt64(reader.GetOrdinal("IdCounteragent")),
                 orderDate: reader.GetDateTime(reader.GetOrdinal("OrderDate")),
-                deliveryDate: reader.IsDBNull(reader.GetOrdinal("DeliveryDate")) ?
-                            (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("DeliveryDate")),
-                comment: reader.IsDBNull(reader.GetOrdinal("Comment")) ?
-                       null : reader.GetString(reader.GetOrdinal("Comment"))
+                deliveryDate: reader.IsDBNull(reader.GetOrdinal("DeliveryDate"))
+                            ? null
+                            : reader.GetDateTime(reader.GetOrdinal("DeliveryDate")),
+                comment: reader.IsDBNull(reader.GetOrdinal("Comment"))
+                       ? null
+                       : reader.GetString(reader.GetOrdinal("Comment"))
             );
         }
 
-        // Получение заказа из ряда DataGridView
+        // Создание из DataGridViewRow
         public Order(DataGridViewRow row)
         {
             if (row != null)
             {
                 _id = Convert.ToInt64(row.Cells["id"].Value);
-                _number = row.Cells["Number"].Value == DBNull.Value ?
-                         (Int64?)null : Convert.ToInt64(row.Cells["Number"].Value);
-                _idCounteragent = row.Cells["IdCounteragent"].Value == DBNull.Value ?
-                                (Int64?)null : Convert.ToInt64(row.Cells["IdCounteragent"].Value);
+                _number = row.Cells["Number"].Value == DBNull.Value
+                         ? 0 
+                         : Convert.ToInt64(row.Cells["Number"].Value);
+                _idCounteragent = row.Cells["IdCounteragent"].Value == DBNull.Value
+                                 ? null
+                                 : Convert.ToInt64(row.Cells["IdCounteragent"].Value);
                 _orderDate = Convert.ToDateTime(row.Cells["OrderDate"].Value);
-                _deliveryDate = row.Cells["DeliveryDate"].Value == DBNull.Value ?
-                              (DateTime?)null : Convert.ToDateTime(row.Cells["DeliveryDate"].Value);
-                _comment = row.Cells["Comment"].Value == DBNull.Value ?
-                         null : row.Cells["Comment"].Value.ToString();
+                _deliveryDate = row.Cells["DeliveryDate"].Value == DBNull.Value
+                               ? null
+                               : Convert.ToDateTime(row.Cells["DeliveryDate"].Value);
+                _comment = row.Cells["Comment"].Value == DBNull.Value
+                         ? null
+                         : row.Cells["Comment"].Value.ToString();
             }
         }
 
+        // Остальные методы без изменений
         public static String findNumberInList(List<Order> list, Int64 indexToFind)
         {
             foreach (Order order in list)
@@ -104,11 +113,11 @@ namespace Diploma.Models
             }
             return "Не найдено";
         }
-        // Проверка валидности данных
+
         public Boolean IsValid()
         {
             return (_id >= 0 &&
-                   (_deliveryDate == null || _orderDate <= _deliveryDate));
+                   (_deliveryDate == null || _orderDate <= _deliveryDate) && _number>0);
         }
     }
 }

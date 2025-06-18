@@ -13,7 +13,7 @@ namespace Diploma.Models
     public class User
     {
         private Int64 _id;
-        private Int64? _id_position;  // Изменено на nullable тип
+        private Int64? _id_position;
         private String _name;
         private String _surname;
         private String _patronymic;
@@ -22,7 +22,7 @@ namespace Diploma.Models
         private String _password;
 
         public Int64 Id { get { return _id; } }
-        public Int64? IdPosition { get { return _id_position; } }  // Изменено на nullable
+        public Int64? IdPosition { get { return _id_position; } }
         public String Name { get { return _name; } }
         public String Surname { get { return _surname; } }
         public String Patronymic { get { return _patronymic; } }
@@ -33,7 +33,7 @@ namespace Diploma.Models
         public User()
         {
             this._id = 0;
-            this._id_position = null;  // Значение по умолчанию - null
+            this._id_position = null;
             this._name = "nobody";
             this._surname = "nobody";
             this._patronymic = "nobody";
@@ -46,7 +46,7 @@ namespace Diploma.Models
                    String patronymic, Int32 place_num, String login, String password)
         {
             this._id = id;
-            this._id_position = id_position;  // Может быть null
+            this._id_position = id_position; 
             this._name = name;
             this._surname = surname;
             this._patronymic = patronymic;
@@ -101,7 +101,7 @@ namespace Diploma.Models
             }
         }
 
-        // Проверка валидности данных (убрана проверка _id_position > 0)
+        // Проверка валидности данных 
         public Boolean IsValid()
         {
             return (!String.IsNullOrEmpty(_name)

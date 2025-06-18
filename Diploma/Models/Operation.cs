@@ -15,10 +15,10 @@ namespace Diploma.Models
         private String _name;
         private String _description;
 
-        public Int64 Id => _id;
-        public Int64 IdPosition => _idPosition;
-        public String Name => _name;
-        public String Description => _description;
+        public Int64 Id { get { return _id; } }
+        public Int64 IdPosition { get { return _idPosition; } }
+        public String Name { get { return _name; } }
+        public String Description { get { return _description; } }
 
         // Конструктор со всеми полями
         public Operation(Int64 id, Int64 idPosition, String name, String description)
