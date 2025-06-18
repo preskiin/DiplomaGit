@@ -48,13 +48,14 @@
             this.привязанныйСписокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.привязанноеПолеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.текстовоеПолеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(10, 12);
+            this.textBox1.Location = new System.Drawing.Point(12, 39);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(283, 20);
             this.textBox1.TabIndex = 1;
@@ -71,10 +72,11 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(10, 56);
+            this.textBox2.Location = new System.Drawing.Point(10, 266);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(283, 20);
             this.textBox2.TabIndex = 3;
+            this.textBox2.Visible = false;
             // 
             // button2
             // 
@@ -118,6 +120,7 @@
             this.button4.TabIndex = 7;
             this.button4.Text = "Список";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Visible = false;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
@@ -128,6 +131,7 @@
             this.button5.TabIndex = 8;
             this.button5.Text = "button5";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Visible = false;
             // 
             // contextMenuStrip1
             // 
@@ -155,38 +159,38 @@
             // работникиToolStripMenuItem
             // 
             this.работникиToolStripMenuItem.Name = "работникиToolStripMenuItem";
-            this.работникиToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.работникиToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.работникиToolStripMenuItem.Text = "Работники";
             this.работникиToolStripMenuItem.Click += new System.EventHandler(this.работникиToolStripMenuItem_Click);
             // 
             // должностиToolStripMenuItem
             // 
             this.должностиToolStripMenuItem.Name = "должностиToolStripMenuItem";
-            this.должностиToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.должностиToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.должностиToolStripMenuItem.Text = "Должности";
             // 
             // действияToolStripMenuItem
             // 
             this.действияToolStripMenuItem.Name = "действияToolStripMenuItem";
-            this.действияToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.действияToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.действияToolStripMenuItem.Text = "Действия";
             // 
             // заказыToolStripMenuItem
             // 
             this.заказыToolStripMenuItem.Name = "заказыToolStripMenuItem";
-            this.заказыToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.заказыToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.заказыToolStripMenuItem.Text = "Заказы";
             // 
             // товарыToolStripMenuItem
             // 
             this.товарыToolStripMenuItem.Name = "товарыToolStripMenuItem";
-            this.товарыToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.товарыToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.товарыToolStripMenuItem.Text = "Товары";
             // 
             // контрагентыToolStripMenuItem
             // 
             this.контрагентыToolStripMenuItem.Name = "контрагентыToolStripMenuItem";
-            this.контрагентыToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.контрагентыToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.контрагентыToolStripMenuItem.Text = "Контрагенты";
             // 
             // привязанныйСписокToolStripMenuItem
@@ -208,11 +212,21 @@
             this.текстовоеПолеToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.текстовоеПолеToolStripMenuItem.Text = "Текстовое поле";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(218, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Введите адрес файла .docx для открытия";
+            // 
             // TemplateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1171, 645);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.webView21);
@@ -222,7 +236,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Name = "TemplateForm";
-            this.Text = "Form1";
+            this.Text = "Редактирование документа";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
@@ -251,6 +265,7 @@
         private System.Windows.Forms.ToolStripMenuItem товарыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem контрагентыToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem привязанныйСписокToolStripMenuItem;
+        private System.Windows.Forms.Label label1;
     }
 }
 

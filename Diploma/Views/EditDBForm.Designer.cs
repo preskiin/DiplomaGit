@@ -37,8 +37,12 @@
             this.операцииToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.пользователиработникиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.должностиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.документыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.контрагентыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.заказыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.деталиЗаказовToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.товарыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.шаблоныToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.документыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.действияСЗаписямиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.добавитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.изменитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,10 +56,6 @@
             this.bindingNavigatorPositionItem = new System.Windows.Forms.ToolStripTextBox();
             this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.контрагентыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.заказыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.деталиЗаказовToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.товарыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -128,12 +128,33 @@
             this.должностиToolStripMenuItem.Text = "Должности";
             this.должностиToolStripMenuItem.Click += new System.EventHandler(this.должностиToolStripMenuItem_Click);
             // 
-            // документыToolStripMenuItem
+            // контрагентыToolStripMenuItem
             // 
-            this.документыToolStripMenuItem.Name = "документыToolStripMenuItem";
-            this.документыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.документыToolStripMenuItem.Text = "Документы";
-            this.документыToolStripMenuItem.Click += new System.EventHandler(this.документыToolStripMenuItem_Click);
+            this.контрагентыToolStripMenuItem.Name = "контрагентыToolStripMenuItem";
+            this.контрагентыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.контрагентыToolStripMenuItem.Text = "Контрагенты";
+            this.контрагентыToolStripMenuItem.Click += new System.EventHandler(this.контрагентыToolStripMenuItem_Click);
+            // 
+            // заказыToolStripMenuItem
+            // 
+            this.заказыToolStripMenuItem.Name = "заказыToolStripMenuItem";
+            this.заказыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.заказыToolStripMenuItem.Text = "Заказы";
+            this.заказыToolStripMenuItem.Click += new System.EventHandler(this.заказыToolStripMenuItem_Click);
+            // 
+            // деталиЗаказовToolStripMenuItem
+            // 
+            this.деталиЗаказовToolStripMenuItem.Name = "деталиЗаказовToolStripMenuItem";
+            this.деталиЗаказовToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.деталиЗаказовToolStripMenuItem.Text = "Детали заказов";
+            this.деталиЗаказовToolStripMenuItem.Click += new System.EventHandler(this.деталиЗаказовToolStripMenuItem_Click);
+            // 
+            // товарыToolStripMenuItem
+            // 
+            this.товарыToolStripMenuItem.Name = "товарыToolStripMenuItem";
+            this.товарыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.товарыToolStripMenuItem.Text = "Товары";
+            this.товарыToolStripMenuItem.Click += new System.EventHandler(this.товарыToolStripMenuItem_Click);
             // 
             // шаблоныToolStripMenuItem
             // 
@@ -141,6 +162,13 @@
             this.шаблоныToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.шаблоныToolStripMenuItem.Text = "Шаблоны";
             this.шаблоныToolStripMenuItem.Click += new System.EventHandler(this.шаблоныToolStripMenuItem_Click);
+            // 
+            // документыToolStripMenuItem
+            // 
+            this.документыToolStripMenuItem.Name = "документыToolStripMenuItem";
+            this.документыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.документыToolStripMenuItem.Text = "Документы";
+            this.документыToolStripMenuItem.Click += new System.EventHandler(this.документыToolStripMenuItem_Click);
             // 
             // действияСЗаписямиToolStripMenuItem
             // 
@@ -186,7 +214,7 @@
             // добавитьToolStripMenuItem1
             // 
             this.добавитьToolStripMenuItem1.Name = "добавитьToolStripMenuItem1";
-            this.добавитьToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.добавитьToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
             this.добавитьToolStripMenuItem1.Text = "Добавить";
             // 
             // изменитьToolStripMenuItem1
@@ -260,34 +288,6 @@
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
             this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // контрагентыToolStripMenuItem
-            // 
-            this.контрагентыToolStripMenuItem.Name = "контрагентыToolStripMenuItem";
-            this.контрагентыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.контрагентыToolStripMenuItem.Text = "Контрагенты";
-            this.контрагентыToolStripMenuItem.Click += new System.EventHandler(this.контрагентыToolStripMenuItem_Click);
-            // 
-            // заказыToolStripMenuItem
-            // 
-            this.заказыToolStripMenuItem.Name = "заказыToolStripMenuItem";
-            this.заказыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.заказыToolStripMenuItem.Text = "Заказы";
-            this.заказыToolStripMenuItem.Click += new System.EventHandler(this.заказыToolStripMenuItem_Click);
-            // 
-            // деталиЗаказовToolStripMenuItem
-            // 
-            this.деталиЗаказовToolStripMenuItem.Name = "деталиЗаказовToolStripMenuItem";
-            this.деталиЗаказовToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.деталиЗаказовToolStripMenuItem.Text = "Детали заказов";
-            this.деталиЗаказовToolStripMenuItem.Click += new System.EventHandler(this.деталиЗаказовToolStripMenuItem_Click);
-            // 
-            // товарыToolStripMenuItem
-            // 
-            this.товарыToolStripMenuItem.Name = "товарыToolStripMenuItem";
-            this.товарыToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.товарыToolStripMenuItem.Text = "Товары";
-            this.товарыToolStripMenuItem.Click += new System.EventHandler(this.товарыToolStripMenuItem_Click);
-            // 
             // EditDBForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,7 +298,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "EditDBForm";
-            this.Text = "TestForm";
+            this.Text = "Форма управления данными";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
