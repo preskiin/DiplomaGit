@@ -741,5 +741,10 @@ namespace Diploma.Views
         {
 
         }
+
+        private void вГлавноеМенюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            localContext.SwitchMainForm(new Diploma.Views.MainMenuForm(localContext, enteredUser, _connection_string));
+        }
     }
 }

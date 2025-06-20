@@ -34,7 +34,7 @@ namespace Diploma.Views
             label1.Text = "Здравствуйте, " + enteredUser.Name + " " + enteredUser.Patronymic + "!";
             if (Diploma.Controllers.CRUD_Positions.getLevel(enteredUser.IdPosition, _connectionString) != 8919409)
             {
-                button4.Enabled = false;
+                button4.Visible = false;
             }
             switch (label1.Text.Length)
             {
@@ -76,6 +76,11 @@ namespace Diploma.Views
         private void button4_Click(object sender, EventArgs e)
         {
             localContext.SwitchMainForm(new Diploma.Views.EditDBForm(localContext, enteredUser, _connectionString));
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            localContext.SwitchMainForm(new Diploma.TemplateForm(localContext, enteredUser, _connectionString));
         }
     }
 }

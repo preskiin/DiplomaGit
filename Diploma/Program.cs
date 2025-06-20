@@ -24,8 +24,8 @@ namespace Diploma
             Diploma.Controllers.MyAppContext context = new Diploma.Controllers.MyAppContext();
             context.MainForm = new Authorize(context, connectionToDb); // Первая главная форма
 
-            Application.Run(new TemplateForm());
-
+            //Application.Run(new TemplateForm());
+            Application.Run(context);
         }
     }
 }

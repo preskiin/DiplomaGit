@@ -18,11 +18,22 @@ namespace Diploma
     public partial class TemplateForm : Form
     {
         private DocumentController docController;
-        private String _connection = "Data Source=PRESKIIN-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        private Diploma.Controllers.MyAppContext localContext;
+        private Diploma.Models.User enteredUser;
+        private String _connection;
+
         public TemplateForm()
         {
             InitializeComponent();
-        } 
+        }
+
+        public TemplateForm(Diploma.Controllers.MyAppContext context, Diploma.Models.User user, String connection)
+        {
+            InitializeComponent();
+            localContext = context;
+            enteredUser = user;
+            _connection = connection;
+        }
 
         private void onContextMenuRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs e)
         {
@@ -111,21 +122,13 @@ namespace Diploma
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            //docController.addListInput(docController.getHtml().IndexOf("<div>") + 5);
-            //this.webView21.NavigateToString(docController.getHtml());
+            localContext.SwitchMainForm(new Diploma.Views.MainMenuForm(localContext, enteredUser, _connection));
         }
 
         private async void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             await webView21.CoreWebView2.ExecuteScriptAsync("document.body.contentEditable = 'true'; document.designMode = 'on';");
             docController.getElementsFromHtml("template2003");
-        }
-
-        private async void button4_Click(object sender, EventArgs e)
-        {
-            //await webView21.EnsureCoreWebView2Async();
-            String html = docController.createListInput(DocumentController.usingCRUD.people);
-            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
         }
 
         private string scriptInsertOnPos(String htmlElem)
@@ -183,6 +186,5 @@ namespace Diploma
             }
             
         }
- 
     }
 }
