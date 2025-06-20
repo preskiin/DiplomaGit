@@ -293,12 +293,14 @@ namespace Diploma.Controllers
             }
             html.AppendLine(@$"<div class='template2003' 
                 data-name-element='{dropdownName}'
-                data-show-field='null'
-                data-name-to-connect='base'
-                data-is-filled='false'
-                data-value='null'
-                data-class-name='User'
-                data-another-table-field=null>
+                data-name-to-connect=base
+                data-need-field=null
+                data-need-table=null
+                data-current-field=Surname_Name_Patronymic
+                data-current-table=People
+                data-type-element=list
+                data-value=null
+                data-is-filled=false>
                 ");
 
             // Создаем input с datalist

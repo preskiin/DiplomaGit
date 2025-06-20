@@ -1,4 +1,5 @@
 ﻿using Diploma.Models;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -188,6 +189,30 @@ namespace Diploma.Controllers
             return result;
         }
         
+        public static Int64 getLevel(Int64? idPosition, String connection)
+        {
+            if (idPosition == null)
+                return -2;//код для заморозки пользователя
+            String sql_exp = "SELECT * FROM Positions WHERE id = @Id";
+            SqlConnection con = new SqlConnection(connection);
+            SqlCommand cmd = new SqlCommand(sql_exp, con);
+            cmd.Parameters.AddWithValue("@Id", idPosition);
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            Int64 result;
+            if (reader.Read())
+            {
+                result = Position.FromDataReader(reader).Level;
+            }
+            else
+            {
+                result = -1;//код отсутствия записи
+            }
+            reader.Close();
+            con.Close();
+            return result;
+        }
+
         public static List<Position> getAllPositions(String connection)
         {
             List<Position> positions = new();

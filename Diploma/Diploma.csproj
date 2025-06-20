@@ -110,6 +110,7 @@
     <Compile Include="Controllers\CRUD_Products.cs" />
     <Compile Include="Controllers\CRUD_Templates.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Controllers\MyAppContext.cs" />
     <Compile Include="Models\Counteragent.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Operation.cs" />

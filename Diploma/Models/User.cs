@@ -73,8 +73,8 @@ namespace Diploma.Models
         {
             return new User(
                 id: reader.GetInt64(reader.GetOrdinal("id")),
-                id_position: reader.IsDBNull(reader.GetOrdinal("Id_position")) ?
-                    (Int64?)null : reader.GetInt64(reader.GetOrdinal("Id_position")),
+                id_position: reader.IsDBNull(reader.GetOrdinal("IdPosition")) ?
+                    (Int64?)null : reader.GetInt64(reader.GetOrdinal("IdPosition")),
                 name: reader.GetString(reader.GetOrdinal("Name")),
                 surname: reader.GetString(reader.GetOrdinal("Surname")),
                 patronymic: reader.GetString(reader.GetOrdinal("Patronymic")),

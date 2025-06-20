@@ -17,7 +17,9 @@ namespace Diploma.Views
 {
     public partial class EditDBForm : Form
     {
-        private String _connection_string = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        private Diploma.Controllers.MyAppContext localContext;
+        private Diploma.Models.User enteredUser;
+        private String _connection_string;
         private CRUD_Positions _positionsCRUD;
         private CRUD_Operations _operationsCRUD;
         private CRUD_Users _usersCRUD;
@@ -48,7 +50,13 @@ namespace Diploma.Views
         {
             InitializeComponent();
         }
-
+        public EditDBForm(Diploma.Controllers.MyAppContext context, Diploma.Models.User user, String connection)
+        {
+            InitializeComponent();
+            localContext = context;
+            enteredUser = user;
+            _connection_string = connection;
+        }
 
         private void операцииToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -16,19 +16,27 @@ namespace Diploma
 {
     public partial class Authorize : Form
     {
-        //private String _connection;
+        private Diploma.Controllers.MyAppContext localContext;
+        private String _connection;
+
         public Authorize()
         {
             InitializeComponent();
-            //_connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+        }
+        public Authorize(Diploma.Controllers.MyAppContext context, String connection)
+        {
+            InitializeComponent();
+            _connection = connection;
+            localContext = context;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MyAuthorization auth = new MyAuthorization();
-            if (auth.check_auth(textBox1.Text, textBox2.Text))
+            var auth = new Diploma.Controllers.MyAuthorization();
+            Diploma.Models.User tmpUser = auth.check_auth(textBox1.Text, textBox2.Text);
+            if (tmpUser!=null)
             {
-                button1.BackColor = Color.Green;
+                localContext.SwitchMainForm(new Diploma.Views.MainMenuForm(localContext, tmpUser, _connection));
             }
             else
                 label3.Text = "Неверное имя пользователя или пароль";

@@ -43,6 +43,7 @@ namespace Diploma
                 tmpElem.need_table = data.needTable;
                 tmpElem.current_field = data.currentField;
                 tmpElem.current_table = data.currentTable;
+                tmpElem.type_element = data.typeElement;
                 tmpElem.value = data.value;
                 tmpElem.is_filled = Convert.ToBoolean(data.isFilled);
                 docController.updateListElements(tmpElem);

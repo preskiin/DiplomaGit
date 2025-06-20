@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Forms;
+using Diploma.Models;
 
 
 namespace Diploma.Controllers
@@ -32,24 +33,25 @@ namespace Diploma.Controllers
         }
 
         //Сверяет хэши логина и пароля из базы, с хэшем переданных логина и пароля
-        public bool check_auth(String log, String pas)
+        public User check_auth(String log, String pas)
         {
+            User tmpResult = null;
             CRUD_Users users = new CRUD_Users(connection_string);
             String data_pas = users.get_pas(get_sha256(log));//вытаскивает по хэшу
             if (data_pas != null)
             {
-                
                  if (data_pas == get_sha256(pas))
                  {
-                     return true;
+                    tmpResult = users.read(get_sha256(log));
+                    return tmpResult;
                  }
                  else
                  {
-                     return false;
+                     return tmpResult;
                  }
             }
             else
-                return false;
+                return tmpResult;
         }
     }
 }

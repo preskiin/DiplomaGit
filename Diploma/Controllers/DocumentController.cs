@@ -37,6 +37,7 @@ namespace Diploma.Controllers
             public string need_table;
             public string current_field;
             public string current_table;
+            public string type_element;
             public string value;
             public bool is_filled;
         }
@@ -269,6 +270,7 @@ namespace Diploma.Controllers
                     tmpElem.need_table = node.Attributes["data-need-table"].Value;
                     tmpElem.current_field = node.Attributes["data-current-field"].Value;
                     tmpElem.current_table = node.Attributes["data-current-field"].Value;
+                    tmpElem.type_element = node.Attributes["data-type-element"].Value;
                     tmpElem.value = node.Attributes["data-value"].Value;
                     tmpElem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
                 }
@@ -279,7 +281,7 @@ namespace Diploma.Controllers
 
         public String createBoundField(elemToCreate element)
         {
-            counter++;
+            //counter++;
             element.name_element = "element"+Convert.ToString(this.counter);
             StringBuilder html = new StringBuilder();
             html.AppendLine(@$"<input type='text' class='template2003' 
@@ -288,7 +290,8 @@ namespace Diploma.Controllers
                 data-need-field={element.need_field}
                 data-need-table={element.need_table}
                 data-current-field={element.current_field}
-                data-current-field={element.current_table}
+                data-current-table={element.current_table}
+                data-type-element={element.type_element}
                 data-value={element.value}
                 data-is-filled={element.is_filled}
                 'placeholder='--{element.name_element}--' readonly>
