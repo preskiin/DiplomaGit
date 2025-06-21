@@ -69,6 +69,20 @@ namespace Diploma.Controllers
             return null;
         }
 
+        //статическая, возвращает список всех заказов из базы в формате DataTable
+        public static System.Data.DataTable readAllOrders(String connectionStr)
+        {
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = "SELECT * FROM Orders ORDER BY Number";
+            SqlConnection connection = new SqlConnection(connectionStr);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
+
         // Получение страницы заказов
         public IEnumerable<Order> GetPage(int pageNumber)
         {

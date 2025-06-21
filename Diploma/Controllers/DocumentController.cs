@@ -29,7 +29,7 @@ namespace Diploma.Controllers
             operations,
             counteragents,
             products,
-            order,
+            orders,
             orderItems,
         }
 
@@ -210,11 +210,13 @@ namespace Diploma.Controllers
                 case usingCRUD.positions:
                     {
                         //htmlString = CRUD_Positions.generatePositionsDropdown(this._connection);
+                        htmlString = createTemplateListPositions();
                         break;
                     }
                 case usingCRUD.operations:
                     {
                         //htmlString = CRUD_Operations.generateOperationsDropdown(this._connection);
+                        htmlString = createTemplateListOperations();
                         break;
                     }
                 case usingCRUD.people:
@@ -228,12 +230,19 @@ namespace Diploma.Controllers
 
                         //this.counter++;
                         //htmlString = CRUD_Counteragents.generateCounteragentsDropdown(this._connection);
+                        htmlString = this.createTemplateListCounteragents();
                         break;
                     }
                 case usingCRUD.products:
                     {
                         //this.counter++;
                         //htmlString = CRUD_Products.generateProductsDropdown(this._connection);
+                        htmlString = this.createTemplateListProducts();
+                        break;
+                    }
+                case usingCRUD.orders:
+                    {
+                        htmlString = this.createTemplateListOrders();
                         break;
                     }
                 default:
@@ -448,7 +457,87 @@ namespace Diploma.Controllers
             html.AppendLine($"<input type='hidden' name='{instructElement.name_element}-id' id='{instructElement.name_element}-id' value=''>");
             return html.ToString();
         }
-        
+
+        public String createHtmlForListCounteragents(elemToCreate instructElement)
+        {
+            var html = new StringBuilder();//создает строку кода html
+            var agents = CRUD_Counteragents.readAllCounteragents(_connection);//получаем массив агентов
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
+            foreach (DataRow agent in agents.Rows)
+            {
+                html.AppendLine($"<option value='{agent["Name"]}' data-id='{agent["id"]}'>");
+            }
+
+            html.AppendLine("</datalist>");
+            html.AppendLine($"<input type='hidden' name='{instructElement.name_element}-id' id='{instructElement.name_element}-id' value=''>");
+            return html.ToString();
+        }
+
+        public String createHtmlForListOperations(elemToCreate instructElement)
+        {
+            var html = new StringBuilder();//создает строку кода html
+            var operations = CRUD_Operations.readAllOperations(_connection);//получаем массив действий
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
+            foreach (DataRow operation in operations.Rows)
+            {
+                html.AppendLine($"<option value='{operation["Name"]}' data-id='{operation["id"]}'>");
+            }
+
+            html.AppendLine("</datalist>");
+            html.AppendLine($"<input type='hidden' name='{instructElement.name_element}-id' id='{instructElement.name_element}-id' value=''>");
+            return html.ToString();
+        }
+
+        public String createHtmlForListOrders(elemToCreate instructElement)
+        {
+            var html = new StringBuilder();//создает строку кода html
+            var orders = CRUD_Orders.readAllOrders(_connection);//получаем массив заказов
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
+            foreach (DataRow order in orders.Rows)
+            {
+                html.AppendLine($"<option value='{order["Number"]}' data-id='{order["id"]}'>");
+            }
+
+            html.AppendLine("</datalist>");
+            html.AppendLine($"<input type='hidden' name='{instructElement.name_element}-id' id='{instructElement.name_element}-id' value=''>");
+            return html.ToString();
+        }
+
+        public String createHtmlForListPositions(elemToCreate instructElement)
+        {
+            var html = new StringBuilder();//создает строку кода html
+            var positions = CRUD_Positions.readAllPositions(_connection);//получаем массив должностей
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
+            foreach (DataRow position in positions.Rows)
+            {
+                html.AppendLine($"<option value='{position["Name"]}' data-id='{position["id"]}'>");
+            }
+
+            html.AppendLine("</datalist>");
+            html.AppendLine($"<input type='hidden' name='{instructElement.name_element}-id' id='{instructElement.name_element}-id' value=''>");
+            return html.ToString();
+        }
+
+        public String createHtmlForListProducts(elemToCreate instructElement)
+        {
+            var html = new StringBuilder();//создает строку кода html
+            var products = CRUD_Products.readAllProducts(_connection);//получаем массив должностей
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
+            foreach (DataRow product in products.Rows)
+            {
+                html.AppendLine($"<option value='{product["Name"]}' data-id='{product["id"]}'>");
+            }
+
+            html.AppendLine("</datalist>");
+            html.AppendLine($"<input type='hidden' name='{instructElement.name_element}-id' id='{instructElement.name_element}-id' value=''>");
+            return html.ToString();
+        }
+
         //возвращает elemToCreate с указанным именем из переданной коллекции
         private elemToCreate findElementByName(String name, List<elemToCreate> elements)
         {
@@ -463,6 +552,7 @@ namespace Diploma.Controllers
             }
             return tmp_elem;
         }
+
         //генерирует код выпадающего списка (созданного), в зависимости от current_table в объекте tmpElem
         private String baseTemplateList(elemToCreate tmpElem)
         {
@@ -476,27 +566,27 @@ namespace Diploma.Controllers
                     }
                 case "Counteragents":
                     {
-                        //tmpStr = createHtmlForListCounteragents(tmpElem);
+                        tmpStr = createHtmlForListCounteragents(tmpElem);
                         break;
                     }
                 case "Operations":
                     {
-                        //tmpStr = createHtmlForListOperations(tmpElem);
+                        tmpStr = createHtmlForListOperations(tmpElem);
                         break; 
                     }
                 case "Orders":
                     {
-                        //tmpStr = createHtmlForListOrders(tmpElem);
+                        tmpStr = createHtmlForListOrders(tmpElem);
                         break;
                     }
                 case "Positions":
                     {
-                        //tmpStr = createHtmlForListPositions(tmpElem);
+                        tmpStr = createHtmlForListPositions(tmpElem);
                         break;
                     }
                 case "Products":
                     {
-                        //tmpStr = createHtmlForListProducts(tmpElem);
+                        tmpStr = createHtmlForListProducts(tmpElem);
                         break;
                     }
                 default:
@@ -532,6 +622,7 @@ namespace Diploma.Controllers
             }
             return elements;
         }
+
         //Это функция загрузки шаблона. При открытии шаблона сперва данные из базы выгружаются в this.htmlCode, затем,
         //с помощью функции findAllTemplatesInHtml, собираются данные о коллекции шаблонных элементов существующем коде и создается коллекция elemToCreate, хранящая в себе атрибуты
         //всех объектов. Финальным этапом является прохождение всего this.htmlCode, удаление текста внутри <div></div> и вставка туда с помощью соответствующих createTemplateList. 
@@ -568,8 +659,7 @@ namespace Diploma.Controllers
                             break;
                     }
                 }
-                this.htmlCode = doc.DocumentNode.OuterHtml;
-                //string processedHtml = 
+                this.htmlCode = doc.DocumentNode.OuterHtml;//присваиваем полученный текст в htmlCode
             }
 
         }

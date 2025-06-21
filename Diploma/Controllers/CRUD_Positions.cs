@@ -124,6 +124,20 @@ namespace Diploma.Controllers
             return tmp_pos;
         }
 
+        //статическая, возвращает список всех должностей из базы в формате DataTable
+        public static System.Data.DataTable readAllPositions(String connectionStr)
+        {
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = "SELECT * FROM Positions ORDER BY Name";
+            SqlConnection connection = new SqlConnection(connectionStr);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
+
         // Обновляет существующую позицию.
         public Int64 update(Position position)
         {

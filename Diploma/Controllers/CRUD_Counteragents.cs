@@ -60,6 +60,20 @@ namespace Diploma.Controllers
             return null;
         }
 
+        //статическая, возвращает список всех контрагентов из базы в формате DataTable
+        public static DataTable readAllCounteragents(String connectionStr)
+        {
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = "SELECT * FROM Counteragents ORDER BY Name";
+            SqlConnection connection = new SqlConnection(connectionStr);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
+
         // Получение страницы контрагентов
         public IEnumerable<Counteragent> GetPage(int pageNumber)
         {

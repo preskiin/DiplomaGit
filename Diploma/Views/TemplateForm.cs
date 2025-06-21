@@ -196,5 +196,35 @@ namespace Diploma
         {
 
         }
+
+        private async void должностиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String html = docController.createListInput(DocumentController.usingCRUD.positions);
+            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+        }
+
+        private async void действияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String html = docController.createListInput(DocumentController.usingCRUD.operations);
+            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+        }
+
+        private async void заказыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String html = docController.createListInput(DocumentController.usingCRUD.orders);
+            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+        }
+
+        private async void товарыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String html = docController.createListInput(DocumentController.usingCRUD.products);
+            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+        }
+
+        private async void контрагентыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String html = docController.createListInput(DocumentController.usingCRUD.counteragents);
+            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+        }
     }
 }

@@ -61,6 +61,20 @@ namespace Diploma.Controllers
             return tmp;
         }
 
+        //статическая, возвращает список всех действий из базы в формате DataTable
+        public static System.Data.DataTable readAllOperations(String connectionStr)
+        {
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = "SELECT * FROM Operations ORDER BY Name";
+            SqlConnection connection = new SqlConnection(connectionStr);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
+
         // Получает все операции для указанной должности (IdPosition)
         public List<Operation> readByPositionId(Int64 positionId)
         {
