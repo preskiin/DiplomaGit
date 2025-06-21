@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Diploma.Models;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json.Schema;
 
@@ -163,6 +166,20 @@ namespace Diploma.Controllers
             return users;
         }
 
+        //статическая, возвращает список всех пользователей из базы в формате DataTable
+        public static DataTable readAllUsers(String connectionStr)
+        {
+            var dataTable = new System.Data.DataTable();
+            String sql_exp = "SELECT * FROM People ORDER BY Surname";
+            SqlConnection connection = new SqlConnection(connectionStr);
+            SqlCommand command = new SqlCommand(sql_exp, connection);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(dataTable);
+            connection.Close();
+            return dataTable;
+        }
+
         //Отправляет запрос на обновление указанного экземпляра по ID
         public Int64 update(User user)
         {
@@ -260,7 +277,7 @@ namespace Diploma.Controllers
         }
 
         //создает html-код выпадающего списка со значениями ФИО людей из базы
-        public static string generateUsersDropdown(string connectionString, int counter, string currentValue = "")
+        public static string generateUsersDropdown(string connectionString, int counter)
         {
             String dropdownName = "element" + Convert.ToString(counter);
             var html = new StringBuilder();
@@ -275,22 +292,22 @@ namespace Diploma.Controllers
                 users[reader.GetString(2) + " " + reader.GetString(1) + " " + reader.GetString(3)] = reader.GetInt64(0);
             }
             // Определяем текущее название должности по ID (если currentValue - это ID)
-            string currentName = "";
-            if (!string.IsNullOrEmpty(currentValue))
-            {
-                if (long.TryParse(currentValue, out long currentId))
-                {
-                    currentName = users.FirstOrDefault(x => x.Value == currentId).Key ?? "";
-                }
-                else
-                {
-                    // Если currentValue - это название, проверяем его наличие в списке
-                    if (users.ContainsKey(currentValue))
-                    {
-                        currentName = currentValue;
-                    }
-                }
-            }
+            //string currentName = "";
+            //if (!string.IsNullOrEmpty(currentValue))
+            //{
+            //    if (long.TryParse(currentValue, out long currentId))
+            //    {
+            //        currentName = users.FirstOrDefault(x => x.Value == currentId).Key ?? "";
+            //    }
+            //    else
+            //    {
+            //        // Если currentValue - это название, проверяем его наличие в списке
+            //        if (users.ContainsKey(currentValue))
+            //        {
+            //            currentName = currentValue;
+            //        }
+            //    }
+            //}
             html.AppendLine(@$"<div class='template2003' 
                 data-name-element='{dropdownName}'
                 data-name-to-connect=base
@@ -304,7 +321,7 @@ namespace Diploma.Controllers
                 ");
 
             // Создаем input с datalist
-            html.AppendLine($"<input list='{dropdownName}-list' name='{dropdownName}' id='{dropdownName}' value='{currentName}' class='form-control' placeholder='-- {dropdownName} --'>");
+            html.AppendLine($"<input list='{dropdownName}-list' name='{dropdownName}' id='{dropdownName}' value='' class='form-control' placeholder='-- {dropdownName} --'>");
             html.AppendLine($"<datalist id='{dropdownName}-list'>");
 
             // Добавляем варианты в datalist
@@ -316,7 +333,7 @@ namespace Diploma.Controllers
             html.AppendLine("</datalist>");
 
             // Добавляем скрытое поле для хранения ID
-            html.AppendLine($"<input type='hidden' name='{dropdownName}-id' id='{dropdownName}-id' value='{currentValue}'>");
+            html.AppendLine($"<input type='hidden' name='{dropdownName}-id' id='{dropdownName}-id' value=''>");
 
             // Добавляем JavaScript для валидации введенного значения
             html.AppendLine($@"

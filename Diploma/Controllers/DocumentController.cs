@@ -13,6 +13,10 @@ using Diploma.Controllers;
 using Diploma.Models;
 using System.Data.SqlClient;
 using HtmlAgilityPack;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using System.Data;
+using System.Windows.Markup.Localizer;
+using System.Runtime.CompilerServices;
 
 namespace Diploma.Controllers
 {
@@ -48,7 +52,6 @@ namespace Diploma.Controllers
 
         public List<elemToCreate> elements;
        
-
         public DocumentController(String con)
         {
             _connection = con;
@@ -206,23 +209,18 @@ namespace Diploma.Controllers
             {
                 case usingCRUD.positions:
                     {
-
-                        //this.counter++;
                         //htmlString = CRUD_Positions.generatePositionsDropdown(this._connection);
                         break;
                     }
                 case usingCRUD.operations:
                     {
-
-                        //this.counter++;
                         //htmlString = CRUD_Operations.generateOperationsDropdown(this._connection);
                         break;
                     }
                 case usingCRUD.people:
                     {
-
-                        //this.counter++;
-                        htmlString = CRUD_Users.generateUsersDropdown(connectionString: this._connection, counter+1);
+                        //htmlString = CRUD_Users.generateUsersDropdown(connectionString: this._connection, counter+1);
+                        htmlString = this.createTemplateListUsers();
                         break;
                     }
                 case usingCRUD.counteragents:
@@ -252,7 +250,7 @@ namespace Diploma.Controllers
             }
             return htmlString;
         }
-
+        ////не метод, а бред, не следует его использовать: ищет в строке элементы с указанным классом и возвращает ПЕРВЫЙ элемент из коллекции
         private elemToCreate findTemplateInHtml(String html, String templateToFind)
         {
             elemToCreate tmpElem = new elemToCreate();
@@ -273,11 +271,13 @@ namespace Diploma.Controllers
                     tmpElem.type_element = node.Attributes["data-type-element"].Value;
                     tmpElem.value = node.Attributes["data-value"].Value;
                     tmpElem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
+                    break;//костыль!
                 }
             }
             return tmpElem;
-           
+
         }
+
 
         public String createBoundField(elemToCreate element)
         {
@@ -328,6 +328,250 @@ namespace Diploma.Controllers
             {
                 
             }
+        }
+
+        //Создает код шаблона списка пользователей
+        public String createTemplateListUsers()
+        {
+            string new_name = "element"+Convert.ToString(this.counter + 1);
+            string show_name = "СписокЛюдей"+ Convert.ToString(this.counter + 1);
+            string htmlStr = @$"<div class='template2003' 
+                data-name-element='{new_name}'
+                data-name-to-connect=null
+                data-need-field=null
+                data-need-table=null
+                data-current-field=Surname_Name_Patronymic
+                data-current-table=People
+                data-type-element=list
+                data-value=null
+                data-is-filled=false>{show_name}</div>";
+            return htmlStr;
+        }
+
+        public String createTemplateListCounteragents()
+        {
+            string new_name = "element" + Convert.ToString(this.counter + 1);
+            string show_name = "СписокКонтрагентов" + Convert.ToString(this.counter + 1);
+            string htmlStr = @$"<div class='template2003' 
+                data-name-element='{new_name}'
+                data-name-to-connect=null
+                data-need-field=null
+                data-need-table=null
+                data-current-field=Name
+                data-current-table=Counteragents
+                data-type-element=list
+                data-value=null
+                data-is-filled=false>{show_name}</div>";
+            return htmlStr;
+        }
+
+        public String createTemplateListOperations()
+        {
+            string new_name = "element" + Convert.ToString(this.counter + 1);
+            string show_name = "СписокДействий" + Convert.ToString(this.counter + 1);
+            string htmlStr = @$"<div class='template2003' 
+                data-name-element='{new_name}'
+                data-name-to-connect=null
+                data-need-field=null
+                data-need-table=null
+                data-current-field=Name
+                data-current-table=Operations
+                data-type-element=list
+                data-value=null
+                data-is-filled=false>{show_name}</div>";
+            return htmlStr;
+        }
+
+        public String createTemplateListProducts()
+        {
+            string new_name = "element" + Convert.ToString(this.counter + 1);
+            string show_name = "СписокТоваров" + Convert.ToString(this.counter + 1);
+            string htmlStr = @$"<div class='template2003' 
+                data-name-element='{new_name}'
+                data-name-to-connect=null
+                data-need-field=null
+                data-need-table=null
+                data-current-field=Name
+                data-current-table=Products
+                data-type-element=list
+                data-value=null
+                data-is-filled=false>{show_name}</div>";
+            return htmlStr;
+        }
+
+        public String createTemplateListPositions()
+        {
+            string new_name = "element" + Convert.ToString(this.counter + 1);
+            string show_name = "СписокДолжностей" + Convert.ToString(this.counter + 1);
+            string htmlStr = @$"<div class='template2003' 
+                data-name-element='{new_name}'
+                data-name-to-connect=null
+                data-need-field=null
+                data-need-table=null
+                data-current-field=Name
+                data-current-table=Positions
+                data-type-element=list
+                data-value=null
+                data-is-filled=false>{show_name}</div>";
+            return htmlStr;
+        }
+
+        public String createTemplateListOrders()
+        {
+            string new_name = "element" + Convert.ToString(this.counter + 1);
+            string show_name = "СписокЗаказов" + Convert.ToString(this.counter + 1);
+            string htmlStr = @$"<div class='template2003' 
+                data-name-element='{new_name}'
+                data-name-to-connect=null
+                data-need-field=null
+                data-need-table=null
+                data-current-field=Number
+                data-current-table=Orders
+                data-type-element=list
+                data-value=null
+                data-is-filled=false>{show_name}</div>";
+            return htmlStr;
+        }
+
+        public String createHtmlForListUsers(elemToCreate instructElement)
+        {
+            var html = new StringBuilder();//создает строку кода html
+            var users = CRUD_Users.readAllUsers(_connection);//получаем массив пользователей.
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
+            foreach (DataRow user in users.Rows)
+            {
+                html.AppendLine($"<option value='{user["Surname"]+" " + user["Name"]+" " + user["Patronymic"]}' data-id='{user["id"]}'>");
+            }
+
+            html.AppendLine("</datalist>");
+            html.AppendLine($"<input type='hidden' name='{instructElement.name_element}-id' id='{instructElement.name_element}-id' value=''>");
+            return html.ToString();
+        }
+        
+        //возвращает elemToCreate с указанным именем из переданной коллекции
+        private elemToCreate findElementByName(String name, List<elemToCreate> elements)
+        {
+            elemToCreate tmp_elem= new();
+            foreach (elemToCreate elem in elements)
+            {
+                if (elem.name_element == name)
+                {
+                    tmp_elem = elem;
+                    break;
+                }
+            }
+            return tmp_elem;
+        }
+        //генерирует код выпадающего списка (созданного), в зависимости от current_table в объекте tmpElem
+        private String baseTemplateList(elemToCreate tmpElem)
+        {
+            String tmpStr = "";
+            switch (tmpElem.current_table)
+            {
+                case "People":
+                    {
+                        tmpStr = createHtmlForListUsers(tmpElem);
+                        break;
+                    }
+                case "Counteragents":
+                    {
+                        //tmpStr = createHtmlForListCounteragents(tmpElem);
+                        break;
+                    }
+                case "Operations":
+                    {
+                        //tmpStr = createHtmlForListOperations(tmpElem);
+                        break; 
+                    }
+                case "Orders":
+                    {
+                        //tmpStr = createHtmlForListOrders(tmpElem);
+                        break;
+                    }
+                case "Positions":
+                    {
+                        //tmpStr = createHtmlForListPositions(tmpElem);
+                        break;
+                    }
+                case "Products":
+                    {
+                        //tmpStr = createHtmlForListProducts(tmpElem);
+                        break;
+                    }
+                default:
+                    break;
+            }
+            return tmpStr;
+        }
+
+        //Возвращает коллекцию объектов elemToCreate, содержащую в себе данные(атрибуты) всех встреченных объектов с классом templateToFind в строке html
+        private List<elemToCreate> findAllTemplatesInHtml(String html, String templateToFind)
+        {
+            List<elemToCreate> elements = new List<elemToCreate>();
+            elemToCreate tmpElem = new elemToCreate();
+            var htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            htmlDoc.LoadHtml(html);
+            // Ищем все элементы с классом template2003
+            var nodes = htmlDoc.DocumentNode.SelectNodes($"//*[contains(@class, '{templateToFind}')]");
+            if (nodes != null)
+            {
+                foreach (var node in nodes)
+                {
+                    tmpElem.name_element = node.Attributes["data-name-element"].Value;
+                    tmpElem.name_to_connect_element = node.Attributes["data-name-to-connect"].Value;
+                    tmpElem.need_field = node.Attributes["data-need-field"].Value;
+                    tmpElem.need_table = node.Attributes["data-need-table"].Value;
+                    tmpElem.current_field = node.Attributes["data-current-field"].Value;
+                    tmpElem.current_table = node.Attributes["data-current-table"].Value;
+                    tmpElem.type_element = node.Attributes["data-type-element"].Value;
+                    tmpElem.value = node.Attributes["data-value"].Value;
+                    tmpElem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
+                    elements.Add(tmpElem);
+                }
+            }
+            return elements;
+        }
+        //Это функция загрузки шаблона. При открытии шаблона сперва данные из базы выгружаются в this.htmlCode, затем,
+        //с помощью функции findAllTemplatesInHtml, собираются данные о коллекции шаблонных элементов существующем коде и создается коллекция elemToCreate, хранящая в себе атрибуты
+        //всех объектов. Финальным этапом является прохождение всего this.htmlCode, удаление текста внутри <div></div> и вставка туда с помощью соответствующих createTemplateList. 
+        //После этого строка this.htmlCode может быть присвоена в webView2.
+        public void createAllTemplateObjects()
+        {
+            List<elemToCreate> elements = findAllTemplatesInHtml(this.htmlCode, "template2003");
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(this.htmlCode);
+            var divs = doc.DocumentNode.SelectNodes("//div[contains(@class, 'template2003')]");
+            if (divs != null)
+            {
+                foreach (var div in divs)
+                {
+                    //здесь нужно будет, скорее всего, вставить свитч, выбирающий, какой тип элемента находится в div (list или привязанный list или привязанной поле)
+                    string nameElement = div.GetAttributeValue("data-name-element", "");
+                    elemToCreate tmp = findElementByName(nameElement, elements);
+                    switch (tmp.type_element)
+                    {
+                        case "list":
+                            {
+                                div.InnerHtml = baseTemplateList(tmp);
+                                break;
+                            }
+                        case "bound-list":
+                            {
+                                break;
+                            }
+                        case "bound-field":
+                            {
+                                break;
+                            }
+                        default:
+                            break;
+                    }
+                }
+                this.htmlCode = doc.DocumentNode.OuterHtml;
+                //string processedHtml = 
+            }
+
         }
     }
 

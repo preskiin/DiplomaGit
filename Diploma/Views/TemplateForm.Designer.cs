@@ -101,6 +101,7 @@
             this.webView21.Size = new System.Drawing.Size(838, 603);
             this.webView21.TabIndex = 6;
             this.webView21.ZoomFactor = 1D;
+            this.webView21.NavigationStarting += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs>(this.webView21_NavigationStarting);
             this.webView21.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.webView21_NavigationCompleted);
             // 
             // contextMenuStrip1

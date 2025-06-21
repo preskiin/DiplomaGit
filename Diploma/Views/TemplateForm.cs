@@ -22,9 +22,12 @@ namespace Diploma
         private Diploma.Models.User enteredUser;
         private String _connection;
 
+        //Исправить по завершению формирования: не должно быть доступа к бд!
         public TemplateForm()
         {
             InitializeComponent();
+
+            _connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         }
 
         public TemplateForm(Diploma.Controllers.MyAppContext context, Diploma.Models.User user, String connection)
@@ -45,11 +48,11 @@ namespace Diploma
         {
             if (e.TryGetWebMessageAsString().StartsWith("{\"nameElement"))
             {
-                var message = JsonConvert.DeserializeObject<string>(e.WebMessageAsJson);
+                var message = JsonConvert.DeserializeObject<dynamic>(e.WebMessageAsJson);
                 dynamic data = JsonConvert.DeserializeObject(message);
                 var tmpElem = new DocumentController.elemToCreate();
                 tmpElem.name_element = data.nameElement;
-                tmpElem.name_to_connect_element = data.nameToConnect;
+                tmpElem.name_to_connect_element = data.nameToConnectElement;
                 tmpElem.need_field = data.needField;
                 tmpElem.need_table = data.needTable;
                 tmpElem.current_field = data.currentField;
@@ -63,22 +66,21 @@ namespace Diploma
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
+            //textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
             await webView21.EnsureCoreWebView2Async();
             this.webView21.CoreWebView2.Settings.IsScriptEnabled = true;
-            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/Test.html");
-            webView21.CoreWebView2.NavigateToString(htmlContent);
-            //////this.webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
+            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/test (2).html");
 
-            //this.webView21.CoreWebView2.Navigate("about:blank");
-
-
+            webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
             this.webView21.CoreWebView2.ContextMenuRequested += onContextMenuRequested; //подписка на событие о нажатии ПКМ внутри webview2
             this.webView21.CoreWebView2.WebMessageReceived += onAnswerFromWeb; //подписка на событие об ответе с webview2 о выборе элемента в списке
             docController = new DocumentController(_connection);
-            String htmlCodeFromWV = await getHtmlFromWebView2();
-            docController.setHtml(htmlCodeFromWV);
-            
+            docController.setHtml(htmlContent);
+            docController.createAllTemplateObjects();
+            //String htmlCodeFromWV = await getHtmlFromWebView2();
+            //docController.setHtml(htmlCodeFromWV);
+            webView21.CoreWebView2.NavigateToString(docController.getHtml());
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -92,7 +94,7 @@ namespace Diploma
                 MessageBox.Show("Текст не был присвоен элементу", "Ошибка", MessageBoxButtons.OK);
             }    
         }
-
+        //сохранение текущей строки в вебвью в файлы компьютера
         private async void button2_Click(object sender, EventArgs e)
         {
             String htmlCodeFormWV = await getHtmlFromWebView2();
@@ -120,6 +122,8 @@ namespace Diploma
                 return null;
             }
         }
+
+        //переход на главную форму, если пользователь зашел через нее сюда
         private void button3_Click(object sender, EventArgs e)
         {
             localContext.SwitchMainForm(new Diploma.Views.MainMenuForm(localContext, enteredUser, _connection));
@@ -131,6 +135,7 @@ namespace Diploma
             docController.getElementsFromHtml("template2003");
         }
 
+        //возвращает строку скрипта для выполнения со вставкой html-кода на позицию каретки, который был передан в параметре
         private string scriptInsertOnPos(String htmlElem)
         {
             string script = $@"
@@ -182,9 +187,14 @@ namespace Diploma
                 String html = docController.createBoundField(formChoice.currentElement);
                 await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
                 docController.getElementsFromHtml("template2003");
-                //забираем с формы chooseList объект определенного класса, и кидаем нужны значения в наш объект elements
+                //забираем с формы chooseList объект определенного класса, и кидаем нужные значения в наш объект elements
             }
             
+        }
+
+        private void webView21_NavigationStarting(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs e)
+        {
+
         }
     }
 }

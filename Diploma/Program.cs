@@ -25,7 +25,7 @@ namespace Diploma
             context.MainForm = new Authorize(context, connectionToDb); // Первая главная форма
 
             //Application.Run(new TemplateForm());
-            Application.Run(context);
+            Application.Run(new TemplateForm());
         }
     }
 }
