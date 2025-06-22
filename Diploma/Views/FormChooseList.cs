@@ -14,9 +14,9 @@ namespace Diploma.Views
 {
     public partial class FormChooseList : Form
     {
-        List<DocumentController.elemToCreate> listFromAbove;
-        String listClassChoice;
-        public DocumentController.elemToCreate currentElement;
+        List<DocumentController.elemToCreate> listFromAbove;//коллекция элементов, к которым можно подключиться
+        //String connectedTable;//значение названия таблицы, к которой привязан элемент, к которому привязывается создаваемый нами элемент
+        public DocumentController.elemToCreate currentElement;//объект создаваемого шаблона
         public FormChooseList()
         {
             InitializeComponent();
@@ -35,8 +35,11 @@ namespace Diploma.Views
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             currentElement= new DocumentController.elemToCreate();
+            currentElement.type_element = "bound-field";
             currentElement.is_filled = false;
             currentElement.value = "null";
+            //connectedTable = "";
+            //очищаем второй список от прошлых значений
             comboBox2.Items.Clear();
             comboBox2.SelectedIndex = -1;
             comboBox2.Enabled = true;
@@ -46,12 +49,16 @@ namespace Diploma.Views
             {
                 if (element.name_element == listNameChoice)
                 {
-                    //listClassChoice = element.className;
+                    currentElement.need_table = element.current_table;
                     break;
                 }
             }
-            this.currentElement.name_to_connect_element = listNameChoice;
-            comboBox2.Items.AddRange(getFieldsOfClass(listClassChoice));
+            if (currentElement.need_table != "" && currentElement.need_table!=null)
+            {
+                //проверить на работоспособность при отсутствии выбранного значения
+                this.currentElement.name_to_connect_element = listNameChoice;
+                comboBox2.Items.AddRange(getFieldsForChoose(currentElement.need_table));
+            }
 
         }
 
@@ -66,37 +73,37 @@ namespace Diploma.Views
             this.Close();
         }
 
-        private String[] getFieldsOfClass(String className)
+        private String[] getFieldsForChoose(String _connectedTable)
         {
             List<String> tmpArr = new List<string>();
-            switch (className)
+            switch (_connectedTable)
             {
-                case "User":
+                case "People":
                     {
-                        tmpArr.AddRange(["Должность человека", "Номер рабочего места"]);
+                        tmpArr.AddRange(["Должность человека", "Номер рабочего места", "Сектор человека", "Отдел человека"]);
                         break;
                     }
-                case "Position":
+                case "Positions":
                     {
                         tmpArr.AddRange(["Сектор должности", "Отдел должности"]);
                         break;
                     }
-                case "Operation":
+                case "Operations":
                     {
                         tmpArr.AddRange(["Должность, которая это может выполнить", "Название действия", "Описание действия"]);
                         break;
                     }
-                case "Product":
+                case "Products":
                     {
                         tmpArr.AddRange(["Описание товара", "Цена товара"]);
                         break;
                     }
-                case "Counteragent":
+                case "Counteragents":
                     {
                         tmpArr.AddRange(["Контрагент"]);
                         break;
                     }
-                case "Order":
+                case "Orders":
                     {
                         tmpArr.AddRange(["Номер заказа", "Контрагент", "Дата заказа", "Дата доставки", "Комментарий к заказу"]);
                         break;
@@ -114,97 +121,122 @@ namespace Diploma.Views
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             var showNameChoice = Convert.ToString(comboBox2.Items[comboBox2.SelectedIndex]);
-            //switch (showNameChoice)
-            //{
-            //    case "Должность человека":
-            //        {
-            //            this.currentElement.className = "User";
-            //            this.currentElement.show_field = "IdPosition";
-            //            break;
-            //        }
-            //    case "Номер рабочего места":
-            //        {
-            //            this.currentElement.className = "User";
-            //            this.currentElement.show_field = "Place";
-            //            break;
-            //        }
-            //    case "Сектор должности":
-            //        {
-            //            this.currentElement.className = "Position";
-            //            this.currentElement.show_field = "Sector";
-            //            break;
-            //        }
-            //    case "Отдел должности":
-            //        {
-            //            this.currentElement.className = "Position";
-            //            this.currentElement.show_field = "Department";
-            //            break;
-            //        }
-            //    case "Должность, которая это может выполнить":
-            //        {
-            //            this.currentElement.className = "Operation";
-            //            this.currentElement.show_field = "IdPosition";
-            //            break;
-            //        }
-            //    case "Название действия":
-            //        {
-            //            this.currentElement.className = "Operation";
-            //            this.currentElement.show_field = "Name";
-            //            break;
-            //        }
-            //    case "Описание действия":
-            //        {
-            //            this.currentElement.className = "Operation";
-            //            this.currentElement.show_field = "Description";
-            //            break;
-            //        }
-            //    case "Описание товара":
-            //        {
-            //            this.currentElement.className = "Product";
-            //            this.currentElement.show_field = "Description";
-            //            break;
-            //        }
-            //    case "Цена товара":
-            //        {
-            //            this.currentElement.className = "Product";
-            //            this.currentElement.show_field = "Price";
-            //            break;
-            //        }
-            //    case "Контрагент":
-            //        {
-            //            this.currentElement.className = "Order";
-            //            this.currentElement.show_field = "IdCounteragent";
-            //            break;
-            //        }
-            //    case "Номер заказа":
-            //        {
-            //            this.currentElement.className = "Order";
-            //            this.currentElement.show_field = "Number";
-            //            break;
-            //        }
-            //    case "Дата заказа":
-            //        {
-            //            this.currentElement.className = "Order";
-            //            this.currentElement.show_field = "OrderDate";
-            //            break;
-            //        }
-            //    case "Дата доставки":
-            //        {
-            //            this.currentElement.className = "Order";
-            //            this.currentElement.show_field = "DeliveryDate";
-            //            break;
-            //        }
-            //    case "Комментарий к заказу":
-            //        {
-            //            this.currentElement.className = "Order";
-            //            this.currentElement.show_field = "Comment";
-            //            break;
-            //        }
-            //    default:
-            //        {
-            //            break;
-            //        }
-            //}
+            switch (showNameChoice)
+            {
+                //варианты от списка людей
+                case "Должность человека":
+                    {
+                        currentElement.need_field = "IdPosition";
+                        currentElement.current_field = "Name";
+                        currentElement.current_table = "Positions";
+                        break;
+                    }
+                case "Номер рабочего места":
+                    {
+                        currentElement.need_field = "Place";
+                        currentElement.current_field = "Place";
+                        currentElement.current_table = "People";
+                        break;
+                    }
+                case "Сектор человека":
+                    {
+                        currentElement.need_field = "IdPosition";
+                        currentElement.current_field = "Sector";
+                        currentElement.current_table = "Positions";
+                        break;
+                    }
+                case "Отдел человека":
+                    {
+                        currentElement.need_field = "IdPosition";
+                        currentElement.current_field = "Department";
+                        currentElement.current_table = "Positions";
+                        break;
+                    }
+                //варианты списка должностей
+                //case "Сектор должности":
+                //    {
+                //        currentElement.need_field = "Sector";
+                //        currentElement.current_field = "Sector";
+                //        currentElement.current_table = "Positions";
+                //        break;
+                //    }
+                //case "Отдел должности":
+                //    {
+                //        currentElement.need_field = "Department";
+                //        currentElement.current_field = "Department";
+                //        currentElement.current_table = "Positions";
+                //        break;
+                //    }
+                //case "Должность, которая это может выполнить":
+                //    {
+                //        this.currentElement.className = "Operation";
+                //        this.currentElement.show_field = "IdPosition";
+                //        break;
+                //    }
+                //case "Название действия":
+                //    {
+                //        this.currentElement.className = "Operation";
+                //        this.currentElement.show_field = "Name";
+                //        break;
+                //    }
+                //case "Описание действия":
+                //    {
+                //        this.currentElement.className = "Operation";
+                //        this.currentElement.show_field = "Description";
+                //        break;
+                //    }
+                //case "Описание товара":
+                //    {
+                //        this.currentElement.className = "Product";
+                //        this.currentElement.show_field = "Description";
+                //        break;
+                //    }
+                //case "Цена товара":
+                //    {
+                //        this.currentElement.className = "Product";
+                //        this.currentElement.show_field = "Price";
+                //        break;
+                //    }
+                //case "Контрагент":
+                //    {
+                //        this.currentElement.className = "Order";
+                //        this.currentElement.show_field = "IdCounteragent";
+                //        break;
+                //    }
+                //case "Номер заказа":
+                //    {
+                //        this.currentElement.className = "Order";
+                //        this.currentElement.show_field = "Number";
+                //        break;
+                //    }
+                //case "Дата заказа":
+                //    {
+                //        this.currentElement.className = "Order";
+                //        this.currentElement.show_field = "OrderDate";
+                //        break;
+                //    }
+                //case "Дата доставки":
+                //    {
+                //        this.currentElement.className = "Order";
+                //        this.currentElement.show_field = "DeliveryDate";
+                //        break;
+                //    }
+                //case "Комментарий к заказу":
+                //    {
+                //        this.currentElement.className = "Order";
+                //        this.currentElement.show_field = "Comment";
+                //        break;
+                //    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+
+        private void FormChooseList_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

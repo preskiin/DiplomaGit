@@ -17,6 +17,7 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using System.Data;
 using System.Windows.Markup.Localizer;
 using System.Runtime.CompilerServices;
+using Microsoft.Web.WebView2.WinForms;
 
 namespace Diploma.Controllers
 {
@@ -171,12 +172,14 @@ namespace Diploma.Controllers
             }
         }
 
+        //присваивает текущему htmlCode переданное в параметрах значение
         public void setHtml(String htmlString)
         {
             this.htmlCode=htmlString;
         }
 
-        public void getElementsFromHtml(String classToFind)
+        //пересоздает все элементы в коллекции и пересчитывает их
+        public void getAllElementsFromHtml(String classToFind)
         {
             this.elements = new List<elemToCreate>();
             var htmlDoc = new HtmlAgilityPack.HtmlDocument();
@@ -194,6 +197,7 @@ namespace Diploma.Controllers
                     elem.need_table = node.Attributes["data-need-table"].Value;
                     elem.current_field = node.Attributes["data-current-field"].Value;
                     elem.current_table = node.Attributes["data-current-table"].Value;
+                    elem.type_element = node.Attributes["data-type-element"].Value;
                     elem.value = node.Attributes["data-value"].Value;
                     elem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
                     this.elements.Add(elem);
@@ -202,6 +206,8 @@ namespace Diploma.Controllers
             }
         }
 
+        //создает html-код объекта выпадающего списка и присваивает его в строку. После этого, с помощью функции поиска шаблонов в строке,
+        //создается объект шаблона, который добавляется в текущую коллекцию, увеличивая счетчик. После этого возвращается строка html-кода
         public String createListInput(usingCRUD dataNeeded)
         {
             String htmlString = "";
@@ -209,34 +215,26 @@ namespace Diploma.Controllers
             {
                 case usingCRUD.positions:
                     {
-                        //htmlString = CRUD_Positions.generatePositionsDropdown(this._connection);
                         htmlString = createTemplateListPositions();
                         break;
                     }
                 case usingCRUD.operations:
                     {
-                        //htmlString = CRUD_Operations.generateOperationsDropdown(this._connection);
                         htmlString = createTemplateListOperations();
                         break;
                     }
                 case usingCRUD.people:
                     {
-                        //htmlString = CRUD_Users.generateUsersDropdown(connectionString: this._connection, counter+1);
                         htmlString = this.createTemplateListUsers();
                         break;
                     }
                 case usingCRUD.counteragents:
                     {
-
-                        //this.counter++;
-                        //htmlString = CRUD_Counteragents.generateCounteragentsDropdown(this._connection);
                         htmlString = this.createTemplateListCounteragents();
                         break;
                     }
                 case usingCRUD.products:
                     {
-                        //this.counter++;
-                        //htmlString = CRUD_Products.generateProductsDropdown(this._connection);
                         htmlString = this.createTemplateListProducts();
                         break;
                     }
@@ -259,7 +257,7 @@ namespace Diploma.Controllers
             }
             return htmlString;
         }
-        ////не метод, а бред, не следует его использовать: ищет в строке элементы с указанным классом и возвращает ПЕРВЫЙ элемент из коллекции
+        ////не метод, а бред, не следует его использовать: ищет в строке все элементы с указанным классом и возвращает ПЕРВЫЙ элемент из коллекции
         private elemToCreate findTemplateInHtml(String html, String templateToFind)
         {
             elemToCreate tmpElem = new elemToCreate();
@@ -276,7 +274,7 @@ namespace Diploma.Controllers
                     tmpElem.need_field = node.Attributes["data-need-field"].Value;
                     tmpElem.need_table = node.Attributes["data-need-table"].Value;
                     tmpElem.current_field = node.Attributes["data-current-field"].Value;
-                    tmpElem.current_table = node.Attributes["data-current-field"].Value;
+                    tmpElem.current_table = node.Attributes["data-current-table"].Value;
                     tmpElem.type_element = node.Attributes["data-type-element"].Value;
                     tmpElem.value = node.Attributes["data-value"].Value;
                     tmpElem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
@@ -287,57 +285,109 @@ namespace Diploma.Controllers
 
         }
 
-
-        public String createBoundField(elemToCreate element)
+        public async void updateBoundElements(elemToCreate updated_element, WebView2 myWebView)
         {
-            //counter++;
-            element.name_element = "element"+Convert.ToString(this.counter);
-            StringBuilder html = new StringBuilder();
-            html.AppendLine(@$"<input type='text' class='template2003' 
-                data-name-element='{element.name_element}'
-                data-name-to-connect={element.name_to_connect_element}
-                data-need-field={element.need_field}
-                data-need-table={element.need_table}
-                data-current-field={element.current_field}
-                data-current-table={element.current_table}
-                data-type-element={element.type_element}
-                data-value={element.value}
-                data-is-filled={element.is_filled}
-                'placeholder='--{element.name_element}--' readonly>
-                ");
-            return html.ToString();
-        }
-
-        public void updateListElements(elemToCreate updated_element)
-        {
-            int count = 0;
-            foreach (var elem in elements)
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(this.htmlCode);
+            var boundsToUpdate = doc.DocumentNode.SelectNodes($"//*[@data-name-to-connect='{updated_element.name_element}']");//ловит элементы из htmlCode, у которых nameToConnect соответствует имени переданного объекта
+            if (boundsToUpdate != null)
             {
-                if (elem.name_element == updated_element.name_element)
+                foreach(var bound in boundsToUpdate)
                 {
-                    break;
+                    //отработать ошибку, при которой пользователь сбросил значение в элементе,к которому привязано поле
+                    string curF = bound.GetAttributeValue("data-current-field", null);
+                    string curT = bound.GetAttributeValue("data-current-table", null);
+                    string needF = bound.GetAttributeValue("data-need-field", null);
+                    string needT = bound.GetAttributeValue("data-need-table", null);
+                    DataTable localTable = createAndExecuteQuery(Convert.ToInt64(updated_element.value=="null"? null : updated_element.value),
+                        bound.GetAttributeValue("data-current-field", null), bound.GetAttributeValue("data-current-table", null),
+                        bound.GetAttributeValue("data-need-field", null), bound.GetAttributeValue("data-need-table", null));
+                    string js;
+                    if (localTable.Rows.Count > 0)
+                    {
+                        js = $@"
+                        var element = document.querySelector('[data-name-element={bound.GetAttributeValue("data-name-element", null)}]');
+                        if (element) {{
+                            element.setAttribute('data-value', '{Convert.ToString(localTable.Rows[0]["id"])}');
+                            element.value='{Convert.ToString(localTable.Rows[0][curF])}';
+                            element.setAttribute('data-is-filled', 'true'); 
+                        }}";
+                        
+                    }
+                    else
+                    {
+                        js = $@"
+                        var element = document.querySelector('[data-name-element={bound.GetAttributeValue("data-name-element", null)}]');
+                        if (element) {{
+                            element.setAttribute('data-value', '');
+                            element.value='';
+                            element.setAttribute('data-is-filled', 'false'); 
+                        }}";
+                    }
+                    await myWebView.CoreWebView2.ExecuteScriptAsync(js);
                 }
-                count++;
+
+                string newHtml = await myWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
+                string cleanHtml = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(newHtml);
+                this.htmlCode = cleanHtml;
             }
-            elements[count] = updated_element;
-            updateBoundFieldElements(elements[count].name_element);
+
+            //elements[count] = updated_element;
+            //updateBoundFieldElements(elements[count].name_element);
+        }
+        
+
+        //составляет и выполняет запрос на основании переданных параметров.
+       private DataTable createAndExecuteQuery(Int64 selectedId, String curF, String curT, String needF, String needT)//есть смысл добавить Split в объекте curF, на случай, если туда будет передано поле в формате 
+            //Фамилия_Имя_Отчество пока не придумал, как это сделать
+        {
+            DataTable dataTable = new();
+            dataTable.Columns.Add("id", typeof(string));
+            dataTable.Columns.Add(curF, typeof(string));
+            if (curT == needT)
+            {
+                String sql_exp = $"SELECT id, {curF} FROM {curT} WHERE id=@SelectedId";
+                SqlConnection connection = new SqlConnection(_connection);
+                SqlCommand command = new SqlCommand(sql_exp, connection);
+                command.Parameters.AddWithValue("@SelectedId", selectedId);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        dataTable.Rows.Add(reader.GetValue(0).ToString(), reader.GetValue(1).ToString());
+                    }
+                }
+                connection.Close();
+            }
+            else 
+            {
+                String sql_exp = $"SELECT id, {needF} FROM {needT} WHERE id =@SelectedId";
+                SqlConnection connection = new SqlConnection(_connection);
+                SqlCommand command = new SqlCommand(sql_exp, connection);
+                command.Parameters.AddWithValue("@SelectedId", selectedId);
+                connection.Open();
+                Int64 shiftId = -1;
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                        shiftId= reader.GetInt64(1);
+                }
+                sql_exp = $"SELECT id, {curF} FROM {curT} WHERE id=@ShiftId";
+                command = new SqlCommand(sql_exp, connection);
+                command.Parameters.AddWithValue("@ShiftId", shiftId);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if(reader.Read())
+                    {
+                        dataTable.Rows.Add(reader.GetValue(0).ToString(), reader.GetValue(1).ToString());
+                    }
+                }
+                connection.Close();
+            }
+            return dataTable;
         }
 
-        public void updateBoundFieldElements(String listName)
-        {
-            List<elemToCreate> elementsToUpdate = new List<elemToCreate>();
-            foreach (var elem in elements)
-            {
-                if (elem.name_to_connect_element == listName)
-                {
-                    elementsToUpdate.Add(elem);
-                }
-            }
-            foreach (var element in elementsToUpdate)
-            {
-                
-            }
-        }
 
         //Создает код шаблона списка пользователей
         public String createTemplateListUsers()
@@ -346,7 +396,7 @@ namespace Diploma.Controllers
             string show_name = "СписокЛюдей"+ Convert.ToString(this.counter + 1);
             string htmlStr = @$"<div class='template2003' 
                 data-name-element='{new_name}'
-                data-name-to-connect=null
+                data-name-to-connect=base
                 data-need-field=null
                 data-need-table=null
                 data-current-field=Surname_Name_Patronymic
@@ -363,7 +413,7 @@ namespace Diploma.Controllers
             string show_name = "СписокКонтрагентов" + Convert.ToString(this.counter + 1);
             string htmlStr = @$"<div class='template2003' 
                 data-name-element='{new_name}'
-                data-name-to-connect=null
+                data-name-to-connect=base
                 data-need-field=null
                 data-need-table=null
                 data-current-field=Name
@@ -380,7 +430,7 @@ namespace Diploma.Controllers
             string show_name = "СписокДействий" + Convert.ToString(this.counter + 1);
             string htmlStr = @$"<div class='template2003' 
                 data-name-element='{new_name}'
-                data-name-to-connect=null
+                data-name-to-connect=base
                 data-need-field=null
                 data-need-table=null
                 data-current-field=Name
@@ -397,7 +447,7 @@ namespace Diploma.Controllers
             string show_name = "СписокТоваров" + Convert.ToString(this.counter + 1);
             string htmlStr = @$"<div class='template2003' 
                 data-name-element='{new_name}'
-                data-name-to-connect=null
+                data-name-to-connect=base
                 data-need-field=null
                 data-need-table=null
                 data-current-field=Name
@@ -414,7 +464,7 @@ namespace Diploma.Controllers
             string show_name = "СписокДолжностей" + Convert.ToString(this.counter + 1);
             string htmlStr = @$"<div class='template2003' 
                 data-name-element='{new_name}'
-                data-name-to-connect=null
+                data-name-to-connect=base
                 data-need-field=null
                 data-need-table=null
                 data-current-field=Name
@@ -431,7 +481,7 @@ namespace Diploma.Controllers
             string show_name = "СписокЗаказов" + Convert.ToString(this.counter + 1);
             string htmlStr = @$"<div class='template2003' 
                 data-name-element='{new_name}'
-                data-name-to-connect=null
+                data-name-to-connect=base
                 data-need-field=null
                 data-need-table=null
                 data-current-field=Number
@@ -440,6 +490,26 @@ namespace Diploma.Controllers
                 data-value=null
                 data-is-filled=false>{show_name}</div>";
             return htmlStr;
+        }
+        //создает код шаблона привязанного поля
+        public String createTemplateForBoundField(elemToCreate element)
+        {
+            element.name_element = "element" + Convert.ToString(this.counter+1);
+            StringBuilder html = new StringBuilder();
+            html.AppendLine(@$"<input type='text' class='template2003' 
+                data-name-element='{element.name_element}'
+                data-name-to-connect={element.name_to_connect_element}
+                data-need-field={element.need_field}
+                data-need-table={element.need_table}
+                data-current-field={element.current_field}
+                data-current-table={element.current_table}
+                data-type-element={element.type_element}
+                data-value={element.value}
+                data-is-filled={element.is_filled}
+                placeholder='--Привязанный к {element.name_to_connect_element.Replace("element", "")}--' readonly
+                value=''>
+                ");
+            return html.ToString();
         }
 
         public String createHtmlForListUsers(elemToCreate instructElement)
@@ -649,6 +719,7 @@ namespace Diploma.Controllers
                             }
                         case "bound-list":
                             {
+                                //это поле вроде даже менять не надо
                                 break;
                             }
                         case "bound-field":

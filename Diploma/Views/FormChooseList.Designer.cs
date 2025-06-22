@@ -109,6 +109,7 @@
             this.Controls.Add(this.comboBox1);
             this.Name = "FormChooseList";
             this.Text = "FormChooseList";
+            this.Load += new System.EventHandler(this.FormChooseList_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

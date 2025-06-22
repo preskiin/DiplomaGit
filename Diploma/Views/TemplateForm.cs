@@ -60,7 +60,7 @@ namespace Diploma
                 tmpElem.type_element = data.typeElement;
                 tmpElem.value = data.value;
                 tmpElem.is_filled = Convert.ToBoolean(data.isFilled);
-                docController.updateListElements(tmpElem);
+                docController.updateBoundElements(tmpElem, webView21);
             }
         }
 
@@ -94,13 +94,13 @@ namespace Diploma
                 MessageBox.Show("Текст не был присвоен элементу", "Ошибка", MessageBoxButtons.OK);
             }    
         }
+
         //сохранение текущей строки в вебвью в файлы компьютера
         private async void button2_Click(object sender, EventArgs e)
         {
             String htmlCodeFormWV = await getHtmlFromWebView2();
             docController.saveHtml(htmlCodeFormWV);
         }
-
 
         //создает строку html из страницы, которая отображена сейчас в webView2
         public async Task<string> getHtmlFromWebView2()
@@ -132,7 +132,7 @@ namespace Diploma
         private async void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             await webView21.CoreWebView2.ExecuteScriptAsync("document.body.contentEditable = 'true'; document.designMode = 'on';");
-            docController.getElementsFromHtml("template2003");
+            docController.getAllElementsFromHtml("template2003");
         }
 
         //возвращает строку скрипта для выполнения со вставкой html-кода на позицию каретки, который был передан в параметре
@@ -164,19 +164,12 @@ namespace Diploma
             return script;
         }
 
-        private async void работникиToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            String html = docController.createListInput(DocumentController.usingCRUD.people);
-            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
-            //docController.getElementsFromHtml("template2003");
-        }
-
         private async void привязанноеПолеToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<DocumentController.elemToCreate> tmp_list = new List<DocumentController.elemToCreate>();
             foreach (var element in docController.elements)
             {
-                if (element.name_to_connect_element !="null")
+                if (element.name_to_connect_element =="base")
                 {
                     tmp_list.Add(element);
                 }
@@ -184,12 +177,13 @@ namespace Diploma
             FormChooseList formChoice = new FormChooseList(tmp_list);
             if (DialogResult.OK ==formChoice.ShowDialog())
             {
-                String html = docController.createBoundField(formChoice.currentElement);
+                //метод createBoundFields должен быть универсальным, так как значения, которые можно получить от formChooseList достаточные
+                //для создания шаблона
+                String html = docController.createTemplateForBoundField(formChoice.currentElement);//строка html-кода шаблона привязанного поля
                 await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
-                docController.getElementsFromHtml("template2003");
-                //забираем с формы chooseList объект определенного класса, и кидаем нужные значения в наш объект elements
+                docController.setHtml(await getHtmlFromWebView2());//Сохраняет изменения в htmlCode объекта docController
             }
-            
+
         }
 
         private void webView21_NavigationStarting(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs e)
@@ -197,34 +191,46 @@ namespace Diploma
 
         }
 
+        private async void работникиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String html = docController.createListInput(DocumentController.usingCRUD.people);
+            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            docController.setHtml(await getHtmlFromWebView2());
+        }
+
         private async void должностиToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String html = docController.createListInput(DocumentController.usingCRUD.positions);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            docController.setHtml(await getHtmlFromWebView2());
         }
 
         private async void действияToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String html = docController.createListInput(DocumentController.usingCRUD.operations);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            docController.setHtml(await getHtmlFromWebView2());
         }
 
         private async void заказыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String html = docController.createListInput(DocumentController.usingCRUD.orders);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            docController.setHtml(await getHtmlFromWebView2());
         }
 
         private async void товарыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String html = docController.createListInput(DocumentController.usingCRUD.products);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            docController.setHtml(await getHtmlFromWebView2());
         }
 
         private async void контрагентыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String html = docController.createListInput(DocumentController.usingCRUD.counteragents);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            docController.setHtml(await getHtmlFromWebView2());
         }
     }
 }
