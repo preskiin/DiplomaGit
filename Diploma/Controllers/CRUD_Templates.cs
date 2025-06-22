@@ -42,6 +42,21 @@ namespace Diploma.Controllers
             return dataTable;
         }
 
+        public DataTable getAllDataTable()
+        {
+            var dataTable = new DataTable();
+            string sql = @"
+                SELECT id, Name
+                FROM Templates";
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var command = new SqlCommand(sql, connection);
+                connection.Open();
+                new SqlDataAdapter(command).Fill(dataTable);
+            }
+            return dataTable;
+        }
         // Получить шаблон по ID (с Content)
         public Template GetById(long id)
         {

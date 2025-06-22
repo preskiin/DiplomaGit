@@ -6,10 +6,12 @@ using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Diploma.Controllers;
+using Diploma.Models;
 using Diploma.Views;
 using Newtonsoft.Json;
 
@@ -27,7 +29,7 @@ namespace Diploma
         {
             InitializeComponent();
 
-            _connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
+            /*_connection = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True"*/;
         }
 
         public TemplateForm(Diploma.Controllers.MyAppContext context, Diploma.Models.User user, String connection)
@@ -69,7 +71,7 @@ namespace Diploma
             //textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
             await webView21.EnsureCoreWebView2Async();
             this.webView21.CoreWebView2.Settings.IsScriptEnabled = true;
-            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/test (2).html");
+            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
 
             webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
             this.webView21.CoreWebView2.ContextMenuRequested += onContextMenuRequested; //подписка на событие о нажатии ПКМ внутри webview2
@@ -99,7 +101,35 @@ namespace Diploma
         private async void button2_Click(object sender, EventArgs e)
         {
             String htmlCodeFormWV = await getHtmlFromWebView2();
-            docController.saveHtml(htmlCodeFormWV);
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                FileName = "MyHtml.html",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop), 
+                Filter = "HTML Files (*.html)|*.html|All files (*.*)|*.*",
+                Title = "Сохранить HTML-файл"
+            };
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+                docController.setHtml(htmlCodeFormWV);
+                docController.saveHtml(filePath);
+                MessageBox.Show(
+                $"Файл успешно сохранён:\n{filePath}",
+                "Успех",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            }
+            else
+            {
+                MessageBox.Show(
+                "Сохранение отменено.",
+                "Информация",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning
+            );
+            }
+            //docController.saveHtml(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MyHtml.html");
         }
 
         //создает строку html из страницы, которая отображена сейчас в webView2
@@ -231,6 +261,29 @@ namespace Diploma
             String html = docController.createListInput(DocumentController.usingCRUD.counteragents);
             await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
             docController.setHtml(await getHtmlFromWebView2());
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ChooseFileFromBase frm = new ChooseFileFromBase(_connection);
+            if (DialogResult.OK == frm.ShowDialog())
+            {
+                Template template = frm.chosenTemplate;
+                if (template != null)
+                {
+                    string htmlContent = Encoding.UTF8.GetString(template.Content);
+                    docController.setHtml(htmlContent);
+                    docController.createAllTemplateObjects();
+                    webView21.CoreWebView2.NavigateToString(docController.getHtml());
+                    docController.getAllElementsFromHtml("template2003");
+                }
+            }
+            
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

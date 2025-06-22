@@ -119,6 +119,12 @@
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Template.cs" />
+    <Compile Include="Views\ChooseFileFromBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ChooseFileFromBase.Designer.cs">
+      <DependentUpon>ChooseFileFromBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ClassForms\FormCounteragent.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -186,6 +192,12 @@
     <Compile Include="Views\ClassForms\OrderChooseForm.Designer.cs">
       <DependentUpon>OrderChooseForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FillTemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FillTemplateForm.Designer.cs">
+      <DependentUpon>FillTemplateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\FormChooseList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -214,6 +226,9 @@
     <Compile Include="Views\EditDBForm.Designer.cs">
       <DependentUpon>EditDBForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\ChooseFileFromBase.resx">
+      <DependentUpon>ChooseFileFromBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\ClassForms\FormCounteragent.resx">
       <DependentUpon>FormCounteragent.cs</DependentUpon>
     </EmbeddedResource>
@@ -255,6 +270,9 @@
     </Compile>
     <EmbeddedResource Include="Views\ClassForms\OrderChooseForm.resx">
       <DependentUpon>OrderChooseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FillTemplateForm.resx">
+      <DependentUpon>FillTemplateForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormChooseList.resx">
       <DependentUpon>FormChooseList.cs</DependentUpon>

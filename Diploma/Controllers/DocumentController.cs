@@ -18,6 +18,7 @@ using System.Data;
 using System.Windows.Markup.Localizer;
 using System.Runtime.CompilerServices;
 using Microsoft.Web.WebView2.WinForms;
+using System.Windows.Controls;
 
 namespace Diploma.Controllers
 {
@@ -33,7 +34,8 @@ namespace Diploma.Controllers
             orders,
             orderItems,
         }
-
+        private List<string> inlineScripts = new List<string> { "$(document).ready(function() {\r\n  $(\".template2003 input[list]\").on(\"focusout\", function() {\r\n    validateInput.call($(this).closest(\".template2003\"));\r\n  });\r\n});\r\n\r\nlet isSending = false;\r\n\r\nfunction validateInput() \r\n{\r\n\tif (isSending) return;\r\n\tlet $container = $(this);\r\n\tlet input = $container.find(\"input[list]\");\r\n\tlet value = input.val();\r\n\tlet datalistId = input.attr(\"list\");\r\n\tlet datalist = $(\"#\" + datalistId);\r\n\tlet message;\r\n\tif ($container.attr(\"data-type-element\") == \"list\") {\r\n\t\tlet isValid = false;\r\n\t\tdatalist.find(\"option\").each(function() \r\n\t\t{\r\n\t\t\tif ($(this).val() === value) \r\n\t\t\t{\r\n\t\t\t\t$container.attr(\"data-value\", $(this).data(\"id\"));\r\n\t\t\t\t$container.attr(\"data-is-filled\", \"true\");\r\n\t\t\t\tisValid = true;\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t});\r\n\t\tif (!isValid) \r\n\t\t{\r\n\t\t\tinput.val(\"\");\r\n\t\t\t$container.attr(\"data-value\", \"null\");\r\n\t\t\t$container.attr(\"data-is-filled\", \"false\");\r\n\t\t} \r\n\t\tisSending = true;\r\n\t\tmessage = \r\n\t\t{\r\n\t\t\tnameElement: $container.attr(\"data-name-element\"),\r\n\t\t\tnameToConnectElement: $container.attr(\"data-name-to-connect\"),\r\n\t\t\tneedField: $container.attr(\"data-need-field\"),\r\n\t\t\tneedTable: $container.attr(\"data-need-table\"),\r\n\t\t\tcurrentField: $container.attr(\"data-current-field\"),\r\n\t\t\tcurrentTable: $container.attr(\"data-current-table\"),\r\n\t\t\ttypeElement: $container.attr(\"data-type-element\"),\r\n\t\t\tvalue: $container.attr(\"data-value\"), \r\n\t\t\tisFilled: $container.attr(\"data-is-filled\")\r\n\t\t};\r\n\t\tif(window.chrome && chrome.webview) \r\n\t\t{\r\n\t\t\twindow.chrome.webview.postMessage(JSON.stringify(message));\r\n\t\t}\r\n\t\tsetTimeout(() => { isSending = false; }, 100);\r\n\t}\r\n}" };
+        private List<string> externalScripts = new List<string> {"https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"};
         public struct elemToCreate
         {
             public string name_element;
@@ -46,7 +48,6 @@ namespace Diploma.Controllers
             public string value;
             public bool is_filled;
         }
-
         private String _connection;
         private String htmlCode;
         private int counter = 0;
@@ -162,17 +163,17 @@ namespace Diploma.Controllers
             
         }
 
-        //сохраняет html-код на рабочий стол
-        public void saveHtml(string htmlString)
+        //сохраняет html-код на рабочий стол. Работает, пока перед нажатием обновляется через webView
+        public void saveHtml(string path)
         {
             if (this.htmlCode != null)
             {
-                this.htmlCode =  htmlString;
-                File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\MyHtml.html", this.htmlCode);
+                addScriptsInHtmlCode();
+                File.WriteAllText(path, this.htmlCode);
             }
         }
 
-        //присваивает текущему htmlCode переданное в параметрах значение
+        //присваивает текущему htmlCode переданное в параметрах значение и добавляет туда скрипты, если их там не было
         public void setHtml(String htmlString)
         {
             this.htmlCode=htmlString;
@@ -202,8 +203,8 @@ namespace Diploma.Controllers
                     elem.is_filled = Convert.ToBoolean(node.Attributes["data-is-filled"].Value);
                     this.elements.Add(elem);
                 }
-                this.counter = this.elements.Count;
             }
+            this.counter = this.elements.Count;
         }
 
         //создает html-код объекта выпадающего списка и присваивает его в строку. После этого, с помощью функции поиска шаблонов в строке,
@@ -509,6 +510,12 @@ namespace Diploma.Controllers
                 placeholder='--Привязанный к {element.name_to_connect_element.Replace("element", "")}--' readonly
                 value=''>
                 ");
+            elemToCreate tmpToAdd = findTemplateInHtml(html.ToString(), "template2003");
+            if (tmpToAdd.name_element != null)
+            {
+                counter++;
+                elements.Add(tmpToAdd);
+            }
             return html.ToString();
         }
 
@@ -700,6 +707,7 @@ namespace Diploma.Controllers
         public void createAllTemplateObjects()
         {
             List<elemToCreate> elements = findAllTemplatesInHtml(this.htmlCode, "template2003");
+            //addScriptsInHtmlCode();
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(this.htmlCode);
             var divs = doc.DocumentNode.SelectNodes("//div[contains(@class, 'template2003')]");
@@ -733,6 +741,40 @@ namespace Diploma.Controllers
                 this.htmlCode = doc.DocumentNode.OuterHtml;//присваиваем полученный текст в htmlCode
             }
 
+        }
+        //добавляет в this.htmlCode необходимые скрипты
+        public void addScriptsInHtmlCode()
+        {
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(this.htmlCode);
+            var scripts = doc.DocumentNode.SelectNodes("//script");
+            if (scripts != null)
+            {
+                foreach (var script in scripts)
+                {
+                    script.Remove();
+                }
+            }
+            var bodyNode = doc.DocumentNode.SelectSingleNode("//body") ?? doc.DocumentNode.AppendChild(doc.CreateElement("body"));
+            if (externalScripts != null)
+            {
+                foreach (var url in externalScripts)
+                {
+                    var scriptNode = doc.CreateElement("script");
+                    scriptNode.SetAttributeValue("src", url);
+                    bodyNode.AppendChild(scriptNode);
+                }
+            }
+            if (inlineScripts != null)
+            {
+                foreach (var script in inlineScripts)
+                {
+                    var scriptNode = HtmlNode.CreateNode($"<script>{script}</script>");
+                    bodyNode.AppendChild(scriptNode);
+                }
+            }
+            
+            this.htmlCode = doc.DocumentNode.OuterHtml;
         }
     }
 

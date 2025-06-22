@@ -82,5 +82,15 @@ namespace Diploma.Views
         {
             localContext.SwitchMainForm(new Diploma.TemplateForm(localContext, enteredUser, _connectionString));
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            localContext.SwitchMainForm(new Diploma.Views.FillTemplateForm(localContext, enteredUser, _connectionString));
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
