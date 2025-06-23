@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System.Net.Http;
 
 namespace Diploma.Controllers
 {
@@ -523,6 +524,33 @@ namespace Diploma.Controllers
             return html.ToString();
         }
 
+        //создает код поля для ввода текста
+        public String createInputBox()
+        {
+            string name_element = "element" + Convert.ToString(this.counter + 1);
+            StringBuilder html = new StringBuilder();
+            html.AppendLine(@$"<input type='text' class='template2003' 
+                data-name-element='{name_element}'
+                data-name-to-connect=null
+                data-need-field=null
+                data-need-table=null
+                data-current-field=null
+                data-current-table=null
+                data-type-element=input-box
+                data-value=null
+                data-is-filled=false
+                placeholder='--Поле для текста--'
+                value=''>
+                ");
+            elemToCreate tmpToAdd = findTemplateInHtml(html.ToString(), "template2003");
+            if (tmpToAdd.name_element != null)
+            {
+                counter++;
+                elements.Add(tmpToAdd);
+            }
+            return html.ToString();
+        }
+        //"инициализирует" списки на форме
         public String createHtmlForListUsers(elemToCreate instructElement)
         {
             var html = new StringBuilder();//создает строку кода html
@@ -738,6 +766,8 @@ namespace Diploma.Controllers
                                 //это поле вроде даже менять не надо
                                 break;
                             }
+                        case "input-box":
+                            { break; }
                         default:
                             break;
                     }
@@ -780,6 +810,260 @@ namespace Diploma.Controllers
             }
 
             this.htmlCode = doc.DocumentNode.OuterHtml;
+        }
+    }
+
+    public class HtmlToWordConverter
+    {
+        private readonly string _connection;
+
+        public HtmlToWordConverter(string connection)
+        {
+            _connection = connection;
+        }
+        public void ConvertHtmlStringToWord(string html, string outputDocxPath)
+        {
+            //string cleanedHtml = CleanHtml(html);
+            CreateWordDocument(outputDocxPath, html);
+        }
+
+    //    public void ConvertHtmlToFileInBase(string html, string filePath)
+    //    {
+    //        // Добавляем стили для компактного отображения
+    //        string style = @"
+    //<style>
+    //    body, p, div, table, tr, td {
+    //        margin: 0 !important;
+    //        padding: 0 !important;
+    //        border-collapse: collapse !important;
+    //    }
+    //    table {
+    //        border: 1px solid black !important;
+    //        border-spacing: 0 !important;
+    //    }
+    //    td, th {
+    //        padding: 2px 4px !important;
+    //        border: 1px solid black !important;
+    //    }
+    //</style>"
+    //        ;
+    //        html = style + html;
+
+
+    //        using (WordprocessingDocument doc = WordprocessingDocument.Create(filePath, WordprocessingDocumentType.Document))
+    //        {
+    //            MainDocumentPart mainPart = doc.AddMainDocumentPart();
+    //            mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
+    //            DocumentFormat.OpenXml.Wordprocessing.Body body =
+    //                mainPart.Document.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Body());
+
+    //            string altChunkId = "HtmlChunk";
+    //            AlternativeFormatImportPart chunk = mainPart.AddAlternativeFormatImportPart(
+    //                AlternativeFormatImportPartType.Html,
+    //                altChunkId);
+
+    //            using (StreamWriter streamWriter = new StreamWriter(chunk.GetStream()))
+    //            {
+    //                streamWriter.Write(html);
+    //            }
+
+    //            AltChunk altChunk = new AltChunk();
+    //            altChunk.Id = altChunkId;
+    //            body.AppendChild(altChunk);
+    //        }
+    //    }
+
+        private string CleanHtml(string html)
+        {
+            // Создаем документ HTML для парсинга
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(html);
+
+            // Обрабатываем все элементы с классом template2003
+            var templateElements = doc.DocumentNode.SelectNodes("//*[contains(@class, 'template2003')]");
+            if (templateElements != null)
+            {
+                foreach (var element in templateElements)
+                {
+                    // Получаем информацию о типе элемента
+                    var typeAttr = element.GetAttributeValue("data-type-element", "");
+                    var nameAttr = element.GetAttributeValue("data-name-element", "");
+                    var currentTable = element.GetAttributeValue("data-current-table", "");
+                    var currentField = element.GetAttributeValue("data-current-field", "");
+
+                    // Обрабатываем списки
+                    if (typeAttr == "list" && !string.IsNullOrEmpty(nameAttr))
+                    {
+                        // Находим соответствующий input
+                        var input = doc.DocumentNode.SelectSingleNode($"//input[@name='{nameAttr}']");
+                        if (input != null)
+                        {
+                            // Получаем выбранное значение
+                            string selectedValue = input.GetAttributeValue("value", "");
+
+                            // Получаем ID выбранного элемента
+                            string selectedId = doc.DocumentNode
+                                .SelectSingleNode($"//input[@name='{nameAttr}-id']")?
+                                .GetAttributeValue("value", "");
+
+                            // Если есть ID, получаем связанные данные
+                            if (!string.IsNullOrEmpty(selectedId) && !string.IsNullOrEmpty(currentTable))
+                            {
+                                selectedValue = GetRelatedData(currentTable, selectedId, currentField);
+                            }
+
+                            // Заменяем весь элемент на значение
+                            element.ParentNode.ReplaceChild(
+                                HtmlAgilityPack.HtmlNode.CreateNode(selectedValue),
+                                element);
+                        }
+                    }
+                    // Обрабатываем привязанные поля
+                    else if (typeAttr == "bound" && !string.IsNullOrEmpty(nameAttr))
+                    {
+                        // Находим соответствующий input
+                        var input = doc.DocumentNode.SelectSingleNode($"//input[@name='{nameAttr}']");
+                        if (input != null)
+                        {
+                            // Заменяем на значение
+                            element.ParentNode.ReplaceChild(
+                                HtmlAgilityPack.HtmlNode.CreateNode(input.GetAttributeValue("value", "")),
+                                element);
+                        }
+                    }
+                }
+            }
+
+            // Удаляем ненужные элементы
+            doc.DocumentNode.Descendants()
+                .Where(n => n.Name == "script" || n.Name == "datalist" ||
+                           (n.Name == "div" && n.GetAttributeValue("class", "") == "template2003"))
+                .ToList()
+                .ForEach(n => n.Remove());
+
+            return doc.DocumentNode.OuterHtml;
+        }
+
+        private string GetRelatedData(string tableName, string id, string field)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connection))
+                {
+                    connection.Open();
+                    string query = $"SELECT {field} FROM {tableName} WHERE id = @id";
+                    using (var cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        return cmd.ExecuteScalar()?.ToString() ?? "[не заполнено]";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении связанных данных: {ex.Message}");
+                return "[ошибка]";
+            }
+        }
+
+        private void CreateWordDocument(string filePath, string htmlContent)
+        {
+            // Добавляем стили для компактного отображения
+            string style = @"
+    <style>
+        body, p, div, table, tr, td {
+            margin: 0 !important;
+            padding: 0 !important;
+            border-collapse: collapse !important;
+        }
+        table {
+            border: 1px solid black !important;
+            border-spacing: 0 !important;
+        }
+        td, th {
+            padding: 2px 4px !important;
+            border: 1px solid black !important;
+        }
+    </style>";
+
+            htmlContent = style + htmlContent;
+
+
+            using (WordprocessingDocument doc = WordprocessingDocument.Create(filePath, WordprocessingDocumentType.Document))
+            {
+                MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
+                DocumentFormat.OpenXml.Wordprocessing.Body body =
+                    mainPart.Document.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Body());
+
+                string altChunkId = "HtmlChunk";
+                AlternativeFormatImportPart chunk = mainPart.AddAlternativeFormatImportPart(
+                    AlternativeFormatImportPartType.Html,
+                    altChunkId);
+
+                using (StreamWriter streamWriter = new StreamWriter(chunk.GetStream()))
+                {
+                    streamWriter.Write(htmlContent);
+                }
+
+                AltChunk altChunk = new AltChunk();
+                altChunk.Id = altChunkId;
+                body.AppendChild(altChunk);
+            }
+        }
+
+        public byte[] CreateByteDocumentForBase(string htmlContent)
+        {
+            // Добавляем стили для компактного отображения
+            string style = @"
+<style>
+    body, p, div, table, tr, td {
+        margin: 0 !important;
+        padding: 0 !important;
+        border-collapse: collapse !important;
+    }
+    table {
+        border: 1px solid black !important;
+        border-spacing: 0 !important;
+    }
+    td, th {
+        padding: 2px 4px !important;
+        border: 1px solid black !important;
+    }
+</style>";
+
+            htmlContent = style + htmlContent;
+
+            // Используем MemoryStream вместо файла
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                // Создаем документ в памяти
+                using (WordprocessingDocument doc = WordprocessingDocument.Create(
+                    memoryStream,
+                    WordprocessingDocumentType.Document))
+                {
+                    MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Body());
+
+                    string altChunkId = "HtmlChunk";
+                    AlternativeFormatImportPart chunk = mainPart.AddAlternativeFormatImportPart(
+                        AlternativeFormatImportPartType.Html,
+                        altChunkId);
+
+                    using (StreamWriter streamWriter = new StreamWriter(chunk.GetStream()))
+                    {
+                        streamWriter.Write(htmlContent);
+                    }
+
+                    AltChunk altChunk = new AltChunk();
+                    altChunk.Id = altChunkId;
+                    body.AppendChild(altChunk);
+                }
+
+                // Возвращаем массив байтов из потока
+                return memoryStream.ToArray();
+            }
         }
     }
 }

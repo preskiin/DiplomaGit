@@ -329,6 +329,12 @@ namespace Diploma
 
             }
         }
-                
+
+        private async void текстовоеПолеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String html = docController.createInputBox();
+            await webView21.CoreWebView2.ExecuteScriptAsync(scriptInsertOnPos(html));
+            docController.setHtml(await getHtmlFromWebView2());
+        }
     }
 }

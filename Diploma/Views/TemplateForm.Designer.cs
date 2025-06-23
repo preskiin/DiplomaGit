@@ -55,12 +55,13 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(9, 99);
+            this.button1.Location = new System.Drawing.Point(12, 141);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(284, 23);
             this.button1.TabIndex = 2;
             this.button1.Text = "Открыть файл с устройства";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
@@ -106,7 +107,7 @@
             this.привязанноеПолеToolStripMenuItem,
             this.текстовоеПолеToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(193, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(193, 114);
             // 
             // списокToolStripMenuItem
             // 
@@ -168,6 +169,7 @@
             this.привязанныйСписокToolStripMenuItem.Name = "привязанныйСписокToolStripMenuItem";
             this.привязанныйСписокToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.привязанныйСписокToolStripMenuItem.Text = "Привязанный список";
+            this.привязанныйСписокToolStripMenuItem.Visible = false;
             // 
             // привязанноеПолеToolStripMenuItem
             // 
@@ -181,6 +183,7 @@
             this.текстовоеПолеToolStripMenuItem.Name = "текстовоеПолеToolStripMenuItem";
             this.текстовоеПолеToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.текстовоеПолеToolStripMenuItem.Text = "Текстовое поле";
+            this.текстовоеПолеToolStripMenuItem.Click += new System.EventHandler(this.текстовоеПолеToolStripMenuItem_Click);
             // 
             // button4
             // 
@@ -194,9 +197,9 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(9, 150);
+            this.button5.Location = new System.Drawing.Point(9, 97);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(282, 23);
+            this.button5.Size = new System.Drawing.Size(284, 23);
             this.button5.TabIndex = 11;
             this.button5.Text = "Открыть .docx как шаблон";
             this.button5.UseVisualStyleBackColor = true;

@@ -18,7 +18,6 @@ namespace Diploma
     {
         private Diploma.Controllers.MyAppContext localContext;
         private String _connection;
-        private String origPassword;
         public Authorize()
         {
             InitializeComponent();
@@ -40,10 +39,6 @@ namespace Diploma
             }
             else
                 label3.Text = "Неверное имя пользователя или пароль";
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
         }
     }
 }
