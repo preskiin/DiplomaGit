@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Diploma.Models;
+using System.Runtime.CompilerServices;
+using Aspose.Words;
+using Aspose.Words.Saving;
 
 namespace Diploma.Views
 {
@@ -19,7 +22,7 @@ namespace Diploma.Views
         private DocumentController docController;
         private Diploma.Controllers.MyAppContext localContext;
         private Diploma.Models.User enteredUser;
-
+        private String htmlCode = "";
         public FillTemplateForm()
         {
             InitializeComponent();
@@ -102,11 +105,20 @@ namespace Diploma.Views
         {
 
             await webView21.ExecuteScriptAsync("document.body.contentEditable = 'false';");
+            this.htmlCode = await getHtmlFromWebView2();
         }
 
-        private async void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
-            HtmlToWordConverter converter = new HtmlToWordConverter();
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TestDocx.docx";
+            Aspose.Words.Document doc = new Aspose.Words.Document();
+            DocumentBuilder builder = new DocumentBuilder(doc);
+            builder.InsertHtml(this.htmlCode);
+            SaveOptions saveOptions = new TxtSaveOptions();
+            saveOptions.SaveFormat = SaveFormat.Docx;
+            doc.Save(path, saveOptions);
+            //HtmlToWordConverter converter = new HtmlToWordConverter();
+            //converter.ConvertHtmlStringToWord(this.htmlCode, path);
         }
     }
 }

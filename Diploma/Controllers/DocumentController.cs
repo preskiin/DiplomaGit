@@ -39,7 +39,7 @@ namespace Diploma.Controllers
             orderItems,
         }
         private List<string> inlineScripts = new List<string> { "$(document).ready(function() {\r\n  $(\".template2003 input[list]\").on(\"focusout\", function() {\r\n    validateInput.call($(this).closest(\".template2003\"));\r\n  });\r\n});\r\n\r\nlet isSending = false;\r\n\r\nfunction validateInput() \r\n{\r\n\tif (isSending) return;\r\n\tlet $container = $(this);\r\n\tlet input = $container.find(\"input[list]\");\r\n\tlet value = input.val();\r\n\tlet datalistId = input.attr(\"list\");\r\n\tlet datalist = $(\"#\" + datalistId);\r\n\tlet message;\r\n\tif ($container.attr(\"data-type-element\") == \"list\") {\r\n\t\tlet isValid = false;\r\n\t\tdatalist.find(\"option\").each(function() \r\n\t\t{\r\n\t\t\tif ($(this).val() === value) \r\n\t\t\t{\r\n\t\t\t\t$container.attr(\"data-value\", $(this).data(\"id\"));\r\n\t\t\t\t$container.attr(\"data-is-filled\", \"true\");\r\n\t\t\t\tisValid = true;\r\n\t\t\t\treturn false;\r\n\t\t\t}\r\n\t\t});\r\n\t\tif (!isValid) \r\n\t\t{\r\n\t\t\tinput.val(\"\");\r\n\t\t\t$container.attr(\"data-value\", \"null\");\r\n\t\t\t$container.attr(\"data-is-filled\", \"false\");\r\n\t\t} \r\n\t\tisSending = true;\r\n\t\tmessage = \r\n\t\t{\r\n\t\t\tnameElement: $container.attr(\"data-name-element\"),\r\n\t\t\tnameToConnectElement: $container.attr(\"data-name-to-connect\"),\r\n\t\t\tneedField: $container.attr(\"data-need-field\"),\r\n\t\t\tneedTable: $container.attr(\"data-need-table\"),\r\n\t\t\tcurrentField: $container.attr(\"data-current-field\"),\r\n\t\t\tcurrentTable: $container.attr(\"data-current-table\"),\r\n\t\t\ttypeElement: $container.attr(\"data-type-element\"),\r\n\t\t\tvalue: $container.attr(\"data-value\"), \r\n\t\t\tisFilled: $container.attr(\"data-is-filled\")\r\n\t\t};\r\n\t\tif(window.chrome && chrome.webview) \r\n\t\t{\r\n\t\t\twindow.chrome.webview.postMessage(JSON.stringify(message));\r\n\t\t}\r\n\t\tsetTimeout(() => { isSending = false; }, 100);\r\n\t}\r\n}" };
-        private List<string> externalScripts = new List<string> {"https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"};
+        private List<string> externalScripts = new List<string> { "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" };
         public struct elemToCreate
         {
             public string name_element;
@@ -57,7 +57,7 @@ namespace Diploma.Controllers
         private int counter = 0;
 
         public List<elemToCreate> elements;
-       
+
         public DocumentController(String con)
         {
             _connection = con;
@@ -88,7 +88,7 @@ namespace Diploma.Controllers
             else
                 return false;
         }
-        
+
         //удаляет упоминания библиотеки в документе html
         private void cleanFromWatermarks()
         {
@@ -99,7 +99,7 @@ namespace Diploma.Controllers
                 if (tmpStr.IndexOf("<div style=") != -1)
                 {
                     start_rem = tmpStr.IndexOf("<div style=");
-                    tmpStr = tmpStr.Remove(start_rem, getDivClosePosition(start_rem, tmpStr)-start_rem);
+                    tmpStr = tmpStr.Remove(start_rem, getDivClosePosition(start_rem, tmpStr) - start_rem);
                 }
                 else
                     break;
@@ -112,12 +112,12 @@ namespace Diploma.Controllers
         private Int32 getDivClosePosition(Int32 start_pos, String allStr)
         {
             int result = 1;
-            int tmp_position = start_pos+4;
-            for (int i=0; i<10; i++)
+            int tmp_position = start_pos + 4;
+            for (int i = 0; i < 10; i++)
             {
                 if (result == 0)
                     break;
-                if (allStr.IndexOf("<div", tmp_position)<allStr.IndexOf("</div>", tmp_position)&&allStr.IndexOf("<div", tmp_position)!=-1)
+                if (allStr.IndexOf("<div", tmp_position) < allStr.IndexOf("</div>", tmp_position) && allStr.IndexOf("<div", tmp_position) != -1)
                 {
                     result++;
                     tmp_position = allStr.IndexOf("<div", tmp_position) + 4;
@@ -135,8 +135,8 @@ namespace Diploma.Controllers
         private String removeFirstLastP(String strToClean)
         {
             String tmpStr = strToClean;
-            tmpStr = tmpStr.Remove(tmpStr.IndexOf("<p"), tmpStr.IndexOf("</p>")+4-tmpStr.IndexOf("<p"));
-            tmpStr = tmpStr.Remove(tmpStr.LastIndexOf("<p"), tmpStr.LastIndexOf("</p>") + 4- tmpStr.LastIndexOf("<p"));
+            tmpStr = tmpStr.Remove(tmpStr.IndexOf("<p"), tmpStr.IndexOf("</p>") + 4 - tmpStr.IndexOf("<p"));
+            tmpStr = tmpStr.Remove(tmpStr.LastIndexOf("<p"), tmpStr.LastIndexOf("</p>") + 4 - tmpStr.LastIndexOf("<p"));
             return tmpStr;
         }
 
@@ -164,7 +164,7 @@ namespace Diploma.Controllers
                 return 1;
             }
             else return -1;
-            
+
         }
 
         //сохраняет html-код на рабочий стол. Работает, пока перед нажатием обновляется через webView
@@ -180,7 +180,7 @@ namespace Diploma.Controllers
         //присваивает текущему htmlCode переданное в параметрах значение и добавляет туда скрипты, если их там не было
         public void setHtml(String htmlString)
         {
-            this.htmlCode=htmlString;
+            this.htmlCode = htmlString;
         }
 
         //пересоздает все элементы в коллекции и пересчитывает их
@@ -191,7 +191,7 @@ namespace Diploma.Controllers
             htmlDoc.LoadHtml(this.htmlCode);
             // Ищем все элементы с классом template2003
             var nodes = htmlDoc.DocumentNode.SelectNodes($"//*[contains(@class, '{classToFind}')]");
-            if (nodes!=null)
+            if (nodes != null)
             {
                 foreach (var node in nodes)
                 {
@@ -297,14 +297,14 @@ namespace Diploma.Controllers
             var boundsToUpdate = doc.DocumentNode.SelectNodes($"//*[@data-name-to-connect='{updated_element.name_element}']");//ловит элементы из htmlCode, у которых nameToConnect соответствует имени переданного объекта
             if (boundsToUpdate != null)
             {
-                foreach(var bound in boundsToUpdate)
+                foreach (var bound in boundsToUpdate)
                 {
                     //отработать ошибку, при которой пользователь сбросил значение в элементе,к которому привязано поле
                     string curF = bound.GetAttributeValue("data-current-field", null);
                     string curT = bound.GetAttributeValue("data-current-table", null);
                     string needF = bound.GetAttributeValue("data-need-field", null);
                     string needT = bound.GetAttributeValue("data-need-table", null);
-                    DataTable localTable = createAndExecuteQuery(Convert.ToInt64(updated_element.value=="null"? null : updated_element.value),
+                    DataTable localTable = createAndExecuteQuery(Convert.ToInt64(updated_element.value == "null" ? null : updated_element.value),
                         bound.GetAttributeValue("data-current-field", null), bound.GetAttributeValue("data-current-table", null),
                         bound.GetAttributeValue("data-need-field", null), bound.GetAttributeValue("data-need-table", null));
                     string js;
@@ -317,7 +317,7 @@ namespace Diploma.Controllers
                             element.value='{Convert.ToString(localTable.Rows[0][curF])}';
                             element.setAttribute('data-is-filled', 'true'); 
                         }}";
-                        
+
                     }
                     else
                     {
@@ -340,11 +340,11 @@ namespace Diploma.Controllers
             //elements[count] = updated_element;
             //updateBoundFieldElements(elements[count].name_element);
         }
-        
+
 
         //составляет и выполняет запрос на основании переданных параметров.
-       private DataTable createAndExecuteQuery(Int64 selectedId, String curF, String curT, String needF, String needT)//есть смысл добавить Split в объекте curF, на случай, если туда будет передано поле в формате 
-            //Фамилия_Имя_Отчество пока не придумал, как это сделать
+        private DataTable createAndExecuteQuery(Int64 selectedId, String curF, String curT, String needF, String needT)//есть смысл добавить Split в объекте curF, на случай, если туда будет передано поле в формате 
+                                                                                                                       //Фамилия_Имя_Отчество пока не придумал, как это сделать
         {
             DataTable dataTable = new();
             dataTable.Columns.Add("id", typeof(string));
@@ -365,7 +365,7 @@ namespace Diploma.Controllers
                 }
                 connection.Close();
             }
-            else 
+            else
             {
                 String sql_exp = $"SELECT id, {needF} FROM {needT} WHERE id =@SelectedId";
                 SqlConnection connection = new SqlConnection(_connection);
@@ -376,14 +376,14 @@ namespace Diploma.Controllers
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (reader.Read())
-                        shiftId= reader.GetInt64(1);
+                        shiftId = reader.GetInt64(1);
                 }
                 sql_exp = $"SELECT id, {curF} FROM {curT} WHERE id=@ShiftId";
                 command = new SqlCommand(sql_exp, connection);
                 command.Parameters.AddWithValue("@ShiftId", shiftId);
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    if(reader.Read())
+                    if (reader.Read())
                     {
                         dataTable.Rows.Add(reader.GetValue(0).ToString(), reader.GetValue(1).ToString());
                     }
@@ -397,8 +397,8 @@ namespace Diploma.Controllers
         //Создает код шаблона списка пользователей
         public String createTemplateListUsers()
         {
-            string new_name = "element"+Convert.ToString(this.counter + 1);
-            string show_name = "СписокЛюдей"+ Convert.ToString(this.counter + 1);
+            string new_name = "element" + Convert.ToString(this.counter + 1);
+            string show_name = "СписокЛюдей" + Convert.ToString(this.counter + 1);
             string htmlStr = @$"<div class='template2003' 
                 data-name-element='{new_name}'
                 data-name-to-connect=base
@@ -499,7 +499,7 @@ namespace Diploma.Controllers
         //создает код шаблона привязанного поля
         public String createTemplateForBoundField(elemToCreate element)
         {
-            element.name_element = "element" + Convert.ToString(this.counter+1);
+            element.name_element = "element" + Convert.ToString(this.counter + 1);
             StringBuilder html = new StringBuilder();
             html.AppendLine(@$"<input type='text' class='template2003' 
                 data-name-element='{element.name_element}'
@@ -531,7 +531,7 @@ namespace Diploma.Controllers
             html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
             foreach (DataRow user in users.Rows)
             {
-                html.AppendLine($"<option value='{user["Surname"]+" " + user["Name"]+" " + user["Patronymic"]}' data-id='{user["id"]}'>");
+                html.AppendLine($"<option value='{user["Surname"] + " " + user["Name"] + " " + user["Patronymic"]}' data-id='{user["id"]}'>");
             }
 
             html.AppendLine("</datalist>");
@@ -622,7 +622,7 @@ namespace Diploma.Controllers
         //возвращает elemToCreate с указанным именем из переданной коллекции
         private elemToCreate findElementByName(String name, List<elemToCreate> elements)
         {
-            elemToCreate tmp_elem= new();
+            elemToCreate tmp_elem = new();
             foreach (elemToCreate elem in elements)
             {
                 if (elem.name_element == name)
@@ -653,7 +653,7 @@ namespace Diploma.Controllers
                 case "Operations":
                     {
                         tmpStr = createHtmlForListOperations(tmpElem);
-                        break; 
+                        break;
                     }
                 case "Orders":
                     {
@@ -777,69 +777,9 @@ namespace Diploma.Controllers
                     bodyNode.AppendChild(scriptNode);
                 }
             }
-            
+
             this.htmlCode = doc.DocumentNode.OuterHtml;
         }
     }
-    public class HtmlToWordConverter
-    {
-        public void ConvertHtmlStringToWord(string html, string outputDocxPath)
-        {
-            // Очистка HTML и замена input на значения
-            string cleanedHtml = CleanHtml(html);
-
-            // Создание Word-документа
-            CreateWordDocument(outputDocxPath, cleanedHtml);
-        }
-
-        public void ConvertHtmlToWord(string htmlFilePath, string outputDocxPath)
-        {
-            // Чтение HTML с кодировкой UTF-8 (для кириллицы)
-            string html = File.ReadAllText(htmlFilePath, Encoding.UTF8);
-
-            // Очистка HTML и замена input на значения
-            string cleanedHtml = CleanHtml(html);
-
-            // Создание Word-документа
-            CreateWordDocument(outputDocxPath, cleanedHtml);
-        }
-
-        private string CleanHtml(string html)
-        {
-            // Удаление скриптов
-            html = Regex.Replace(html, @"<script[^>]*>.*?</script>", "", RegexOptions.Singleline);
-
-            // Замена input на их значения
-            html = Regex.Replace(html, @"<input[^>]*value=""([^""]*)""[^>]*>", m =>
-            {
-                string value = m.Groups[1].Value;
-                return string.IsNullOrEmpty(value) ? "[не заполнено]" : value;
-            });
-
-            // Удаление datalist и ненужных атрибутов
-            html = Regex.Replace(html, @"<datalist[^>]*>.*?</datalist>", "", RegexOptions.Singleline);
-            html = Regex.Replace(html, @"<div[^>]*class=""template2003""[^>]*>.*?</div>", "");
-
-            return html;
-        }
-
-        private void CreateWordDocument(string filePath, string content)
-        {
-            using (WordprocessingDocument doc = WordprocessingDocument.Create(filePath, WordprocessingDocumentType.Document))
-            {
-                MainDocumentPart mainPart = doc.AddMainDocumentPart();
-                mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
-                DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Body());
-
-                // Добавление текста с сохранением переносов строк
-                foreach (var line in content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    DocumentFormat.OpenXml.Wordprocessing.Paragraph paragraph = body.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Paragraph());
-                    DocumentFormat.OpenXml.Wordprocessing.Run run = paragraph.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Run());
-                    run.AppendChild(new Text(line));
-                }
-            }
-        }
-    }
-
 }
+
