@@ -105,7 +105,7 @@ namespace Diploma.Views
                     }
                 case "Orders":
                     {
-                        tmpArr.AddRange(["Номер заказа", "Контрагент", "Дата заказа", "Дата доставки", "Комментарий к заказу"]);
+                        tmpArr.AddRange(["Номер заказа", "Контрагент заказа", "Дата заказа", "Дата доставки", "Комментарий к заказу"]);
                         break;
                     }
                 default:
@@ -153,80 +153,102 @@ namespace Diploma.Views
                         break;
                     }
                 //варианты списка должностей
-                //case "Сектор должности":
-                //    {
-                //        currentElement.need_field = "Sector";
-                //        currentElement.current_field = "Sector";
-                //        currentElement.current_table = "Positions";
-                //        break;
-                //    }
-                //case "Отдел должности":
-                //    {
-                //        currentElement.need_field = "Department";
-                //        currentElement.current_field = "Department";
-                //        currentElement.current_table = "Positions";
-                //        break;
-                //    }
-                //case "Должность, которая это может выполнить":
-                //    {
-                //        this.currentElement.className = "Operation";
-                //        this.currentElement.show_field = "IdPosition";
-                //        break;
-                //    }
-                //case "Название действия":
-                //    {
-                //        this.currentElement.className = "Operation";
-                //        this.currentElement.show_field = "Name";
-                //        break;
-                //    }
-                //case "Описание действия":
-                //    {
-                //        this.currentElement.className = "Operation";
-                //        this.currentElement.show_field = "Description";
-                //        break;
-                //    }
-                //case "Описание товара":
-                //    {
-                //        this.currentElement.className = "Product";
-                //        this.currentElement.show_field = "Description";
-                //        break;
-                //    }
-                //case "Цена товара":
-                //    {
-                //        this.currentElement.className = "Product";
-                //        this.currentElement.show_field = "Price";
-                //        break;
-                //    }
-                //case "Контрагент":
-                //    {
-                //        this.currentElement.className = "Order";
-                //        this.currentElement.show_field = "IdCounteragent";
-                //        break;
-                //    }
-                //case "Номер заказа":
-                //    {
-                //        this.currentElement.className = "Order";
-                //        this.currentElement.show_field = "Number";
-                //        break;
-                //    }
-                //case "Дата заказа":
-                //    {
-                //        this.currentElement.className = "Order";
-                //        this.currentElement.show_field = "OrderDate";
-                //        break;
-                //    }
-                //case "Дата доставки":
-                //    {
-                //        this.currentElement.className = "Order";
-                //        this.currentElement.show_field = "DeliveryDate";
-                //        break;
-                //    }
-                //case "Комментарий к заказу":
-                //    {
-                //        this.currentElement.className = "Order";
-                //        this.currentElement.show_field = "Comment";
-                //        break;
-                //    }
+                case "Сектор должности":
+                    {
+                        currentElement.need_field = "Sector";
+                        currentElement.current_field = "Sector";
+                        currentElement.current_table = "Positions";
+                        break;
+                    }
+                case "Отдел должности":
+                    {
+                        currentElement.need_field = "Department";
+                        currentElement.current_field = "Department";
+                        currentElement.current_table = "Positions";
+                        break;
+                    }
+                    //варианты операций
+                case "Должность, которая это может выполнить":
+                    {
+                        currentElement.need_field = "IdPosition";
+                        currentElement.current_field = "Name";
+                        currentElement.current_table = "Positions";
+                        break;
+                    }
+                case "Название действия":
+                    {
+                        currentElement.need_field = "Name";
+                        currentElement.current_field = "Name";
+                        currentElement.current_table = "Operations";
+                        break;
+                    }
+                case "Описание действия":
+                    {
+                        currentElement.need_field = "Description";
+                        currentElement.current_field = "Description";
+                        currentElement.current_table = "Operations";
+                        break;
+                    }
+                    //варианты товара
+                case "Описание товара":
+                    {
+                        currentElement.need_field = "Description";
+                        currentElement.current_field = "Description";
+                        currentElement.current_table = "Products";
+                        break;
+                    }
+                case "Цена товара":
+                    {
+
+                        currentElement.need_field = "Price";
+                        currentElement.current_field = "Price";
+                        currentElement.current_table = "Products";
+                        break;
+                    }
+                    //варианты контрагента???
+                case "Контрагент":
+                    {
+                        currentElement.need_field = "Name";
+                        currentElement.current_field = "Name";
+                        currentElement.current_table = "Counteragents";
+                        break;
+                    }
+                    //варианты заказа
+                case "Номер заказа":
+                    {
+                        currentElement.need_field = "Number";
+                        currentElement.current_field = "Number";
+                        currentElement.current_table = "Orders";
+                        break;
+                    }
+                case "Контрагент заказа":
+                    {
+                        currentElement.need_field = "IdCounteragent";
+                        currentElement.current_field = "Name";
+                        currentElement.current_table = "Counteragents";
+                        break;
+                    }
+                case "Дата заказа":
+                    {
+                        currentElement.need_field = "OrderDate";
+                        currentElement.current_field = "OrderDate";
+                        currentElement.current_table = "Orders";
+                        break;
+                    }
+                case "Дата доставки":
+                    {
+                        currentElement.need_field = "DeliveryDate";
+                        currentElement.current_field = "DeliveryDate";
+                        currentElement.current_table = "Orders";
+                        break;
+                    }
+                case "Комментарий к заказу":
+                    {
+                        currentElement.need_field = "Comment";
+                        currentElement.current_field = "Comment";
+                        currentElement.current_table = "Orders";
+                        break;
+                    }
                 default:
                     {
                         break;

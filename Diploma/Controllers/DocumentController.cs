@@ -19,6 +19,10 @@ using System.Windows.Markup.Localizer;
 using System.Runtime.CompilerServices;
 using Microsoft.Web.WebView2.WinForms;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Diploma.Controllers
 {
@@ -727,11 +731,11 @@ namespace Diploma.Controllers
                             }
                         case "bound-list":
                             {
-                                //это поле вроде даже менять не надо
                                 break;
                             }
                         case "bound-field":
                             {
+                                //это поле вроде даже менять не надо
                                 break;
                             }
                         default:
@@ -775,6 +779,66 @@ namespace Diploma.Controllers
             }
             
             this.htmlCode = doc.DocumentNode.OuterHtml;
+        }
+    }
+    public class HtmlToWordConverter
+    {
+        public void ConvertHtmlStringToWord(string html, string outputDocxPath)
+        {
+            // Очистка HTML и замена input на значения
+            string cleanedHtml = CleanHtml(html);
+
+            // Создание Word-документа
+            CreateWordDocument(outputDocxPath, cleanedHtml);
+        }
+
+        public void ConvertHtmlToWord(string htmlFilePath, string outputDocxPath)
+        {
+            // Чтение HTML с кодировкой UTF-8 (для кириллицы)
+            string html = File.ReadAllText(htmlFilePath, Encoding.UTF8);
+
+            // Очистка HTML и замена input на значения
+            string cleanedHtml = CleanHtml(html);
+
+            // Создание Word-документа
+            CreateWordDocument(outputDocxPath, cleanedHtml);
+        }
+
+        private string CleanHtml(string html)
+        {
+            // Удаление скриптов
+            html = Regex.Replace(html, @"<script[^>]*>.*?</script>", "", RegexOptions.Singleline);
+
+            // Замена input на их значения
+            html = Regex.Replace(html, @"<input[^>]*value=""([^""]*)""[^>]*>", m =>
+            {
+                string value = m.Groups[1].Value;
+                return string.IsNullOrEmpty(value) ? "[не заполнено]" : value;
+            });
+
+            // Удаление datalist и ненужных атрибутов
+            html = Regex.Replace(html, @"<datalist[^>]*>.*?</datalist>", "", RegexOptions.Singleline);
+            html = Regex.Replace(html, @"<div[^>]*class=""template2003""[^>]*>.*?</div>", "");
+
+            return html;
+        }
+
+        private void CreateWordDocument(string filePath, string content)
+        {
+            using (WordprocessingDocument doc = WordprocessingDocument.Create(filePath, WordprocessingDocumentType.Document))
+            {
+                MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
+                DocumentFormat.OpenXml.Wordprocessing.Body body = mainPart.Document.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Body());
+
+                // Добавление текста с сохранением переносов строк
+                foreach (var line in content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DocumentFormat.OpenXml.Wordprocessing.Paragraph paragraph = body.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Paragraph());
+                    DocumentFormat.OpenXml.Wordprocessing.Run run = paragraph.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Run());
+                    run.AppendChild(new Text(line));
+                }
+            }
         }
     }
 

@@ -48,6 +48,7 @@
             this.webView21.Size = new System.Drawing.Size(626, 621);
             this.webView21.TabIndex = 0;
             this.webView21.ZoomFactor = 1D;
+            this.webView21.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.webView21_NavigationCompleted);
             // 
             // button1
             // 
@@ -77,6 +78,7 @@
             this.button3.Text = "Составить документ";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Visible = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // FillTemplateForm
             // 

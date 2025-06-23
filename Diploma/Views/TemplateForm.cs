@@ -87,24 +87,19 @@ namespace Diploma
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (docController.docxToHtml(textBox1.Text))
-            {
-                this.webView21.NavigateToString(docController.getHtml());
-            }
-            else
-            {
-                MessageBox.Show("Текст не был присвоен элементу", "Ошибка", MessageBoxButtons.OK);
-            }    
+            
         }
 
         //сохранение текущей строки в вебвью в файлы компьютера
         private async void button2_Click(object sender, EventArgs e)
         {
+            //не ясно как и от чего это зависит, но иногда программа крашится и вылетает. В интернете говорили про использование в разных потоках одного элемента, прочитай статью по ошибке/отредактируй код
+            //я удмаю, что проблема где-то с вебвью и асинхранным ожиданием чтения в строку
             String htmlCodeFormWV = await getHtmlFromWebView2();
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 FileName = "MyHtml.html",
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop), 
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 Filter = "HTML Files (*.html)|*.html|All files (*.*)|*.*",
                 Title = "Сохранить HTML-файл"
             };
@@ -281,9 +276,5 @@ namespace Diploma
             
         }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
