@@ -527,7 +527,7 @@ namespace Diploma.Controllers
         {
             var html = new StringBuilder();//создает строку кода html
             var users = CRUD_Users.readAllUsers(_connection);//получаем массив пользователей.
-            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {"СписокЛюдей"+ instructElement.name_element.Replace("element", "")} --'>");
             html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
             foreach (DataRow user in users.Rows)
             {
@@ -543,7 +543,7 @@ namespace Diploma.Controllers
         {
             var html = new StringBuilder();//создает строку кода html
             var agents = CRUD_Counteragents.readAllCounteragents(_connection);//получаем массив агентов
-            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {"СписокКонтрагентов" + instructElement.name_element.Replace("element", "")} --'>");
             html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
             foreach (DataRow agent in agents.Rows)
             {
@@ -559,7 +559,7 @@ namespace Diploma.Controllers
         {
             var html = new StringBuilder();//создает строку кода html
             var operations = CRUD_Operations.readAllOperations(_connection);//получаем массив действий
-            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {"СписокДействий" + instructElement.name_element.Replace("element", "")} --'>");
             html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
             foreach (DataRow operation in operations.Rows)
             {
@@ -575,7 +575,7 @@ namespace Diploma.Controllers
         {
             var html = new StringBuilder();//создает строку кода html
             var orders = CRUD_Orders.readAllOrders(_connection);//получаем массив заказов
-            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {"СписокЗаказов" + instructElement.name_element.Replace("element", "")} --'>");
             html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
             foreach (DataRow order in orders.Rows)
             {
@@ -591,7 +591,7 @@ namespace Diploma.Controllers
         {
             var html = new StringBuilder();//создает строку кода html
             var positions = CRUD_Positions.readAllPositions(_connection);//получаем массив должностей
-            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {"СписокДолжностей" + instructElement.name_element.Replace("element", "")} --'>");
             html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
             foreach (DataRow position in positions.Rows)
             {
@@ -607,7 +607,7 @@ namespace Diploma.Controllers
         {
             var html = new StringBuilder();//создает строку кода html
             var products = CRUD_Products.readAllProducts(_connection);//получаем массив должностей
-            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {instructElement.name_element} --'>");
+            html.AppendLine($"<input list='{instructElement.name_element}-list' name='{instructElement.name_element}' id='{instructElement.name_element}' value='' class='form-control' placeholder='-- {"СписокТоваров" + instructElement.name_element.Replace("element", "")} --'>");
             html.AppendLine($"<datalist id='{instructElement.name_element}-list'>");
             foreach (DataRow product in products.Rows)
             {
@@ -743,6 +743,7 @@ namespace Diploma.Controllers
                     }
                 }
                 this.htmlCode = doc.DocumentNode.OuterHtml;//присваиваем полученный текст в htmlCode
+                addScriptsInHtmlCode();//добавляет в документ скрипты
             }
 
         }

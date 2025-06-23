@@ -31,7 +31,14 @@ namespace Diploma.Views
 
         private void MainMenuForm_Load(object sender, EventArgs e)
         {
-            label1.Text = "Здравствуйте, " + enteredUser.Name + " " + enteredUser.Patronymic + "!";
+            if (enteredUser.Name == "admin")
+            {
+                label1.Text = "Здравствуйте, Администратор!";
+            }
+            else
+            {
+                label1.Text = "Здравствуйте, " + enteredUser.Name + " " + enteredUser.Patronymic + "!";
+            }
             if (Diploma.Controllers.CRUD_Positions.getLevel(enteredUser.IdPosition, _connectionString) != 8919409)
             {
                 button4.Visible = false;

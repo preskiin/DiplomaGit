@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using Diploma.Controllers;
 using Diploma.Models;
 using Diploma.Views;
+using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using Newtonsoft.Json;
 
 namespace Diploma
@@ -71,17 +72,20 @@ namespace Diploma
             //textBox1.Text = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..") + "\\2.docx");//адрес файла docx для чтения
             await webView21.EnsureCoreWebView2Async();
             this.webView21.CoreWebView2.Settings.IsScriptEnabled = true;
-            string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
+            //string htmlContent = File.ReadAllText("C:/Users/User/Desktop/MyHtml.html");
 
             webView21.CoreWebView2.Settings.IsWebMessageEnabled = true;
             this.webView21.CoreWebView2.ContextMenuRequested += onContextMenuRequested; //подписка на событие о нажатии ПКМ внутри webview2
             this.webView21.CoreWebView2.WebMessageReceived += onAnswerFromWeb; //подписка на событие об ответе с webview2 о выборе элемента в списке
             docController = new DocumentController(_connection);
-            docController.setHtml(htmlContent);
-            docController.createAllTemplateObjects();
+            //docController.setHtml(htmlContent);
+            //docController.createAllTemplateObjects(); 
+            webView21.CoreWebView2.Navigate("about:blank");
+            docController.setHtml(await getHtmlFromWebView2());
+            webView21.CoreWebView2.NavigateToString(docController.getHtml());
             //String htmlCodeFromWV = await getHtmlFromWebView2();
             //docController.setHtml(htmlCodeFromWV);
-            webView21.CoreWebView2.NavigateToString(docController.getHtml());
+
 
         }
 
@@ -276,5 +280,55 @@ namespace Diploma
             
         }
 
+        private async void button4_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text != "")
+            {
+
+                CRUD_Templates cRUD_templates = new CRUD_Templates(_connection);
+                string html = await getHtmlFromWebView2();
+                Template template = new Template(0, textBox1.Text, Encoding.UTF8.GetBytes(html));
+                if( cRUD_templates.create(template)!=-1)
+                {
+                    MessageBox.Show("Шаблон успешно сохранен в базу", "Информация", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    MessageBox.Show("Шаблон не удалось сохранить. Проверьте, не пытаетесь ли выс охранить пустой шаблон и корректное ли введено имя", "Информация", MessageBoxButtons.OK);
+                }
+            }
+            else { MessageBox.Show("Название шаблона не должно быть пустым!", "Внимание!", MessageBoxButtons.OK); }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                // Настройка фильтра для файлов Word
+                openFileDialog.Filter = "Word Documents (*.docx)|*.docx";
+                openFileDialog.FilterIndex = 1; // Установка первого фильтра по умолчанию
+                openFileDialog.Title = "Выберите документ Word";
+                openFileDialog.Multiselect = false; // Запрет выбора нескольких файлов
+                openFileDialog.CheckFileExists = true;
+                openFileDialog.CheckPathExists = true;
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string selectedFilePath = openFileDialog.FileName;
+                    if (!System.IO.Path.GetExtension(selectedFilePath).Equals(".docx", StringComparison.OrdinalIgnoreCase))
+                    {
+                        MessageBox.Show("Выбранный файл не является документом DOCX!",
+                                        "Ошибка",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                        return;
+                    }
+                    docController.docxToHtml(selectedFilePath);
+                    webView21.CoreWebView2.NavigateToString(docController.getHtml());
+                }
+
+            }
+        }
+                
     }
 }

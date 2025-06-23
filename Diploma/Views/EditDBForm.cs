@@ -483,26 +483,74 @@ namespace Diploma.Views
                     }
                 case _currentObj.agents:
                     {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранного контрагента?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            _counteragentsCRUD.delete(Convert.ToInt64(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index].Cells["id"].Value));
+                            _currentTable = _counteragentsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
                 case _currentObj.orders:
                     {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранный заказ?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            _ordersCRUD.delete(Convert.ToInt64(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index].Cells["id"].Value));
+                            _currentTable = _ordersCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
                 case _currentObj.orderItems:
-                    { 
+                    {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранную часть заказа?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            _orderItemsCRUD.Delete(Convert.ToInt64(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index].Cells["id"].Value));
+                            _currentTable = _orderItemsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break; 
                     }
                 case _currentObj.products:
                     {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранный товар?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            _productsCRUD.delete(Convert.ToInt64(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index].Cells["id"].Value));
+                            _currentTable = _productsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
                 case _currentObj.documents:
                     {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранный документ?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            _documentsCRUD.delete(Convert.ToInt64(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index].Cells["id"].Value));
+                            _currentTable = _documentsCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
                 case _currentObj.templates:
                     {
+                        DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить выбранный шаблон?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.Yes)
+                        {
+                            _templatesCRUD.delete(Convert.ToInt64(dataGridView1.Rows[dataGridView1.SelectedRows[0].Index].Cells["id"].Value));
+                            _currentTable = _templatesCRUD.getPageAsDataTable(_currentPage);
+                            dataGridView1.DataSource = _currentTable;
+                            correctView(index);
+                        }
                         break;
                     }
                 default:

@@ -111,14 +111,19 @@ namespace Diploma.Views
         private void button3_Click(object sender, EventArgs e)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TestDocx.docx";
-            Aspose.Words.Document doc = new Aspose.Words.Document();
-            DocumentBuilder builder = new DocumentBuilder(doc);
-            builder.InsertHtml(this.htmlCode);
-            SaveOptions saveOptions = new TxtSaveOptions();
-            saveOptions.SaveFormat = SaveFormat.Docx;
-            doc.Save(path, saveOptions);
+            //Aspose.Words.Document doc = new Aspose.Words.Document();
+            //DocumentBuilder builder = new DocumentBuilder(doc);
+            //builder.InsertHtml(this.htmlCode);
+            //SaveOptions saveOptions = new TxtSaveOptions();
+            //saveOptions.SaveFormat = SaveFormat.Docx;
+            //doc.Save(path, saveOptions);
             //HtmlToWordConverter converter = new HtmlToWordConverter();
             //converter.ConvertHtmlStringToWord(this.htmlCode, path);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            localContext.SwitchMainForm(new Diploma.Views.MainMenuForm(localContext, enteredUser, _connection));
         }
     }
 }
