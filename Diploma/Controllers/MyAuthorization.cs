@@ -20,6 +20,10 @@ namespace Diploma.Controllers
         {
             connection_string= "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
         }
+        public MyAuthorization(String con_str)
+        {
+            connection_string =con_str;
+        }
 
         //возвращает хэш, созданный из переданной строки
         public static String get_sha256(String text_to_sha256)

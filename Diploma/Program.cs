@@ -19,7 +19,7 @@ namespace Diploma
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            //String connectionToDb = "Data Source=PRESKIIN-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;Trust Server Certificate=True";
             String connectionToDb = "Data Source=Preskiin-PC;Initial Catalog=Diploma;Integrated Security=True;Encrypt=False;trusted_connection=True";
             Diploma.Controllers.MyAppContext context = new Diploma.Controllers.MyAppContext();
             context.MainForm = new Authorize(context, connectionToDb); // Первая главная форма

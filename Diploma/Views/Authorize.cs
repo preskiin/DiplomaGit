@@ -32,7 +32,7 @@ namespace Diploma
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var auth = new Diploma.Controllers.MyAuthorization();
+            var auth = new Diploma.Controllers.MyAuthorization(_connection);
             Diploma.Models.User tmpUser = auth.check_auth(textBox1.Text, textBox2.Text);
             if (tmpUser!=null)
             {

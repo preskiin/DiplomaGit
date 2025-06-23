@@ -78,16 +78,35 @@ namespace Diploma.Views
             this.webView21.CoreWebView2.WebMessageReceived += onAnswerFromWeb; //подписка на событие об ответе с webview2 о выборе элемента в списке
 
         }
+        //создает строку html из страницы, которая отображена сейчас в webView2
+        public async Task<string> getHtmlFromWebView2()
+        {
+            try
+            {
+                // Получаем HTML с помощью JavaScript
+                string encodedHtml = await webView21.CoreWebView2.ExecuteScriptAsync(
+                    "document.documentElement.outerHTML;"
+                );
 
+                // Декодируем JSON-строку (удаляем кавычки и экранированные символы)
+                string cleanHtml = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(encodedHtml);
+                return cleanHtml;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении HTML: {ex.Message}");
+                return null;
+            }
+        }
         private async void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
 
             await webView21.ExecuteScriptAsync("document.body.contentEditable = 'false';");
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
-
+            HtmlToWordConverter converter = new HtmlToWordConverter();
         }
     }
 }
